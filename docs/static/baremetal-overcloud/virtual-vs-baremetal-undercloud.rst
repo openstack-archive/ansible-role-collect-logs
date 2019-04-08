@@ -14,4 +14,3 @@ The advantages of using a VM undercloud are:
 .. note:: When using a VM undercloud, but baremetal nodes for the overcloud
           deployment, the ``overcloud_nodes`` variable in tripleo-quickstart
           must overwritten and set to empty.
-

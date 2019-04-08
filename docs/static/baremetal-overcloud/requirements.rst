@@ -20,4 +20,3 @@ The undercloud VM or baremetal machine requires:
 * 1 quad core CPU
 * 16 GB free memory
 * 80 GB disk space
-

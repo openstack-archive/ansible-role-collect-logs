@@ -1,0 +1,12 @@
+---
+- project:
+    check:
+      jobs:
+        - openstack-tox-linters
+    gate:
+      jobs:
+        - openstack-tox-linters
+      queue: tripleo
+    post:
+      jobs:
+        - publish-openstack-python-branch-tarball

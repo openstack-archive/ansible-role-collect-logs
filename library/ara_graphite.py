@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ast
+import datetime
+import socket
+
 DOCUMENTATION = '''
 ---
 module: ara_graphite
@@ -51,9 +55,6 @@ EXAMPLES = '''
     ara_mapping:
         - "Name of task that deploys overcloud": overcloud.deploy.seconds
 '''
-import ast
-import datetime
-import socket
 
 
 def stamp(x):

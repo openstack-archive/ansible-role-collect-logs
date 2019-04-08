@@ -94,4 +94,3 @@ Explanation of Directory Contents
  - requirements_files (required)
 
    Multiple requirements files can be passed to quickstart.sh to include additional repos. For example, to include IPMI validation, the requirements files would need to include are `here <https://github.com/redhat-openstack/ansible-role-tripleo-validate-ipmi>`_
-

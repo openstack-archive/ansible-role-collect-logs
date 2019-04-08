@@ -21,7 +21,7 @@
       shell: "{{ ansible_pkg_mgr }} list installed >/var/log/extra/package-list-installed.txt"
 
     - name: Collecting /proc/cpuinfo|meminfo|swaps
-      shell: "cat /proc/{{item}} &> /var/log/extra/{{item}}.txt"
+      shell: "cat /proc/{{ item }} &> /var/log/extra/{{ item }}.txt"
       with_items:
         - cpuinfo
         - meminfo

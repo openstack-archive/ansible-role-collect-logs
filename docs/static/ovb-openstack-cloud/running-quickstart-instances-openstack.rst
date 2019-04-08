@@ -81,5 +81,3 @@ tripleo-quickstart undercloud and overcloud deployment with network isolation:
 
     ## Uncomment to deploy a quintupleo environment without an undercloud.
     #  OS::OVB::UndercloudEnvironment: OS::Heat::None
-
-

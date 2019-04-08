@@ -18,4 +18,3 @@ to triple-quickstart as in the following example:
         ovs_bridge: br-ctlplane
         ovs_options: '"tag=102"'
         tag: 102
-

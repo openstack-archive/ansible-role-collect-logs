@@ -107,4 +107,3 @@ ready section to copy custom nic-configs files.
 The ``ansible-role-tripleo-overcloud-prep-config`` repo includes a task that copies the nic-configs
 files if they are defined,
 <https://github.com/redhat-openstack/ansible-role-tripleo-overcloud-prep-config/blob/master/tasks/main.yml#L15>
-

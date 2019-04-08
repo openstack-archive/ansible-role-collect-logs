@@ -85,4 +85,3 @@ Below are a list of example settings (overwriting defaults) that would be passed
     public_net_pool_start: 10.0.0.50
     public_net_pool_end: 10.0.0.100
     public_net_gateway: 10.0.0.1
-

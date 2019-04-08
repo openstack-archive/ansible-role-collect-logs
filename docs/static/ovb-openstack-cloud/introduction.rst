@@ -12,4 +12,3 @@ You can download the `quickstart.sh` script with `wget`:
 ::
 
     wget https://raw.githubusercontent.com/openstack/tripleo-quickstart/master/quickstart.sh
-

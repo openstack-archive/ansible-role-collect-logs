@@ -40,4 +40,3 @@ on baremetal overcloud nodes:
         --release $RELEASE \
         $VIRTHOST
     popd
-

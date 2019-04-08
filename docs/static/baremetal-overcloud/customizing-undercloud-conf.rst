@@ -18,4 +18,3 @@ but can be overwritten by passing custom settings to tripleo-quickstart in a set
     undercloud_dhcp_start: 10.0.5.5
     undercloud_dhcp_end: 10.0.5.24
     undercloud_inspection_iprange: 10.0.5.100,10.0.5.120
-
