@@ -1,4 +1,10 @@
 ---
+# formally in tq common and tqe extras-common
+local_working_dir: "{{ lookup('env', 'HOME') }}/.quickstart"
+artcl_collect_dir: "{{ local_working_dir }}/collected_files"
+working_dir: "/home/{{ undercloud_user }}"
+undercloud_user: stack
+
 
 artcl_collect: true
 artcl_collect_list:
@@ -114,7 +120,6 @@ artcl_exclude_list:
   - /etc/pki/ca-trust/extracted
   - /etc/alternatives
   - /var/log/journal
-# artcl_collect_dir is defaulted in extras-common
 artcl_gzip_only: true
 artcl_tar_gz: false
 
