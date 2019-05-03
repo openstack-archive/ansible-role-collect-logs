@@ -2,7 +2,7 @@
 
 - name: Ensure required python packages are installed
   pip:
-    requirements: "{{ local_working_dir }}/usr/local/share/ansible/roles/collect-logs/doc-requirements.txt"
+    requirements: "{{ local_working_dir }}/usr/local/share/ansible/roles/collect-logs/docs/doc-requirements.txt"
 
 - name: Unarchive shell scripts
   shell: >
