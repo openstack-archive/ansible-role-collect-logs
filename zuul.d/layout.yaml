@@ -1,5 +1,9 @@
 ---
 - project:
+    templates:
+      - tripleo-standalone-scenarios-full
+      - tripleo-undercloud-jobs
+      - tripleo-multinode-container-full
     check:
       jobs:
         - openstack-tox-linters
