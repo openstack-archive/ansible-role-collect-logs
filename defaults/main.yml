@@ -79,6 +79,7 @@ artcl_collect_list:
   - /var/log/zaqar/
   - /var/tmp/sosreport*
   - /etc/
+  - /home/*/undercloud-ansible-*
   - /home/*/.instack/install-undercloud.log
   - /home/*/stackrc
   - /home/*/overcloudrc*
