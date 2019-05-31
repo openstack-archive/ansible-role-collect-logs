@@ -24,6 +24,7 @@ artcl_collect_list:
   - /var/log/bootstrap-subnodes.log
   - /var/log/unbound.log
   - /var/log/{{ ansible_pkg_mgr }}.log
+  - /var/log/cloud-init*.log
   - /var/log/aodh/
   - /var/log/audit/
   - /var/log/barbican/
