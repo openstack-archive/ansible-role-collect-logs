@@ -238,6 +238,8 @@
                 container_cp() {
                   docker cp ${1}:${2} $3
                 }
+                # NOTE(ykarel) podman inspect returns 'source' while docker inspect returns 'Source'
+                source_mount=Source
             fi
 
             if [ $engine = 'podman' ]; then
@@ -250,6 +252,8 @@
                   cp -rT ${mnt}${2} $3
                   podman umount $1
                 }
+                # NOTE(ykarel) podman inspect returns 'source' while docker inspect returns 'Source'
+                source_mount=source
             fi
 
             BASE_CONTAINER_EXTRA=/var/log/extra/${engine};
@@ -297,7 +301,7 @@
                 # NOTE(flaper87): This should go away. Services should be
                 # using a `logs` volume
                 # NOTE(mandre) Do not copy logs if the containers is bind mounting /var/log directory
-                if ! ${engine} exec $cont stat $BASE_CONTAINER_EXTRA 2>1 > /dev/null; then
+                if ! ${engine} inspect $cont | jq .[0].Mounts[].$source_mount | grep -x  '"/var/log[/]*"' 2>1 > /dev/null; then
                       container_cp $cont /var/log $INFO_DIR/log;
                 fi;
 
