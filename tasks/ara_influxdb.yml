@@ -2,6 +2,7 @@
 - name: Get ARA json data
   shell: "{{ local_working_dir }}/bin/ara result list --all -f json"
   register: ara_data
+  no_log: true
 
 - name: Collect and send data to InfluxDB
   ara_influxdb:
@@ -19,6 +20,7 @@
   become: true
   shell: "{{ local_working_dir }}/bin/ara result list --all -f json"
   register: ara_root_data
+  no_log: true
 
 - name: Collect and send data to InfluxDB
   ara_influxdb:
@@ -41,6 +43,7 @@
   register: ara_oc_data
   environment:
     ARA_DATABASE: 'sqlite:///{{ ara_overcloud_db_path }}'
+  no_log: true
 
 - name: Collect and send data to InfluxDB
   ara_influxdb:
