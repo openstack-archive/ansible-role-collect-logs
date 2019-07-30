@@ -20,6 +20,9 @@
     - name: package list installed
       shell: "{{ ansible_pkg_mgr }} list installed >/var/log/extra/package-list-installed.txt"
 
+    - name: list enabled repositories
+      shell: "{{ ansible_pkg_mgr }} repolist -v >/var/log/extra/repolist.txt"
+
     - name: Collecting /proc/cpuinfo|meminfo|swaps
       shell: "cat /proc/{{ item }} &> /var/log/extra/{{ item }}.txt"
       with_items:
@@ -42,8 +45,8 @@
     # used by OSP Release Engineering to import into internal builds
     - name: package import delorean-testing
       shell: |
-        repoquery --disablerepo='*' --enablerepo='delorean-*-testing'\
-        -a --qf '%{sourcerpm}'|sort -u|sed 's/.src.rpm//g' >> /var/log/extra/import-delorean-testing.txt
+        repoquery --disablerepo='*' --enablerepo='delorean-*-deps'\
+        -a --qf '%{sourcerpm}'|sort -u|sed 's/.src.rpm//g' >> /var/log/extra/import-delorean-deps.txt
 
     - name: Collect logs from all failed systemd services
       shell: >
