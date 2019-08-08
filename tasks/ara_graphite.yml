@@ -7,6 +7,6 @@
   ara_graphite:
     graphite_host: "{{ ara_graphite_server }}"
     ara_mapping: "{{ ara_tasks_map }}"
-    ara_data: "{{ ara_data.stdout }}"
+    ara_data: "{{ ara_data.stdout|to_json }}"
     graphite_prefix: "{{ ara_graphite_prefix }}"
     only_successful_tasks: "{{ ara_only_successful_tasks }}"

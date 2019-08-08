@@ -99,6 +99,7 @@ EXAMPLES = '''
 
 import ast  # noqa pylint: disable=C0413
 import datetime  # noqa pylint: disable=C0413
+import json  # noqa pylint: disable=C0413
 import os  # noqa pylint: disable=C0413
 import re  # noqa pylint: disable=C0413
 import requests  # noqa pylint: disable=C0413
@@ -360,6 +361,7 @@ def translate(measure, json_data, only_ok,
     :return: full InfluxDB scheme
     '''
     data = ast.literal_eval(json_data)
+    data = json.loads(data)
     tags = InfluxStandardTags()
     std_fields = InfluxStandardFields()
     map_fields = InfluxConfiguredFields(
