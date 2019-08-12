@@ -1,0 +1,133 @@
+---
+- become: true
+  ignore_errors: true
+  block:
+    - name: check if ODL is enabled via docker
+      shell: docker ps | grep opendaylight_api
+      register: odl_container_enabled
+
+    - name: check if ODL is enabled via podman
+      shell: podman ps | grep opendaylight_api
+      register: odl_container_enabled
+      when: odl_container_enabled.rc != 0
+
+
+    - name: check if ODL is enabled via rpm
+      shell: rpm -qa | grep opendaylight
+      register: odl_rpm_enabled
+
+    - name: Create ODL log directory
+      file: dest="{{ odl_extra_log_dir }}" state=directory
+      when: (odl_rpm_enabled.rc == 0) or (odl_container_enabled.rc == 0)
+
+    - name: Collect OVS outputs for ODL
+      shell: "bash /tmp/odl_extra_logs.sh"
+      when: (odl_rpm_enabled.rc == 0) or (odl_container_enabled.rc == 0)
+
+    - name: Collect ODL info and logs (RPM deployment)
+      shell: >
+        cp /opt/opendaylight/data/log/* /var/log/extra/odl/;
+        journalctl -u opendaylight > /var/log/extra/odl/odl_journal.log
+      when: odl_rpm_enabled.rc == 0
+
+    - name: Collect container info and logs
+      shell: >
+        for engine in docker podman; do
+
+            if [ $engine = 'docker' ]; then
+                (command -v docker && systemctl is-active docker) || continue
+                # container_cp CONTAINER SRC DEST
+                container_cp() {
+                  docker cp ${1}:${2} $3
+                }
+                # NOTE(ykarel) podman inspect returns 'source' while docker inspect returns 'Source'
+                source_mount=Source
+            fi
+
+            if [ $engine = 'podman' ]; then
+                command -v podman || continue
+                # NOTE(cjeanner): podman has no "cp" subcommand, we hence have to mount the container, copy,
+                # umount it. More info: https://www.mankier.com/1/podman-cp
+                # See also: https://github.com/containers/libpod/issues/613
+                container_cp() {
+                  mnt=$(podman mount $1)
+                  cp -rT ${mnt}${2} $3
+                  podman umount $1
+                }
+                # NOTE(ykarel) podman inspect returns 'source' while docker inspect returns 'Source'
+                source_mount=source
+            fi
+
+            BASE_CONTAINER_EXTRA=/var/log/extra/${engine};
+            mkdir -p $BASE_CONTAINER_EXTRA;
+            ALL_FILE=$BASE_CONTAINER_EXTRA/${engine}_allinfo.log;
+
+            CONTAINER_INFO_CMDS=(
+                "${engine} ps --all --size"
+                "${engine} images"
+                "${engine} stats --all --no-stream"
+                "${engine} version"
+                "${engine} info"
+            );
+            if [ $engine = 'docker' ]; then
+                CONTAINER_INFO_CMDS+=("${engine} volume ls")
+            fi
+            for cmd in "${CONTAINER_INFO_CMDS[@]}"; do
+                echo "+ $cmd" >> $ALL_FILE;
+                $cmd >> $ALL_FILE;
+                echo "" >> $ALL_FILE;
+                echo "" >> $ALL_FILE;
+            done;
+
+            # Get only failed containers, in a dedicated file
+            ${engine} ps -a | grep -vE ' (IMAGE|Exited \(0\)|Up) ' &>> /var/log/extra/failed_containers.log;
+
+            for cont in $(${engine} ps | awk {'print $NF'} | grep -v NAMES); do
+                INFO_DIR=$BASE_CONTAINER_EXTRA/containers/${cont};
+                mkdir -p $INFO_DIR;
+                (
+                  set -x;
+                  if [ $engine = 'docker' ]; then
+                      ${engine} top $cont auxw;
+                  # NOTE(cjeanner): `podman top` does not support `ps` options.
+                  elif [ $engine = 'podman' ]; then
+                      ${engine} top $cont;
+                  fi
+                  ${engine} exec $cont top -bwn1;
+                  ${engine} exec $cont bash -c "\$(command -v dnf || command -v yum) list installed";
+                  ${engine} inspect $cont;
+                ) &> $INFO_DIR/${engine}_info.log;
+
+                container_cp $cont /var/lib/kolla/config_files/config.json $INFO_DIR/config.json;
+
+                # NOTE(flaper87): This should go away. Services should be
+                # using a `logs` volume
+                # NOTE(mandre) Do not copy logs if the containers is bind mounting /var/log directory
+                if ! ${engine} inspect $cont | jq .[0].Mounts[].$source_mount | grep -x  '"/var/log[/]*"' 2>1 > /dev/null; then
+                      container_cp $cont /var/log $INFO_DIR/log;
+                fi;
+
+                # Delete symlinks because they break log collection and are generally
+                # not useful
+                find $INFO_DIR -type l -delete;
+            done;
+
+            # NOTE(cjeanner) previous loop cannot have the "-a" flag because of the
+            # "exec" calls. So we just loop a second time, over ALL containers,
+            # in order to get all the logs we can. For instance, the previous loop
+            # would not allow to know why a container is "Exited (1)", preventing
+            # efficient debugging.
+            for cont in $(${engine} ps -a | awk {'print $NF'} | grep -v NAMES); do
+                INFO_DIR=$BASE_CONTAINER_EXTRA/containers/${cont};
+                mkdir -p $INFO_DIR;
+                ${engine} logs $cont &> $INFO_DIR/stdout.log;
+            done;
+
+          # NOTE(flaper87) Copy contents from the logs volume. We can expect this
+          # volume to exist in a containerized environment.
+          # NOTE(cjeanner): Rather test the eXistenZ of the volume, as podman does not
+          # have such thing
+          if [ -d /var/lib/docker/volumes/logs/_data ]; then
+              cp -r /var/lib/docker/volumes/logs/_data $BASE_CONTAINER_EXTRA/logs;
+          fi
+        done

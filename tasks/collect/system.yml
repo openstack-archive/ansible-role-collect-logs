@@ -1,0 +1,124 @@
+---
+- become: true
+  ignore_errors: true
+  block:
+    - name: rpm -qa
+      shell: rpm -qa | sort -f >/var/log/extra/rpm-list.txt
+
+    - name: package list installed
+      shell: "{{ ansible_pkg_mgr }} list installed >/var/log/extra/package-list-installed.txt"
+
+    - name: list enabled repositories
+      shell: "{{ ansible_pkg_mgr }} repolist -v >/var/log/extra/repolist.txt"
+
+    - name: Collecting /proc/cpuinfo|meminfo|swaps
+      shell: "cat /proc/{{ item }} &> /var/log/extra/{{ item }}.txt"
+      with_items:
+        - cpuinfo
+        - meminfo
+        - swaps
+
+    - name: Collect installed cron jobs
+      shell: |
+        for user in $(cut -f1 -d':' /etc/passwd); do \
+        echo $user; crontab -u $user -l | grep -v '^$\|^\s*\#\|^\s*PATH'; done \
+        &> /var/log/extra/installed_crons.txt
+
+    # used by OSP Release Engineering to import into internal builds
+    - name: package import delorean
+      shell: |
+        repoquery --disablerepo='*' --enablerepo='delorean'\
+        -a --qf '%{sourcerpm}'|sort -u|sed 's/.src.rpm//g' >> /var/log/extra/import-delorean.txt
+
+    # used by OSP Release Engineering to import into internal builds
+    - name: package import delorean-testing
+      shell: |
+        repoquery --disablerepo='*' --enablerepo='delorean-*-deps'\
+        -a --qf '%{sourcerpm}'|sort -u|sed 's/.src.rpm//g' >> /var/log/extra/import-delorean-deps.txt
+
+    - name: Collect logs from all failed systemd services
+      shell: >
+        systemctl -t service --failed --no-legend | awk '{print $1}'
+        | xargs -r -n1 journalctl -u > /var/log/extra/failed_services.txt 2>&1
+
+    - name: lsof -P -n
+      shell: "lsof -P -n &> /var/log/extra/lsof.txt"
+
+    - name: pstree -p
+      shell: "pstree -p &> /var/log/extra/pstree.txt"
+
+    - name: sysctl -a
+      shell: "sysctl -a &> /var/log/extra/sysctl.txt"
+
+    - name: Get haproxy stats
+      shell: >
+        pgrep haproxy && \
+        test -S /var/lib/haproxy/stats && \
+        echo 'show info;show stat;show table' | socat /var/lib/haproxy/stats stdio &> /var/log/extra/haproxy-stats.txt || \
+        echo "No HAProxy or no socket on host" > /var/log/extra/haproxy-stats.txt
+
+    - name: lsmod
+      shell: "lsmod &> /var/log/extra/lsmod.txt"
+
+    - name: lspci
+      shell: "lspci &> /var/log/extra/lspci.txt"
+
+    - name: pip list
+      shell: "pip list &> /var/log/extra/pip.txt"
+
+    - name: lvm debug
+      shell: "(vgs; pvs; lvs) &> /var/log/extra/lvm.txt"
+
+    - name: Collect services status
+      shell: |
+        systemctl list-units --full --all &> /var/log/extra/services.txt
+        systemctl status "*" &>> /var/log/extra/services.txt
+
+    - name: Search for AVC denied
+      shell: >
+        grep -i denied /var/log/audit/audit* &&
+        grep -i denied /var/log/audit/audit* > /var/log/extra/denials.txt
+
+    - name: Search for segfaults in logs
+      shell: >
+        grep -v ansible-command /var/log/messages | grep segfault &&
+        grep -v ansible-command /var/log/messages | grep segfault > /var/log/extra/segfaults.txt
+
+    - name: Search for oom-killer instances in logs
+      shell: >
+        grep -v ansible-command /var/log/messages | grep oom-killer &&
+        grep -v ansible-command /var/log/messages | grep oom-killer > /var/log/extra/oom-killers.txt
+
+    - name: Collect delorean logs
+      shell: >
+        if [[ -e /home/{{ undercloud_user }}/DLRN/data/repos ]]; then
+        rm -rf /tmp/delorean_logs && mkdir /tmp/delorean_logs;
+        find /home/{{ undercloud_user }}/DLRN/data/repos/ -name '*.log' -exec cp --parents \{\} /tmp/delorean_logs/ \; ;
+        find /tmp/delorean_logs -name '*.log' -exec gzip \{\} \; ;
+        find /tmp/delorean_logs -name '*.log.gz' -exec sh -c 'x="{}"; mv "$x" "${x%.log.gz}.log.txt.gz"' \; ;
+        rm -rf {{ artcl_collect_dir }}/delorean_logs && mkdir {{ artcl_collect_dir }}/delorean_logs;
+        mv /tmp/delorean_logs/home/{{ undercloud_user }}/DLRN/data/repos/* {{ artcl_collect_dir }}/delorean_logs/;
+        fi
+
+    - name: Collect config-data
+      shell: cp -r /var/lib/config-data/puppet-generated /var/log/config-data
+
+    - name: Collect text version of the journal from last four hours
+      shell: journalctl --since=-4h --lines=100000 > /var/log/journal.txt
+
+    - name: Collect errors and rename if more than 10 MB
+      shell: >
+        grep -rE '^[-0-9]+ [0-9:\.]+ [0-9 ]*ERROR ' /var/log/ |
+        sed "s/\(.*\)\(20[0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\.[0-9]\+\)\(.*\)/\2 ERROR \1\3/g" > /tmp/errors.txt;
+        if (( $(stat -c "%s" /tmp/errors.txt) > 10485760 )); then
+          ERR_NAME=big-errors.txt;
+        else
+          ERR_NAME=errors.txt;
+        fi;
+        mv /tmp/errors.txt /var/log/extra/${ERR_NAME}.txt
+
+    - name: Create a index file for logstash
+      shell: >
+        for i in {{ artcl_logstash_files|default([])|join(" ") }}; do
+        cat $i; done | grep "^20.*|" | sort -sk1,2 |
+        sed "s/\(20[0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\.*[0-9]*\)\(.*\)/\1 INFO \2/g" > /var/log/extra/logstash.txt

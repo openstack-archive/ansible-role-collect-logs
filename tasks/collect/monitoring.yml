@@ -1,0 +1,39 @@
+---
+- become: true
+  ignore_errors: true
+  block:
+    - name: check for dstat log file
+      stat: path=/var/log/extra/dstat-csv.log
+      register: dstat_logfile
+
+    - name: kill dstat
+      shell: "pkill dstat"
+      become: true
+      when: dstat_logfile.stat.exists
+
+    - name: Get dstat_graph tool
+      git:
+        repo: "https://github.com/Dabz/dstat_graph.git"
+        dest: "/tmp/dstat_graph"
+        version: master
+      when: dstat_logfile.stat.exists
+
+    - name: Generate HTML dstat graphs if it exists
+      shell: "/tmp/dstat_graph/generate_page.sh /var/log/extra/dstat-csv.log > /var/log/extra/dstat.html"
+      when: dstat_logfile.stat.exists
+      args:
+        chdir: "/tmp/dstat_graph"
+
+    - name: Generate human-readable SAR logs
+      shell: "[[ -f /usr/lib64/sa/sa2 ]] && /usr/lib64/sa/sa2 -A"
+
+    - name: Ensure sos package is installed when collect sosreport(s)
+      package:
+        name: sos
+        state: present
+      when: artcl_collect_sosreport|bool
+
+    - name: Collect sosreport
+      command: >
+        sosreport {{ artcl_sosreport_options }}
+      when: artcl_collect_sosreport|bool

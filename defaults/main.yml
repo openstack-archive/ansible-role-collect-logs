@@ -205,6 +205,14 @@ ara_tasks_map:
   "overcloud-prep-images : Prepare the overcloud images for deploy": prepare_images.seconds
   "validate-simple : Validate the overcloud": overcloud.ping_test.seconds
   "validate-tempest : Execute tempest": overcloud.tempest.seconds
+
+collect_log_types:
+  - system
+  - monitoring
+  - network
+  - openstack
+  - container
+
 # InfluxDB module settings
 influxdb_only_successful_tasks: true
 influxdb_measurement: test

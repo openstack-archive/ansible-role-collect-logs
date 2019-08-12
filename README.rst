@@ -51,6 +51,9 @@ Collection related
 -  ``artcl_gzip_only``: false/true – When true, gathered files are
    gzipped one by one in ``artcl_collect_dir``, when false, a tar.gz
    file will contain all the logs.
+-  ``collect_log_types`` - A list of which type of logs will be collected,
+   such as openstack logs, network logs, system logs, etc.
+   Acceptable values are system, monitoring, network, openstack and container.
 
 Documentation generation related
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
