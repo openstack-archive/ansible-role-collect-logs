@@ -1,0 +1,677 @@
+---
+regexes:
+  - regex: 'Killed\s+timeout -s 9 '
+    name: "timeout_re"
+  - regex: '1;31mError: .+?\W(\w+)::'
+    name: "puppet_re"
+  - regex: 'Could not resolve host: (\S+); Name or service not known'
+    name: "resolving_re"
+  - regex: 'mError: (\S+?) \S+ returned 1 instead of one of'
+    name: "exec_re"
+  - regex: "Failed to build (.*)"
+    name: "failed_deps_re"
+  - regex: 'curl. .*? couldn.t open file "(.*?)"'
+    name: "curl_re"
+  - regex: 'fatal: Unable to look up (\S+)'
+    name: "git_re"
+  - regex: 'Deployment exited with non-zero status code: (\d+)'
+    name: "deploy_re"
+  - regex: 'Error: Could not find data item (\w+) in any Hiera data file and no default supplied'
+    name: "hiera_re"
+  - regex: 'mError: /Stage\[main\]/\w+/Exec\[(.+?)\]'
+    name: "puppetexec_re"
+  - regex: "Job for (.+) failed because the control process exited with error code."
+    name: "command_exe"
+  - regex: "stderr: 'fatal: unable to access 'http.+/devstack-gate/.*Network is unreachable.*"
+    name: "zcl_re"
+  - regex: "fatal: unable to access 'http.*Network is unreachable"
+    name: "gitnet_re"
+  - regex: "ssh: connect to host .+ port .+: No route to host"
+    name: "ssh_re"
+  - regex: "mError: .* at /etc/puppet/modules/([^/]+)/"
+    name: "pup_module_re"
+  - regex: 'systemd: (\S+).service failed'
+    name: "service_fail_re"
+  - regex: '\[([\w-]+)\]: Failed to call refresh'
+    name: "fail_refresh_re"
+  - regex: "Disk volume where .* is located doesn't have enough disk space"
+    name: "iron_space_re"
+  - regex: 'overcloud-validate.sh 2>&1 .*"rc": 1'
+    name: "oooq_validate_fail"
+  - regex: 'overcloud_image_build_script.sh 2>&1 .*"rc": 1'
+    name: "oooq_image_build_fail"
+  - regex: 'undercloud-install.sh 2>&1 .*"rc": 1'
+    name: "oooq_undercloud_fail"
+  - regex: '^.*"cmd": "(?:set -o pipefail && )*([^\s]*).*"rc": [^0]+.*\n(?!.*ignoring).*'
+    name: "oooq_command_fail"
+    multiline: true
+  - regex: '^.*"cmd": ".* (tempest_output\.log).*"rc": 1.*\n(?!.*ignoring).*'
+    name: "oooq_tempest_fail"
+  - regex: 'Error: Execution of .*yum.* returned 1: Error downloading packages'
+    name: "yum_install_fail_re"
+  - regex: 'ERROR! the playbook: .* could not be found'
+    name: "playbook_err_re"
+  - regex: 'fatal: .* FAILED! =>.*"msg": .* ([^\s]+) is undefined"'
+    name: "ansible_und_err"
+  - regex: "can't read ([^ ]+): No such file or directory"
+    name: "missing_file"
+  - regex: ' Could not install requirement ([^\s]+) from'
+    name: "pip_install_fail"
+  - regex: 'fatal:.*FAILED! .*undercloud.qcow2.*convert_image.sh'
+    name: "convert_fail_re"
+  - regex: 'ERROR:kolla.common.utils:([^\s]+) Failed with status: error'
+    name: kolla_fail_re
+  - regex: 'toci_gate_test.sh:.*sudo kill -9 \d+'
+    name: ovb_kill9_re
+  - regex: 'Error: .*The (.+) hiera key is undefined'
+    name: hiera_key_undefined_re
+  - regex: 'Stack "overcloud" .+ Timed out'
+    name: stack_oc_timeout_re
+  - regex: '(\S+): unbound variable'
+    name: unbound_var_re
+  - regex: 'Error, some other host \(.+\) already uses address .+'
+    name: same_host_re
+  - regex: 'Failed to start (.+) container'
+    name: failed_container_re
+  - regex: "msg\": \"(.*) isn't working \\(healthcheck failed\\)"
+    name: healthcheck_re
+patterns:
+  "console":
+    - id: 1
+      logstash: ""
+      msg: "Overcloud stack installation: SUCCESS."
+      pattern: "Stack overcloud CREATE_COMPLETE"
+      tag: "info"
+    - id: 2
+      logstash: "Stack overcloud CREATE_FAILED"
+      msg: "Overcloud stack: FAILED."
+      pattern: "Stack overcloud CREATE_FAILED"
+      tag: "info"
+    - id: 3
+      logstash: "No valid host was found. There are not enough hosts"
+      msg: "No valid host was found."
+      pattern: "No valid host was found. There are not enough hosts"
+      tag: "code"
+    - id: 4
+      logstash: "Failed to connect to trunk.rdoproject.org"
+      msg: "Connection failure to trunk.rdoproject.org."
+      pattern: "Failed to connect to trunk.rdoproject.org port 80"
+      tag: "infra"
+    - id: 5
+      logstash: ""
+      msg: "Overcloud pingtest FAILED."
+      pattern: "Overloud pingtest, FAIL"
+      tag: "code"
+    - id: 6
+      logstash: ""
+      msg: "Overcloud pingtest FAILED."
+      pattern: "Overcloud pingtest, failed"
+      tag: "code"
+    - id: 7
+      logstash: "Error contacting Ironic server: Node"
+      msg: "Ironic introspection FAIL."
+      pattern: "Error contacting Ironic server: Node "
+      tag: "code"
+    - id: 8
+      logstash: "Introspection completed with errors:"
+      msg: "Ironic introspection FAIL."
+      pattern: "Introspection completed with errors:"
+      tag: "code"
+    - id: 9
+      logstash: ": Introspection timeout"
+      msg: "Introspection timeout."
+      pattern: ": Introspection timeout"
+      tag: "code"
+    - id: 10
+      logstash: ""
+      msg: "Ironic: Host locking error."
+      pattern: "is locked by host localhost.localdomain, please retry"
+      tag: "code"
+    - id: 11
+      logstash: "Timed out waiting for node "
+      msg: "Ironic node register FAIL: timeout for node."
+      pattern: "Timed out waiting for node "
+      tag: "code"
+    - id: 12
+      logstash: "GATE_RETVAL=137"
+      msg: "Killed by timeout."
+      pattern: "Killed                  ./testenv-client -b"
+      tag: "infra"
+    - id: 13
+      logstash: "GATE_RETVAL=137"
+      msg: "Killed by timeout."
+      pattern: "timeout_re"
+      tag: "infra"
+    - id: 14
+      logstash: "puppet_re"
+      msg: "Puppet {} FAIL."
+      pattern: "puppet_re"
+      tag: "code"
+    - id: 15
+      logstash: "exec_re"
+      msg: "Program {} FAIL."
+      pattern: "exec_re"
+      tag: "code"
+    - id: 16
+      logstash: "ERROR:dlrn:"
+      msg: "Delorean FAIL."
+      pattern: "ERROR:dlrn:"
+      tag: "code"
+    - id: 17
+      logstash: "500 Internal Server Error: Failed to upload image"
+      msg: "Glance upload FAIL."
+      pattern: "500 Internal Server Error: Failed to upload image"
+      tag: "code"
+    - id: 18
+      logstash: ""
+      msg: "Jenkins slave FAIL."
+      pattern: "Slave went offline during the build"
+      tag: "infra"
+    - id: 19
+      logstash: "resolving_re"
+      msg: "DNS resolve of {} FAIL."
+      pattern: "resolving_re"
+      tag: "infra"
+    - id: 20
+      logstash: "fatal: The remote end hung up unexpectedly"
+      msg: "Git clone repo FAIL."
+      pattern: "fatal: The remote end hung up unexpectedly"
+      tag: "infra"
+    - id: 23
+      logstash: "FATAL: no longer a configured node for"
+      msg: "Slave FAIL: no longer a configured node"
+      pattern: "FATAL: no longer a configured node for "
+      tag: "infra"
+    - id: 24
+      logstash: "cd: /opt/stack/new/delorean/data/repos: No such file or directory"
+      msg: "Delorean failed to build the change under review."
+      pattern: "cd: /opt/stack/new/delorean/data/repos: No such file or directory"
+      tag: "code"
+    - id: 25
+      logstash: "[ERROR] - SEVERE ERROR occurs: java.lang"
+      msg: "Jenkins slave FAIL: InterruptedException"
+      pattern: "[ERROR] - SEVERE ERROR occurs: java.lang.InterruptedException"
+      tag: "infra"
+    - id: 26
+      logstash: "Killed                  bash -xe /opt/stack/new/tripleo-ci/toci_gate_test.sh"
+      msg: "Main script timeout"
+      pattern: "Killed                  bash -xe /opt/stack/new/tripleo-ci/toci_gate_test.sh"
+      tag: "infra"
+    - id: 27
+      logstash: "Command 'instack-install-undercloud' returned non-zero exit status"
+      msg: "Undercloud install FAIL."
+      pattern: "Command 'instack-install-undercloud' returned non-zero exit status"
+      tag: "code"
+    - id: 28
+      logstash: "failed_deps_re"
+      msg: "Failed to build dep {}."
+      pattern: "failed_deps_re"
+      tag: "infra"
+    - id: 29
+      logstash: "curl_re"
+      msg: "Failed to upload or get image: {}."
+      pattern: "curl_re"
+      tag: "infra"
+    - id: 30
+      logstash: "error: command 'gcc' failed with exit status 1"
+      msg: "Failed to compile deps."
+      pattern: "error: command 'gcc' failed with exit status 1"
+      tag: "infra"
+    - id: 31
+      logstash: "crm_resource for openstack"
+      msg: "'crm_resource' check failed because timeout."
+      pattern: "crm_resource for openstack"
+      tag: "infra"
+    - id: 32
+      logstash: "failed to open 'instack.qcow2': No such file or"
+      msg: "FAIL to build image instack.qcow2."
+      pattern: "failed to open 'instack.qcow2': No such file or"
+      tag: "code"
+    - id: 33
+      logstash: "Stack overcloud UPDATE_FAILED"
+      msg: "Stack update FAILED."
+      pattern: "Stack overcloud UPDATE_FAILED"
+      tag: "info"
+    - id: 34
+      logstash: "git_re"
+      msg: "DNS resolve of {} FAIL."
+      pattern: "git_re"
+      tag: "infra"
+    - id: 35
+      logstash: "deploy_re"
+      msg: "Deployment exited with code {}."
+      pattern: "deploy_re"
+      tag: "code"
+    - id: 36
+      logstash: "No connected Gearman servers"
+      msg: "Gearman problem."
+      pattern: "Error: No connected Gearman servers"
+      tag: "infra"
+    - id: 37
+      logstash: "Overcloud pingtest FAILED"
+      msg: "Overcloud pingtest FAILED."
+      pattern: "Overcloud pingtest FAILED"
+      tag: "code"
+    - id: 38
+      logstash: "... FAILED"
+      msg: "Tempest tests FAILED."
+      pattern: "... FAILED"
+      tag: "code"
+    - id: 39
+      logstash: "No more mirrors to try"
+      msg: "Network issue 'No more mirrors'."
+      pattern: "No more mirrors to try"
+      tag: "infra"
+    - id: 40
+      logstash: "The gearman Job has failed"
+      msg: "Gearman task FAILED."
+      pattern: "ERROR - The gearman Job has failed"
+      tag: "infra"
+    - id: 41
+      logstash: "ERROR - Couldn't retrieve env"
+      msg: "OVB Environment setup FAILED."
+      pattern: "ERROR - Couldn't retrieve env"
+      tag: "infra"
+    - id: 42
+      logstash: 'Command "python setup.py egg_info" failed with error code 1'
+      msg: "Pip install FAIL."
+      pattern: 'Command "python setup.py egg_info" failed with error code 1'
+      tag: "infra"
+    - id: 43
+      logstash: "MessagingTimeout: Timed out waiting for a reply to message ID"
+      msg: "Message timeout."
+      pattern: "MessagingTimeout: Timed out waiting for a reply to message ID"
+      tag: "code"
+    - id: 44
+      logstash: "504 Gateway Time-out: The server didn't respond in time"
+      msg: "Gateway timeout 504."
+      pattern: "504 Gateway Time-out: The server didn't respond in time"
+      tag: "infra"
+    - id: 45
+      logstash: "Exception registering nodes:"
+      msg: "Node registration FAIL."
+      pattern: "Exception registering nodes:"
+      tag: "code"
+    - id: 46
+      logstash: "400 Bad Request: Client disconnected before sending all data to backend (HTTP 400)"
+      msg: "HTTP 400 Error."
+      pattern: "400 Bad Request: Client disconnected before sending all data to backend (HTTP 400)"
+      tag: "code"
+    - id: 47
+      logstash: "command_exe"
+      msg: "{} FAIL."
+      pattern: "command_exe"
+      tag: "code"
+    - id: 48
+      logstash: "Network is unreachable"
+      msg: "Zuul-cloner network FAIL."
+      pattern: "zcl_re"
+      tag: "infra"
+    - id: 49
+      logstash: "Network is unreachable"
+      msg: "Network FAIL."
+      pattern: "gitnet_re"
+      tag: "infra"
+    - id: 50
+      logstash: "port 22: No route to host"
+      msg: "SSH to host FAIL."
+      pattern: "ssh_re"
+      tag: "code"
+    - id: 51
+      logstash: "CommandError: No image with a name or ID of"
+      msg: "No image on the host."
+      pattern: "CommandError: No image with a name or ID of"
+      tag: "code"
+    - id: 52
+      logstash: "Not enough nodes - available"
+      msg: "Not enough nodes are available."
+      pattern: "Not enough nodes - available"
+      tag: "code"
+    - id: 53
+      logstash: "Timing out after 300 seconds:"
+      msg: "Pingtest stack timeout."
+      pattern: "Timing out after 300 seconds:"
+      tag: "code"
+    - id: 54
+      logstash: "504 Gateway Time-out"
+      msg: "504 Gateway Time-out."
+      pattern: "504 Gateway Time-out"
+      tag: "code"
+    - id: 55
+      logstash: "Gateway Time-out (HTTP 504)"
+      msg: "504 Gateway Time-out."
+      pattern: "Gateway Time-out (HTTP 504)"
+      tag: "code"
+    - id: 56
+      logstash: "Retrying (Retry(total=0, connect=None, read=None, redirect=None)) after connection broken by"
+      msg: "Pip networking timeout."
+      pattern: "Retrying (Retry(total=0, connect=None, read=None, redirect=None)) after connection broken by"
+      tag: "infra"
+    - id: 57
+      logstash: "Could not evaluate: Cannot allocate memory - fork"
+      msg: "Puppet memory fail."
+      pattern: "Could not evaluate: Cannot allocate memory - fork(2)"
+      tag: "infra"
+    - id: 58
+      logstash: "Exception introspecting nodes"
+      msg: "Introspection FAIL."
+      pattern: "Exception introspecting nodes"
+      tag: "code"
+    - id: 59
+      logstash: ""
+      msg: "Overcloud pingtest FAILED."
+      pattern: "oooq_validate_fail"
+      tag: "code"
+    - id: 59
+      logstash: ""
+      msg: "Overcloud pingtest FAILED."
+      pattern: "oooq_validate_fail"
+      tag: "code"
+    - id: 60
+      logstash: ""
+      msg: "{} fail."
+      pattern: "oooq_command_fail"
+      tag: "code"
+    - id: 61
+      logstash: '"overcloud_deploy_result": "failed"'
+      msg: "Overcloud stack: FAILED."
+      pattern: '"overcloud_deploy_result": "failed"'
+      tag: "info"
+    - id: 62
+      logstash: "oooq_image_build_fail"
+      msg: "FAIL to build image."
+      pattern: "oooq_image_build_fail"
+      tag: "code"
+    - id: 63
+      logstash: "oooq_undercloud_fail"
+      msg: "Undercloud install FAIL."
+      pattern: "oooq_undercloud_fail"
+      tag: "code"
+    - id: 64
+      logstash: "setup script run by this job failed - exit code: 143"
+      msg: "Forced to stop."
+      pattern: "setup script run by this job failed - exit code: 143"
+      tag: "infra"
+    - id: 65
+      msg: "Tempest test failure."
+      pattern: "oooq_tempest_fail"
+      tag: "code"
+      logstash: "oooq_tempest_fail"
+    - id: 66
+      msg: 'Image Build Error'
+      pattern: '*** Image Build Error ***'
+      tag: "infra"
+      logstash: ""
+    - id: 67
+      msg: "Failed to find playbook"
+      pattern: "playbook_err_re"
+      tag: "infra"
+      logstash: ""
+    - id: 68
+      msg: "Ansible undefined variable {}"
+      pattern: "ansible_und_err"
+      tag: "infra"
+      logstash: "{} is undefined"
+    - id: 69
+      msg: "Multinode SSH connection failed."
+      pattern: "Failed to connect to the host via ssh: ssh: connect to host"
+      tag: "infra"
+      logstash: "Failed to connect to the host via ssh: ssh: connect to host"
+    - id: 70
+      msg: "Overcloud update FAIL."
+      pattern: "Overcloud update - FAILED"
+      tag: "code"
+      logstash: "Overcloud update - FAILED"
+    - id: 71
+      msg: "Heat property error."
+      pattern: "ERROR: Property error:"
+      tag: "code"
+      logstash: "ERROR: Property error:"
+    - id: 72
+      msg: "OVB Environment setup FAILED."
+      pattern: "testenv-client - INFO - Received job : Failed creating OVB stack"
+      tag: "infra"
+      logstash: "testenv-client - INFO - Received job : Failed creating OVB stack"
+    - id: 73
+      msg: "{} file missing."
+      pattern: "missing_file"
+      tag: "infra"
+      logstash: "can't read {}: No such file or directory"
+    - id: 74
+      msg: "Pip install FAIL."
+      pattern: "pip_install_fail"
+      tag: "infra"
+      logstash: "| Could not install requirement"
+    - id: 75
+      msg: "Hardlink copy FAIL."
+      pattern: "Invalid cross-device link"
+      tag: "infra"
+      logstash: "Invalid cross-device link"
+    - id: 76
+      msg: "Forced to stop."
+      pattern: ": exit_value=143"
+      tag: "infra"
+      logstash: ": exit_value=143"
+    - id: 77
+      msg: "Image convert to undercloud FAILED."
+      pattern: "convert_fail_re"
+      tag: "code"
+      logstash: ""
+    - id: 78
+      msg: "Containers build FAILED."
+      pattern: 'fatal: [localhost]: FAILED! => {"changed": true, "cmd": ["kolla-build"'
+      tag: "infra"
+      logstash: ""
+    - id: 79
+      msg: "Container {} FAILED to build."
+      pattern: 'kolla_fail_re'
+      tag: "infra"
+      logstash: "ERROR:kolla.common.utils:{} Failed with status: error"
+    - id: 80
+      msg: "Websocket timeout"
+      pattern: "The Workflow finished successfully but no messages were received before the WebSocket timed out"
+      tag: "code"
+      logstash: "The Workflow finished successfully but no messages were received before the WebSocket timed out"
+    - id: 81
+      msg: "Timeout to get OVB stack from te-broker"
+      pattern: "ovb_kill9_re"
+      tag: "infra"
+      logstash: "sudo kill -9"
+    - id: 82
+      msg: 'No such file in container.'
+      pattern: 'exec user process caused "no such file or directory'
+      logstash: 'exec user process caused "no such file or directory'
+      tag: 'code'
+    - id: 83
+      msg: "Job timeout."
+      pattern: "RUN END RESULT_TIMED_OUT:"
+      tag: "infra"
+      logstash: "RUN END RESULT_TIMED_OUT:"
+    - id: 84
+      msg: "Timeout to create overcloud stack."
+      pattern: "stack_oc_timeout_re"
+      tag: "infra"
+      logstash: ""
+    - id: 85
+      msg: "Failed to create OVB stack."
+      pattern: "RuntimeError: Failed to create stack baremetal"
+      tag: "infra"
+      logstash: ""
+    - id: 86
+      msg: "Unbound variable {}."
+      pattern: 'unbound_var_re'
+      tag: "code"
+      logstash: ": unbound variable"
+  "errors":
+    - id: 200
+      logstash: 'Image prepare failed: Pulling image failed:'
+      msg: "Buildah pull image failed."
+      pattern: 'Image prepare failed: Pulling image failed: cmd "buildah'
+      tag: "infra"
+    - id: 201
+      logstash: '"code":"UNAUTHORIZED","message":"authentication required"'
+      msg: "Unauthorized error from container registry."
+      pattern: '"code":"UNAUTHORIZED","message":"authentication required"'
+      tag: "infra"
+  "ironic-conductor":
+    - id: 300
+      logstash: "Timeout reached while waiting for callback for node"
+      msg: "Ironic deployment timeout."
+      pattern: "Timeout reached while waiting for callback for node"
+      tag: "code"
+    - id: 301
+      logstash: "is located doesn't have enough disk space. Required"
+      msg: "No space on disk for Ironic."
+      pattern: "iron_space_re"
+      tag: "infra"
+  "syslog":
+    - exclude:
+        - "glean@"
+        - "docker-storage-setup"
+      id: 400
+      logstash: ""
+      msg: "{} service FAIL."
+      pattern: "service_fail_re"
+      tag: "command_exe"
+    - id: 401
+      logstash: "Failed to start"
+      msg: "Failed to start {} container"
+      pattern: "failed_container_re"
+      tag: "infra"
+  "logstash":
+    - id: 500
+      logstash: " is not pingable."
+      msg: "Ping timeout when deploying OC."
+      pattern: " is not pingable."
+      tag: "infra"
+    - id: 501
+      logstash: ""
+      msg: "Yum download network failure."
+      pattern: "yum_install_fail_re"
+      tag: "infra"
+    - id: 502
+      pattern: "UnixHTTPConnectionPool(host='localhost', port=None): Read timed out"
+      msg: "Container upload timed out."
+      tag: "infra"
+      logstash: "UnixHTTPConnectionPool(host='localhost', port=None): Read timed out"
+    - id: 503
+      pattern: '404 Client Error: Not Found ("no such id: docker.io'
+      msg: 'Container image not found.'
+      tag: "infra"
+      logstash: '404 Client Error: Not Found ("no such id:'
+    - id: 504
+      logstash: ""
+      msg: "Failed to connect to endpoints of overcloud."
+      pattern: "Failed to contact the endpoint at http"
+      tag: "code"
+    - id: 505
+      logstash: 'Ansible failed, check log at /var/lib/mistral/overcloud/ansible.log'
+      msg: 'Overcloud deploy failed.'
+      tag: 'code'
+      pattern: 'Ansible failed, check log at /var/lib/mistral/overcloud/ansible.log'
+    - id: 506
+      logstash: ""
+      msg: 'Overcloud image create failed.'
+      tag: 'code'
+      pattern: "CalledProcessError: Command '['disk-image-create'"
+    - id: 507
+      logstash: ""
+      msg: 'Container not found.'
+      tag: 'infra'
+      pattern: "ImageNotFoundException: Not found image: docker:"
+    - id: 508
+      logstash: ""
+      msg: 'Ironic node provision failed.'
+      tag: 'infra'
+      pattern: "error: Failed to prepare node"
+    - id: 509
+      logstash: ""
+      msg: 'IPMI to nodes failed.'
+      tag: 'infra'
+      pattern: "Failed to prepare to deploy: IPMI call failed:"
+    - id: 510
+      logstash: ""
+      msg: "Hiera key {} is undefined."
+      pattern: "hiera_key_undefined_re"
+      tag: "code"
+    - id: 511
+      logstash: "Found ansible errors for undercloud deployment"
+      msg: "Undercloud install failed."
+      pattern: "Found ansible errors for undercloud deployment"
+      tag: "code"
+    - id: 512
+      logstash: ""
+      msg: "IPMI to nodes failed."
+      pattern: "Error: IPMI call failed: power status"
+      tag: "infra"
+    - id: 513
+      logstash: ""
+      msg: "Nova failure: no valid host was found."
+      pattern: 'ResourceInError: resources.NovaCompute: Went to status ERROR due to "Message: No valid host was found. , Code: 500'
+      tag: "infra"
+    - id: 514
+      logstash: "DeploymentError: Stack create failed"
+      msg: "Standalone or Undercloud Heat stack failed."
+      pattern: "DeploymentError: Stack create failed"
+      tag: "code"
+    - id: 515
+      logstash: "puppet_re"
+      msg: "Puppet {} FAIL."
+      pattern: "puppet_re"
+      tag: "code"
+    - id: 516
+      logstash: "Can't connect to local MySQL server through socket"
+      msg: "MySQL failure."
+      pattern: "Can't connect to local MySQL server through socket"
+      tag: "code"
+    - id: 517
+      logstash: "Could not evaluate: Cannot allocate memory - fork"
+      msg: "Puppet memory fail."
+      pattern: "Could not evaluate: Cannot allocate memory - fork(2)"
+      tag: "infra"
+    - id: 518
+      logstash: "hiera_re"
+      msg: "No {} in Hiera."
+      pattern: "hiera_re"
+      tag: "code"
+    - id: 519
+      logstash: "hiera_re"
+      msg: "No {} in Hiera."
+      pattern: "hiera_re"
+      tag: "code"
+    - id: 520
+      logstash: "puppetexec_re"
+      msg: "{} FAIL."
+      pattern: "puppetexec_re"
+      tag: "code"
+    - id: 521
+      logstash: "pup_module_re"
+      msg: "Puppet module '{}' FAIL."
+      pattern: "pup_module_re"
+      tag: "code"
+    - id: 522
+      logstash: "fail_refresh_re"
+      msg: "{} FAIL."
+      pattern: "fail_refresh_re"
+      tag: "code"
+    - id: 523
+      logstash: "already uses address"
+      msg: "MAC conflict between hosts."
+      pattern: "same_host_re"
+      tag: "infra"
+    - id: 524
+      logstash: ' ... FAILED'
+      msg: 'Tempest test failed.'
+      tag: "code"
+      pattern: ' ... FAILED'
+    - id: 525
+      logstash: "healthcheck failed"
+      msg: "Failed healthcheck of {}."
+      pattern: "healthcheck_re"
+      tag: "code"
+  "bmc":
+    - id: 600
+      logstash: 'socket.error: [Errno 99] Cannot assign requested address'
+      msg: 'Introspection failed, cannot get IP address'
+      tag: 'infra'
+      pattern: 'socket.error: [Errno 99] Cannot assign requested address'

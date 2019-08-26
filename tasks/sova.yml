@@ -1,0 +1,17 @@
+---
+- name: Include sova patterns
+  include_vars:
+    file: sova-patterns.yml
+    name: pattern_config
+
+- name: Run sova task
+  sova:
+    config: "{{ pattern_config }}"
+    files:
+      console: "{{ ansible_user_dir }}/workspace/logs/quickstart_install.log"
+      errors: "/var/log/errors.txt"
+      "ironic-conductor": "/var/log/containers/ironic/ironic-conductor.log"
+      syslog: "/var/log/journal.txt"
+      logstash: "/var/log/extra/logstash.txt"
+    result: "{{ ansible_user_dir }}/workspace/logs/failures_file"
+    result_file_dir: "{{ ansible_user_dir }}/workspace/logs"

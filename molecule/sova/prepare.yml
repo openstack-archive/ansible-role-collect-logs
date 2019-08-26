@@ -1,0 +1,20 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+
+    - name: Install python YAML module
+      pip:
+        name: pyyaml
+        extra_args: --user
+
+    - name: Prepare the console file directory
+      file:
+        path: '{{ ansible_user_dir }}/workspace/logs/'
+        state: directory
+
+    - name: Create a sample console file
+      copy:
+        content: |
+          No valid host was found. There are not enough hosts
+        dest: '{{ ansible_user_dir }}/workspace/logs/quickstart_install.log'

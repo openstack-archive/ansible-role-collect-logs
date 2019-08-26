@@ -1,0 +1,24 @@
+---
+- hosts: all
+  tasks:
+    - name: Ensure all files exists
+      stat:
+        path: "{{ ansible_user_dir }}/workspace/logs/failures_file"
+      register: failures_file
+      loop:
+        - "{{ ansible_user_dir }}/workspace/logs/failures_file"
+        - "{{ ansible_user_dir }}/workspace/logs/_No_valid_host_was_found.log"
+
+    - name: Ensure all files exists - test
+      assert:
+        that:
+          - item.stat.exists
+      loop: "{{ failures_file.results }}"
+
+    - name: Check if we have strings in failures_file
+      command: grep 'No valid host was found' {{ ansible_user_dir }}/workspace/logs/failures_file
+      changed_when: false
+
+    - name: Check if we have strings in error file
+      command: grep 'No valid host was found' {{ ansible_user_dir }}/workspace/logs/_No_valid_host_was_found.log
+      changed_when: false

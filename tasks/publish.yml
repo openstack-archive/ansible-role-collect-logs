@@ -64,6 +64,9 @@
   when: influxdb_url is defined or influxdb_create_data_file|bool
   ignore_errors: true
 
+- include: sova.yml
+  ignore_errors: true
+
 - name: fetch stackviz results to the root of the collect_dir
   shell: >
     if [ -d {{ artcl_collect_dir }}/undercloud/var/log/extra/stackviz/data ]; then

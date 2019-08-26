@@ -126,8 +126,38 @@ Publishing related
 -  ``artcl_collect_sosreport`` – true/false – If true, create and
    collect a sosreport for each host.
 
-Example Playbook
-----------------
+Logs parsing
+~~~~~~~~~~~~
+"Sova" module parses logs for known patterns and returns messages that were
+found. Patterns are tagged by issues types, like "infra", "code", etc.
+Patterns are located in file sova-patterns.yml in vars/ directory.
+
+-  ``config`` - patterns loaded from file
+-  ``files`` - files and patterns sections match
+-  ``result`` - path to file to write a result of parsing
+-  ``result_file_dir`` - directory to write a file with patterns in name
+
+Example of usage of "sova" module:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: yaml
+
+   ---
+   - name: Run sova task
+     sova:
+       config: "{{ pattern_config }}"
+       files:
+         console: "{{ ansible_user_dir }}/workspace/logs/quickstart_install.log"
+         errors: "/var/log/errors.txt"
+         "ironic-conductor": "/var/log/containers/ironic/ironic-conductor.log"
+         syslog: "/var/log/journal.txt"
+         logstash: "/var/log/extra/logstash.txt"
+       result: "{{ ansible_user_dir }}/workspace/logs/failures_file"
+       result_file_dir: "{{ ansible_user_dir }}/workspace/logs"
+
+
+Example Role Playbook
+---------------------
 
 .. code:: yaml
 
@@ -159,6 +189,7 @@ has several simple rules:
    formatting is added.
 5. All other lines, including shell comments, will be indented by four
    spaces.
+
 
 Enabling sosreport Collection
 -----------------------------
