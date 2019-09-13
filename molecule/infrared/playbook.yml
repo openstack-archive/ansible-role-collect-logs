@@ -1,0 +1,56 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+
+    - name: "Download Infrared"
+      git:
+        repo: "https://github.com/redhat-openstack/infrared.git"
+        version: "master"
+        dest: "{{ infrared_location }}"
+        update: true
+
+    - name: "Create Infrared venv"
+      pip:
+        name: "{{ item }}"
+        virtualenv: "{{ infrared_venv }}"
+      with_items:
+        - pip
+        - setuptools
+        - pbr
+
+    - name: "Install Infrared"
+      pip:
+        name: "."
+        virtualenv: "{{ infrared_venv }}"
+        chdir: "{{ infrared_location }}"
+      tags:
+        # this task is always changed, the problem is on pip module side:
+        # https://github.com/ansible/ansible/issues/28952
+        - molecule-idempotence-notest
+
+    - name: "Create infrared_plugin dir"
+      file:
+        path: "{{ infrared_location }}/infrared_plugin"
+        state: directory
+
+    - name: "Install ansible-role-collect-logs plugin"
+      shell: |
+        export PATH=$PATH:/usr/local/sbin:/usr/sbin
+        source {{ infrared_venv }}/bin/activate
+        ir plugin add {{ playbook_dir }}/../../ --src-path infrared_plugin
+      args:
+        chdir: "{{ infrared_location }}"
+        executable: /bin/bash
+      register: plugin_install_output
+      changed_when: true
+      tags:
+        # the task is always changed, skip idempotence
+        - molecule-idempotence-notest
+
+    - name: "Debug: output from plugin installation task main playbook"
+      debug:
+        msg: "{{ plugin_install_output }}"
+      tags:
+        # the task depends on a taks which skips idempotence
+        - molecule-idempotence-notest

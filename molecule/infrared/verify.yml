@@ -1,0 +1,23 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+
+    - name: "List available plugins"
+      shell: |
+        export PATH=$PATH:/usr/local/sbin:/usr/sbin
+        source {{ infrared_venv }}/bin/activate
+        ir plugin list
+      args:
+        executable: /bin/bash
+      register: plugin_output
+      changed_when: false
+
+    - name: "Verify playbook list plugins output"
+      debug:
+        msg: "{{ plugin_output }}"
+
+    - name: "Check if ansible-role-collect-logs is present"
+      fail:
+        msg: "ansible-role-collect-logs not installed"
+      when: "'ansible-role-collect-logs' not in plugin_output.stdout"
