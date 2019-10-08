@@ -137,6 +137,10 @@ Example Playbook
      roles:
        - collect-logs
 
+** Note:
+  The tasks that collect data from the nodes is executed with ignore_errors.
+  For `example:  <https://opendev.org/openstack/ansible-role-collect-logs/src/branch/master/tasks/collect/system.yml#L3>`__
+
 Templated Bash to rST Conversion Notes
 --------------------------------------
 
