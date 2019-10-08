@@ -11,6 +11,9 @@
     - name: list enabled repositories
       shell: "{{ ansible_pkg_mgr }} repolist -v >/var/log/extra/repolist.txt"
 
+    - name: get current selinux status
+      shell: "/usr/sbin/getenforce >/var/log/extra/selinux.txt"
+
     - name: Collecting /proc/cpuinfo|meminfo|swaps
       shell: "cat /proc/{{ item }} &> /var/log/extra/{{ item }}.txt"
       with_items:
