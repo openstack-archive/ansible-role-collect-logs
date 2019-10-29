@@ -200,6 +200,36 @@ of sosreport(s) with this role, create a custom config (you can use
 centosci-logs.yml as a template) and ensure that
 ``artcl_collect_sosreport: true`` is set.
 
+
+Sanitizing Log Strings
+----------------------
+
+Logs can contain senstive data such as private links and access
+passwords. The 'collect' task provides an option to replace
+private strings with sanitized strings to protect private data.
+
+The 'sanitize_log_strings' task makes use of the Ansible 'replace'
+module and is enabled by defining a ``sanitize_lines``
+variable as shown in the example below:
+
+.. code:: yaml
+
+   ---
+   sanitize_lines:
+     - dir_path: '/tmp/{{ inventory_hostname }}/etc/repos/'
+       file_pattern: '*'
+       orig_string: '^(.*)download(.*)$'
+       sanitized_string: 'SANITIZED_STR_download'
+     - dir_path: '/tmp/{{ inventory_hostname }}/home/zuul/'
+       file_pattern: '*'
+       orig_string: '^(.*)my_private_host\.com(.*)$'
+       sanitized_string: 'SANITIZED_STR_host'
+
+
+The task searches for files containing the sensitive strings
+(orig_string) within a file path, and then replaces the sensitive
+strings in those files with the sanitized_string.
+
 License
 -------
 

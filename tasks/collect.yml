@@ -69,6 +69,14 @@
     chown -R {{ ansible_user }}: /tmp/{{ inventory_hostname }};
   changed_when: true
 
+# See README section 'Sanitizing Log Strings'
+- name: Sanitize logs to remove sensitive details
+  include_tasks: sanitize_log_strings.yaml
+  loop: "{{ sanitize_lines }}"
+  loop_control:
+    loop_var: outer_item
+  when: sanitize_lines is defined and sanitize_lines|length
+
 - name: Compress logs to tar.gz
   shell: >
     chdir=/tmp
