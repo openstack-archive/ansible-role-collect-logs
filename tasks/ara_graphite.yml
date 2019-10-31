@@ -1,7 +1,9 @@
 ---
 - name: Get ARA json data
-  shell: "{{ local_working_dir }}/bin/ara result list --all -f json"
+  shell: |  # noqa 305
+    {{ local_working_dir }}/bin/ara result list --all -f json
   register: ara_data
+  changed_when: false
 
 - name: Send to graphite
   ara_graphite:

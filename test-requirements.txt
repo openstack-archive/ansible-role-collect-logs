@@ -1,1 +1,1 @@
-pre-commit # MIT
+pre-commit>=1.20.0 # MIT

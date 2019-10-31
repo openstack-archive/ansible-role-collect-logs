@@ -1,8 +1,10 @@
 ---
 - name: Get ARA json data
-  shell: "{{ local_working_dir }}/bin/ara result list --all -f json"
+  shell: |  # noqa 305
+    {{ local_working_dir }}/bin/ara result list --all -f json
   register: ara_data
   no_log: true
+  changed_when: false
 
 - name: Collect and send data to InfluxDB
   ara_influxdb:
@@ -18,9 +20,10 @@
 
 - name: Get ARA json data for undercloud
   become: true
-  shell: "{{ local_working_dir }}/bin/ara result list --all -f json"
+  shell: "{{ local_working_dir }}/bin/ara result list --all -f json"  # noqa 305
   register: ara_root_data
   no_log: true
+  changed_when: false
 
 - name: Collect and send data to InfluxDB
   ara_influxdb:
@@ -39,11 +42,12 @@
   when: ara_root_data.stdout != "[]"
 
 - name: Get ARA json data for overcloud
-  shell: "{{ local_working_dir }}/bin/ara result list --all -f json"
+  shell: "{{ local_working_dir }}/bin/ara result list --all -f json"  # noqa 305
   register: ara_oc_data
   environment:
     ARA_DATABASE: 'sqlite:///{{ ara_overcloud_db_path }}'
   no_log: true
+  changed_when: false
 
 - name: Collect and send data to InfluxDB
   ara_influxdb:

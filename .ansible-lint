@@ -1,2 +1,7 @@
 ---
 parseable: true
+skip_list:
+    # Add skips here only as last resort, like:
+    # https://github.com/ansible/ansible-lint/issues/557
+    - 302  # [E302] mkdir used in place of argument state=directory to file module
+    - 303  # [E303] ... used in place of ... module

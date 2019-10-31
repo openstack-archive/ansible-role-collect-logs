@@ -7,7 +7,7 @@
       register: dstat_logfile
 
     - name: kill dstat
-      shell: "pkill dstat"
+      shell: "pkill dstat"  # noqa 305
       become: true
       when: dstat_logfile.stat.exists
 

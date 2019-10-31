@@ -67,18 +67,19 @@
     find /tmp/{{ inventory_hostname }} -type f -print0 | xargs -0 chmod 644;
     find /tmp/{{ inventory_hostname }} -not -type f -not -type d -delete;
     chown -R {{ ansible_user }}: /tmp/{{ inventory_hostname }};
+  changed_when: true
 
 - name: Compress logs to tar.gz
   shell: >
     chdir=/tmp
-    tar czf {{ inventory_hostname }}.tar.gz {{ inventory_hostname }};
+    tar czf {{ inventory_hostname }}.tar.gz {{ inventory_hostname }};  # noqa 303
   when: artcl_tar_gz|bool
 
 - name: gzip logs individually and tar them
   shell: >
     chdir=/tmp
     gzip -r ./{{ inventory_hostname }};
-    tar cf {{ inventory_hostname }}.tar {{ inventory_hostname }};
+    tar cf {{ inventory_hostname }}.tar {{ inventory_hostname }};  # noqa 303
   when: artcl_gzip_only|bool
 
 - name: Fetch log archive (tar.gz)

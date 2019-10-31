@@ -21,7 +21,7 @@
       when: (odl_rpm_enabled.rc == 0) or (odl_container_enabled.rc == 0)
 
     - name: Collect OVS outputs for ODL
-      shell: "bash /tmp/odl_extra_logs.sh"
+      shell: "bash /tmp/odl_extra_logs.sh"  # noqa 305
       when: (odl_rpm_enabled.rc == 0) or (odl_container_enabled.rc == 0)
 
     - name: Collect ODL info and logs (RPM deployment)
