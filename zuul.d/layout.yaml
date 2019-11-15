@@ -7,9 +7,11 @@
     check:
       jobs:
         - openstack-tox-linters
+        - openstack-tox-molecule
     gate:
       jobs:
         - openstack-tox-linters
+        - openstack-tox-molecule
       queue: tripleo
     post:
       jobs:
