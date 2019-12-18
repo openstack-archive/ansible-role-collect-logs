@@ -26,13 +26,14 @@
         cp -r {{ local_working_dir }}/ara_oooq {{ artcl_collect_dir }}/;
       ignore_errors: true
 
-    - name: Generate and retrieve root the ARA static playbook report
-      become: true
+    - name: Generate and retrieve the ARA static playbook report for undercloud
       shell: >
-        {{ local_working_dir }}/bin/ara generate html {{ local_working_dir }}/ara_oooq_root;
-        {{ local_working_dir }}/bin/ara task list --all -f json > {{ artcl_collect_dir }}/ara.oooq.root.json;
-        cp -r {{ local_working_dir }}/ara_oooq_root {{ artcl_collect_dir }}/;
+        {{ local_working_dir }}/bin/ara generate html {{ local_working_dir }}/ara_oooq_uc;
+        {{ local_working_dir }}/bin/ara task list --all -f json > {{ artcl_collect_dir }}/ara.oooq.uc.json;
+        cp -r {{ local_working_dir }}/ara_oooq_uc {{ artcl_collect_dir }}/;
       ignore_errors: true
+      environment:
+        ARA_DATABASE: 'sqlite:///{{ working_dir }}/ara_db.sql'
 
     - name: Generate and retrieve the ARA static playbook report for OC deploy
       become: true
