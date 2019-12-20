@@ -1,0 +1,14 @@
+---
+# See README section 'Sanitizing Log Strings'
+- name: Sanitize logs to remove senstive details
+  find:
+    paths: "{{ outer_item.dir_path }}"
+    patterns: "{{ outer_item.file_pattern }}"
+  register: files_with_pattern
+
+- name: Replace orig_string with sanitized_string in the files
+  replace:
+    path: "{{ item.path }}"
+    regexp: "{{ outer_item.orig_string }}"
+    replace: "{{ outer_item.sanitized_string }}"
+  with_items: "{{ files_with_pattern.files }}"
