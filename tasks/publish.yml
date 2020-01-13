@@ -110,6 +110,16 @@
   ignore_errors: true
   changed_when: true
 
+# the doc footer for logging has been removed.
+# copy the log readme into the base directory.
+- name: copy in the logs README.html
+  shell: >
+    if [ -f {{ working_dir }}/src/opendev.org/openstack/tripleo-ci/docs/tripleo-quickstart-logs.html ]; then
+        cp {{ working_dir }}/src/opendev.org/openstack/tripleo-ci/docs/tripleo-quickstart-logs.html {{ artcl_collect_dir }}/README.html;
+    fi;
+  ignore_errors: true
+  changed_when: true
+
 - name: Rename compressed text based files to end with txt.gz extension
   shell: >
     set -o pipefail &&
