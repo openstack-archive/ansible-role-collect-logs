@@ -18,7 +18,7 @@
           test $ipv -eq 4 && iptables-save &>> /var/log/extra/network.txt;
           test $ipv -eq 6 && ip6tables-save &>> /var/log/extra/network.txt;
         done;
-        (for NS in $(ip netns list); do
+        (for NS in $(ip netns list | cut -f 1 -d " "); do
           for ipv in 4 6; do
             echo "==== $NS (${ipv})====";
             echo "### IPv${ipv} addresses";
