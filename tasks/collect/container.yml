@@ -131,3 +131,5 @@
               cp -r /var/lib/docker/volumes/logs/_data $BASE_CONTAINER_EXTRA/logs;
           fi
         done
+      args:
+        executable: /bin/bash

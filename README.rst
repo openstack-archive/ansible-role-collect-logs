@@ -48,12 +48,10 @@ Collection related
    “FILTER RULES” topic in the rsync man page.
 -  ``artcl_collect_dir`` – A local directory where the logs should be
    gathered, without a trailing slash.
--  ``artcl_gzip_only``: false/true – When true, gathered files are
-   gzipped one by one in ``artcl_collect_dir``, when false, a tar.gz
-   file will contain all the logs.
 -  ``collect_log_types`` - A list of which type of logs will be collected,
    such as openstack logs, network logs, system logs, etc.
    Acceptable values are system, monitoring, network, openstack and container.
+-  ``artcl_gzip_only``: Removed, no longer has any effect.
 
 Documentation generation related
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

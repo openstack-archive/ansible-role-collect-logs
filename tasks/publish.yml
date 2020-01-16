@@ -9,11 +9,11 @@
     fi
   changed_when: true
 
-- name: fetch and gzip the console log
+- name: Fetch console log
   shell: >
     set -o pipefail &&
     curl -k "{{ lookup('env', 'BUILD_URL') }}/timestamps/?time=yyyy-MM-dd%20HH:mm:ss.SSS%20|&appendLog&locale=en_GB"
-    | gzip > {{ artcl_collect_dir }}/console.txt.gz
+    > {{ artcl_collect_dir }}/console.log
   args:
     executable: /bin/bash
   when: lookup('env', 'BUILD_URL')
@@ -92,11 +92,6 @@
     cp {{ artcl_collect_dir }}/undercloud/home/stack/tempest/tempest.{xml,html}{,.gz} {{ artcl_collect_dir }} || true;
     gunzip {{ artcl_collect_dir }}/tempest.{xml,html}.gz || true;
   changed_when: true
-
-- name: Gunzip tempest results to the root of the collect_dir for os_tempest
-  shell: >
-    gunzip -c {{ artcl_collect_dir }}/undercloud/var/log/tempest/stestr_results.html.gz > {{ artcl_collect_dir }}/stestr_results.html || true
-  when: use_os_tempest is defined
 
 - name: Copy testrepository.subunit file to the root of collect_dir for os_tempest
   shell: >
