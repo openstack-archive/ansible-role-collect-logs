@@ -43,5 +43,7 @@
     set -o pipefail &&
     sphinx-build -b html "{{ artcl_docs_source_dir }}" "{{ artcl_docs_build_dir }}"
     2>&1 {{ timestamper_cmd }} > {{ artcl_collect_dir }}/docs/sphinx_build.log
+  args:
+    executable: /bin/bash
   ignore_errors: true
   changed_when: true

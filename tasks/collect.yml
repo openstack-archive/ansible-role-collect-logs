@@ -67,6 +67,8 @@
     find /tmp/{{ inventory_hostname }} -type f -print0 | xargs -0 chmod 644;
     find /tmp/{{ inventory_hostname }} -not -type f -not -type d -delete;
     chown -R {{ ansible_user }}: /tmp/{{ inventory_hostname }};
+  args:
+    executable: /bin/bash
   changed_when: true
 
 # See README section 'Sanitizing Log Strings'

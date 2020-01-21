@@ -14,6 +14,8 @@
     set -o pipefail &&
     curl -k "{{ lookup('env', 'BUILD_URL') }}/timestamps/?time=yyyy-MM-dd%20HH:mm:ss.SSS%20|&appendLog&locale=en_GB"
     | gzip > {{ artcl_collect_dir }}/console.txt.gz
+  args:
+    executable: /bin/bash
   when: lookup('env', 'BUILD_URL')
 
 - when: ara_generate_html|bool
@@ -128,6 +130,8 @@
     { new=orig; sub(/\.gz$/, ".txt.gz", new); system("mv " orig " " new) }
     /\.(conf|ini|json|sh|log|yaml|yml|repo|cfg|j2|py)\.gz$/ { rename($0) }
     /(\/var\/log\/|\/etc\/)[^ \/\.]+\.gz$/ { rename($0) }';
+  args:
+    executable: /bin/bash
   when: artcl_txt_rename|bool
 
 - name: Create the reproducer script
