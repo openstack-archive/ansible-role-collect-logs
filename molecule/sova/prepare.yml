@@ -3,11 +3,6 @@
   hosts: all
   tasks:
 
-    - name: Install python YAML module
-      pip:
-        name: pyyaml
-        extra_args: --user
-
     - name: Prepare the console file directory
       file:
         path: '{{ ansible_user_dir }}/workspace/logs/'

@@ -15,6 +15,7 @@ provisioner:
   name: ansible
   config_options:
     defaults:
+      interpreter_python: auto
       timeout: 30
       forks: 500
   inventory:
