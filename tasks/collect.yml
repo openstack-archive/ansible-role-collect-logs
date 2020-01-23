@@ -88,7 +88,6 @@
     recurse: true
 
 - name: rsync logs
-  # delegate_to: localhost
   synchronize:
     mode: pull
     src: /tmp/{{ inventory_hostname }}/
@@ -97,3 +96,16 @@
     archive: false
     recursive: true
     rsync_opts: "--ignore-errors"
+
+- name: Archive big collected files
+  run_once: true
+  delegate_to: localhost
+  shell:
+    cmd: >
+      find {{ artcl_collect_dir }}
+      -size +{{ artcl_gzip_min_size_bytes }}c
+      -type f
+      -not -name "*gz"
+      -exec gzip -f {} +
+    warn: false
+  changed_when: true

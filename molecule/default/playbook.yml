@@ -1,17 +1,13 @@
 ---
+# vars are defined molecule.yml to avoid repeading them for each play
 - name: Create collection dir play
   hosts: localhost
   tasks:
 
     - name: Create temp collection folder
-      tempfile:
+      file:
+        path: "{{ local_working_dir }}"
         state: directory
-        suffix: staging
-      register: output
-
-    - name: Save logs_tmp_dir
-      set_fact:
-        logs_tmp_dir: "{{ output.path }}"
 
 - name: Converge
   hosts: all
@@ -21,33 +17,3 @@
       include_role:
         name: "ansible-role-collect-logs"
         tasks_from: collect.yml
-      vars:
-        local_working_dir: "{{ hostvars['localhost']['logs_tmp_dir'] }}"
-      tags:
-        - molecule-idempotence-notest
-
-- name: Verify collected stuff
-  hosts: localhost
-  tasks:
-
-    - name: "Include ansible-role-collect-logs :: sova"
-      include_role:
-        name: "ansible-role-collect-logs"
-        tasks_from: sova.yml
-      tags:
-        - molecule-idempotence-notest
-
-    - name: Introspec collected files
-      find:
-        paths: "{{ hostvars['localhost']['logs_tmp_dir'] }}"
-        recurse: true
-      register: result
-
-    - name: Display number of collected files
-      debug:
-        msg: "Collected {{ result['matched'] }} files"
-
-    - name: "Remove collection folder"
-      file:
-        path: "{{ hostvars['localhost']['logs_tmp_dir'] }}"
-        state: absent

@@ -122,7 +122,9 @@ artcl_exclude_list:
   - /etc/pki/ca-trust/extracted
   - /etc/alternatives
   - /var/log/journal
-artcl_gzip_only: true
+
+artcl_gzip: false
+artcl_gzip_min_size_bytes: "10000"
 artcl_tar_gz: false
 
 ## publishing related vars

@@ -28,6 +28,11 @@ provisioner:
   config_options:
     defaults:
       interpreter_python: auto
+  inventory:
+    group_vars:
+      all:
+        local_working_dir: "{{ lookup('env', 'TOX_ENV_DIR') or '~/.cache' }}/log"
+        artcl_gzip: true
 verifier:
   name: ansible
   lint:

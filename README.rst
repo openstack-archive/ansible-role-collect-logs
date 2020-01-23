@@ -51,7 +51,9 @@ Collection related
 -  ``collect_log_types`` - A list of which type of logs will be collected,
    such as openstack logs, network logs, system logs, etc.
    Acceptable values are system, monitoring, network, openstack and container.
--  ``artcl_gzip_only``: Removed, no longer has any effect.
+-  ``artcl_gzip``: Archive bigger files, disabled by default.
+-  ``artcl_gzip_min_size``: Threshold in bytes for big files, defaults to
+   10000 bytes (10KB).
 
 Documentation generation related
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
