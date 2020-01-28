@@ -98,6 +98,7 @@
     rsync_opts: "--ignore-errors"
 
 - name: Archive big collected files
+  when: artcl_gzip | bool
   run_once: true
   delegate_to: localhost
   shell:
