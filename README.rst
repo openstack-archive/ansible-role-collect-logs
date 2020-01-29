@@ -130,6 +130,17 @@ Publishing related
    server.
 
 
+Ara related
+~~~~~~~~~~~
+
+- ``ara_enabled``: true/false - If true, the role will generate ara reports.
+- ``ara_overcloud_db_path``: Path to ara overcloud path (tripleo only).
+- ``ara_generate_html``: true/false - Generate ara html.
+- ``ara_graphite_prefix``: Ara prefix to be used in graphite.
+- ``ara_only_successful_tasks``: true/false - Send to graphite only successfull
+  tasks.
+- ``ara_tasks_map``: Dictionary with ara tasks to be mapped on graphite.
+
 Logs parsing
 ~~~~~~~~~~~~
 "Sova" module parses logs for known patterns and returns messages that were

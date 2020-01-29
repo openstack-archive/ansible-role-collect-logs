@@ -1,0 +1,43 @@
+---
+- when: ara_generate_html|bool
+  block:
+    - name: Generate and retrieve the ARA static playbook report
+      shell: >
+        {{ local_working_dir }}/bin/ara generate html {{ local_working_dir }}/ara_oooq;
+        {{ local_working_dir }}/bin/ara task list --all -f json > {{ artcl_collect_dir }}/ara.json;
+        cp -r {{ local_working_dir }}/ara_oooq {{ artcl_collect_dir }}/;
+
+    - name: Generate and retrieve the ARA static playbook report for undercloud
+      shell: >
+        {{ local_working_dir }}/bin/ara generate html {{ local_working_dir }}/ara_oooq_uc;
+        {{ local_working_dir }}/bin/ara task list --all -f json > {{ artcl_collect_dir }}/ara.oooq.uc.json;
+        cp -r {{ local_working_dir }}/ara_oooq_uc {{ artcl_collect_dir }}/;
+      environment:
+        ARA_DATABASE: 'sqlite:///{{ working_dir }}/ara_db.sql'
+
+    - name: Generate and retrieve the ARA static playbook report for OC deploy
+      become: true
+      shell: >
+        {{ local_working_dir }}/bin/ara generate html {{ local_working_dir }}/ara_oooq_oc;
+        {{ local_working_dir }}/bin/ara task list --all -f json > {{ artcl_collect_dir }}/ara.oooq.oc.json;
+        cp -r {{ local_working_dir }}/ara_oooq_oc {{ artcl_collect_dir }}/;
+      ignore_errors: true
+      environment:
+        ARA_DATABASE: 'sqlite:///{{ ara_overcloud_db_path }}'
+
+- name: Copy ara files to ara-report directories
+  shell: |
+    mkdir -p {{ artcl_collect_dir }}/{{ item.dir }}/ara-report;
+    cp {{ item.file }} {{ artcl_collect_dir }}/{{ item.dir }}/ara-report/ansible.sqlite;
+  loop:
+    - dir: ara_oooq
+      file: "{{ local_working_dir }}/ara.sqlite"
+    - dir: ara_oooq_overcloud
+      file: "{{ ara_overcloud_db_path }}"
+  when: not ara_generate_html|bool
+
+- import_tasks: publish_ara_graphite.yml
+  when: ara_graphite_server is defined
+
+- import_tasks: publish_ara_influxdb.yml
+  when: influxdb_url is defined or influxdb_create_data_file|bool

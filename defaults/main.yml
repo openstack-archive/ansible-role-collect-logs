@@ -200,7 +200,12 @@ artcl_logstash_files:
   - /home/*/tempest.log
   - /var/log/bootstrap-subnodes.log
   - /var/log/tripleo-container-image-prepare.log
+
 # ara_graphite_server: graphite.tripleo.org
+# if ara_enabled is false, no ara tasks will be executed
+ara_enabled: true
+ara_overcloud_db_path: "/var/lib/mistral/overcloud/ara_overcloud.sqlite"
+ara_generate_html: true
 ara_graphite_prefix: "tripleo.{{ lookup('env', 'STABLE_RELEASE')|default('master', true) }}.{{ lookup('env', 'TOCI_JOBTYPE') }}."
 ara_only_successful_tasks: true
 ara_tasks_map:
@@ -230,5 +235,3 @@ influxdb_data_file_path: "{{ lookup('env', 'LOCAL_WORKING_DIR')|default('/tmp', 
 influxdb_create_data_file: true
 odl_extra_log_dir: /var/log/extra/odl
 odl_extra_info_log: "{{ odl_extra_log_dir }}/odl_info.log"
-ara_overcloud_db_path: "/var/lib/mistral/overcloud/ara_overcloud.sqlite"
-ara_generate_html: true
