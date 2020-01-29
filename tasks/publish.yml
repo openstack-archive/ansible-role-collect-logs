@@ -143,7 +143,7 @@
 - name: upload to the artifact server using pubkey auth
   shell: >
     rsync -av
-    --quiet -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+    --quiet -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ artcl_report_server_key|default('') }}"
     {{ artcl_collect_dir }}/ {{ artcl_rsync_path }}/{{ lookup('env', 'BUILD_TAG') }}
   async: "{{ artcl_publish_timeout }}"
   poll: 15

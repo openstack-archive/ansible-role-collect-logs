@@ -8,20 +8,20 @@ driver:
 
 log: true
 lint:
-  name: yamllint
+  enabled: false
 platforms:
   - name: instance
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
-    # Need to fix a whole role
-    options:
-      x:
-        - '301'
-        - '302'
-        - '303'
-        - '305'
+  config_options:
+    defaults:
+      timeout: 30
+      forks: 500
+  inventory:
+    group_vars:
+      all:
+        infrared_location: "{{ playbook_dir }}/.venv"
+        infrared_venv: "{{ infrared_location }}/.infrared"
 verifier:
   name: ansible
   lint:

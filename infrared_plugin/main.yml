@@ -1,0 +1,67 @@
+---
+# This file and plugin.spec are required by Infrared project
+
+# This section collects data from the nodes
+- hosts: "{{ other.openstack_nodes }}"
+  remote_user: "{{ other.remote_user }}"
+  tasks:
+
+    - name: Remap infrared parameters to role variables
+      set_fact:
+        "{{ item.key }}": "{{ item.value }}"
+      with_dict: "{{ other }}"
+
+    - name: Ansible role collect logs
+      include_role:
+        name: ansible-role-collect-logs
+
+# This section takes care of preparing the collected data for publishing
+# and for publishing itself
+- hosts: localhost
+  tasks:
+
+    - name: Remap infrared parameters to role variables
+      set_fact:
+        "{{ item.key }}": "{{ item.value }}"
+      with_dict: "{{ other }}"
+
+    - name: Disable artcl_collect to prepare for publishing
+      set_fact:
+        # override artcl_collect to false because in ansible-role-collect-logs
+        # role collect and publish tasks are complementary
+        artcl_collect: false
+      when: artcl_publish|bool
+
+    - name: Set path to a report server key
+      set_fact:
+        artcl_report_server_key: "-i {{ artcl_report_server_key }}"
+      when: artcl_report_server_key is defined
+
+    - name: Extract the logs
+      shell: |
+        cat *.tar | tar xf - -i
+      args:
+        chdir: "{{ artcl_collect_dir }}"
+        executable: /bin/bash
+      ignore_errors: true
+
+    - name: delete the tar file after extraction
+      shell: |
+        rm -r *.tar
+      args:
+        chdir: "{{ artcl_collect_dir }}"
+        executable: /bin/bash
+      ignore_errors: true
+
+    - name: Ansible role collect logs
+      include_role:
+        name: ansible-role-collect-logs
+
+    # TODO: local_working_dir should be unique per each run - a job should
+    # never fail due to a reason that f.e. the artifacts weren't removed
+    # properly in a previous run
+    - name: Delete artifact files from localhost
+      file:
+        state: absent
+        path: "{{ local_working_dir }}"
+      ignore_errors: true

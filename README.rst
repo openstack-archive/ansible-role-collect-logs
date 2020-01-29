@@ -109,22 +109,23 @@ Publishing related
    ssh to connect
 -  ``artcl_rsync_url`` – rsync target for uploading the logs. The
    localhost needs to have passwordless authentication to the target or
-   the ``PROVISIONER_KEY`` Var specificed in the environment.
+   the ``PROVISIONER_KEY`` var specified in the environment.
 -  ``artcl_use_swift``: false/true – use swift object storage to publish
    the logs
 -  ``artcl_swift_auth_url`` – the OpenStack auth URL for Swift
 -  ``artcl_swift_username`` – OpenStack username for Swift
 -  ``artcl_swift_password`` – password for the Swift user
--  ``artcl_swift_tenant_name`` – OpenStack tenant name for Swift
+-  ``artcl_swift_tenant_name`` – OpenStack tenant (project) name for Swift
 -  ``artcl_swift_container`` – the name of the Swift container to use,
    default is ``logs``
 -  ``artcl_swift_delete_after`` – The number of seconds after which
    Swift will remove the uploaded objects, the default is 2678400
    seconds = 31 days.
--  ``artcl_artifact_url`` – a HTTP URL at which the uploaded logs will
+-  ``artcl_artifact_url`` – An HTTP URL at which the uploaded logs will
    be accessible after upload.
--  ``artcl_collect_sosreport`` – true/false – If true, create and
-   collect a sosreport for each host.
+-  ``artcl_report_server_key`` - A path to a key for an access to the report
+   server.
+
 
 Logs parsing
 ~~~~~~~~~~~~
@@ -168,7 +169,7 @@ Example Role Playbook
        - collect-logs
 
 ** Note:
-  The tasks that collect data from the nodes is executed with ignore_errors.
+  The tasks that collect data from the nodes are executed with ignore_errors.
   For `example:  <https://opendev.org/openstack/ansible-role-collect-logs/src/branch/master/tasks/collect/system.yml#L3>`__
 
 Templated Bash to rST Conversion Notes
@@ -229,6 +230,38 @@ variable as shown in the example below:
 The task searches for files containing the sensitive strings
 (orig_string) within a file path, and then replaces the sensitive
 strings in those files with the sanitized_string.
+
+
+Usage with InfraRed
+-------------------
+
+Run the following steps to execute the role by
+`infrared <https://infrared.readthedocs.io/en/latest/>`__.
+
+1. Install infrared and add ansible-role-collect-logs plugin by providing
+   the url to this repo:
+
+   .. code-block::
+
+       (infrared)$ ir plugin add https://opendev.org/openstack/ansible-role-collect-logs.git --src-path infrared_plugin
+
+2. Verify that the plugin is imported by:
+
+   .. code-block::
+
+       (infrared)$ ir plugin list
+
+3. From infrared directory symlink roles path:
+
+   .. code-block::
+
+       $ ln -s $(pwd)/plugins $(pwd)/plugins/ansible-role-collect-logs/infrared_plugin/roles
+
+4. Run the plugin:
+
+   .. code-block::
+
+        (infrared)$ ir ansible-role-collect-logs
 
 License
 -------
