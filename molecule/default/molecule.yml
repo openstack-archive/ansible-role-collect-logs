@@ -3,7 +3,7 @@ driver:
   name: docker
 log: true
 lint:
-  name: yamllint
+  enabled: false
 platforms:
   - name: centos7
     image: docker.io/pycontribs/centos:7
@@ -16,31 +16,27 @@ platforms:
     #   pre_build_image: true
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
-    # Need to fix a whole role
-    options:
-      x:
-        - '301'
-        - '302'
-        - '303'
-        - '305'
   config_options:
     defaults:
       interpreter_python: auto
+      forks: 50
+      stdout_callback: yaml
+    ssh_connection:
+      pipelining: true
   inventory:
     group_vars:
       all:
         local_working_dir: "{{ lookup('env', 'TOX_ENV_DIR') or '~/.cache' }}/log"
         artcl_gzip: true
+        artcl_min_size: 500000  # ~0.5mb
 verifier:
   name: ansible
   lint:
     name: ansible-lint
+    enabled: false
 scenario:
   test_sequence:
     - dependency
-    - lint
     - cleanup
     - destroy
     - syntax
