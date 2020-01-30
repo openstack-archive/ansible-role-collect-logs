@@ -30,7 +30,7 @@
         # override artcl_collect to false because in ansible-role-collect-logs
         # role collect and publish tasks are complementary
         artcl_collect: false
-      when: artcl_publish|bool
+      when: artcl_publish|default(false)|bool
 
     - name: Set path to a report server key
       set_fact:
