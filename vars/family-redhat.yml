@@ -1,0 +1,7 @@
+---
+# list of packages to be installed for collection
+artcl_collect_pkg_list:
+  - gzip
+  - rsync
+  - socat
+  - tar

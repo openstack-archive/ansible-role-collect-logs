@@ -5,14 +5,12 @@
     - name: Ensure required rpms for logging are installed
       package:
         state: present
-        name:
-          - gzip
-          - rsync
-          - socat
-          - tar
+        name: "{{ artcl_collect_pkg_list }}"
 
     - name: Prepare directory with extra logs
-      file: dest=/var/log/extra state=directory
+      file:
+        dest: /var/log/extra
+        state: directory
 
     - name: Create rsync filter file
       template:

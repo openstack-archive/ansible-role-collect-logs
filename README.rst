@@ -1,7 +1,10 @@
 collect-logs
 ============
 
-An Ansible role for aggregating logs from different nodes.
+Ansible role for aggregating logs from different nodes.
+
+The only supported way to call this role is using its main entry point. Do not
+use ``tasks_from`` as this count as using private interfaces.
 
 Requirements
 ------------
