@@ -11,6 +11,7 @@
 
 - name: Converge
   hosts: all
+  strategy: free
   tasks:
 
     - name: "Include ansible-role-collect-logs :: collect"
