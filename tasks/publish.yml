@@ -18,6 +18,9 @@
     executable: /bin/bash
   when: lookup('env', 'BUILD_URL')
 
+- include: sova.yml
+  ignore_errors: true
+
 - when: ara_generate_html|bool
   block:
 
@@ -65,9 +68,6 @@
 
 - include: ara_influxdb.yml
   when: influxdb_url is defined or influxdb_create_data_file|bool
-  ignore_errors: true
-
-- include: sova.yml
   ignore_errors: true
 
 - name: fetch stackviz results to the root of the collect_dir

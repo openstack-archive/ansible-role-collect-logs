@@ -316,6 +316,33 @@ class InfluxLongestFields(object):
         return result
 
 
+class SovaFields(object):
+    '''SovaFields provides Sova calculated failure reasons.'''
+
+    def __init__(self, sova_file):
+        """Constructor for SovaFields
+
+            :param sova_file: {str} -- path to 'failures_file' of Sova
+        """
+        self.sova_file = sova_file
+
+    def parse_sova_file(self):
+        if not os.path.exists(self.sova_file):
+            return ''
+        with open(self.sova_file) as f:
+            text = f.readlines()
+            reason = text[0]
+            reason_tag = text[1].split("Reason: ")[1]
+        return reason.strip(), reason_tag.strip()
+
+    def render(self):
+        scheme = 'sova_reason="%s",sova_tag="%s",'
+        res = self.parse_sova_file()
+        if not res:
+            return scheme % ('', '')
+        return scheme % (res[0], res[1])
+
+
 def tasks_times_dict(tasks, only_ok=True):
     times_dict = {}
     for task in tasks:
@@ -350,7 +377,8 @@ def task_length(x):
 def translate(measure, json_data, only_ok,
               mapped_fields=True,
               standard_fields=True,
-              longest_tasks=0):
+              longest_tasks=0,
+              data_file=None):
     '''Create data to send to InfluxDB server in format SCHEME
 
     Fields keys are taken from ARA data according to task names.
@@ -376,6 +404,10 @@ def translate(measure, json_data, only_ok,
         fields += map_fields.render()
     if longest_tasks:
         fields += longest_fields.render()
+    if data_file:
+        sova_fields = SovaFields(os.path.join(
+            os.path.dirname(data_file), 'failures_file'))
+        fields += sova_fields.render()
     fields = fields.rstrip(",")
     result = SCHEME.format(
         measure=measure,
@@ -452,7 +484,7 @@ def send_stats(in_url, in_port, in_user, in_pass, in_db, json_data,
     :return: JSON ansible result
     '''
     data2send = translate(measure, json_data, only_ok, mapped_fields,
-                          standard_fields, longest_tasks)
+                          standard_fields, longest_tasks, data_file)
     create_file_with_data(data2send, data_file)
     if in_url:
         response, reason = send(data_file, in_url, in_port, in_user, in_pass,
