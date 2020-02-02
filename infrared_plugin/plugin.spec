@@ -56,7 +56,7 @@ subparsers:
             help: |
               A directory on the executor host within local_working_dir where
               the logs should be gathered, without a trailing slash.
-          artcl_gzip_only:
+          artcl_gzip:
             type: Bool
             help: |
               When true, gathered files are gzipped one by one
