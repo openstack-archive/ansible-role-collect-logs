@@ -11,15 +11,5 @@ platforms:
   - name: instance
 provisioner:
   name: ansible
-  config_options:
-    defaults:
-      interpreter_python: auto
-      timeout: 30
-      forks: 500
-  inventory:
-    group_vars:
-      all:
-        infrared_location: "{{ playbook_dir }}/.venv"
-        infrared_venv: "{{ infrared_location }}/.infrared"
 verifier:
   name: ansible

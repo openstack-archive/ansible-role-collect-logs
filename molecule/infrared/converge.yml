@@ -19,6 +19,8 @@
         virtualenv: "{{ infrared_venv }}"
 
     - name: "Install Infrared"
+      # this task is always changed, the problem is on pip module side:
+      # https://github.com/ansible/ansible/issues/28952
       pip:
         name: "."
         virtualenv: "{{ infrared_venv }}"
@@ -42,7 +44,6 @@
         source {{ infrared_venv }}/bin/activate
         ir plugin add {{ ansible_env.HOME }}/artcl-src --src-path infrared_plugin
       args:
-        chdir: "{{ infrared_location }}"
         executable: /bin/bash
       register: plugin_install_output
       changed_when: true
@@ -50,3 +51,34 @@
     - name: "Debug: output from plugin installation task main playbook"
       debug:
         msg: "{{ plugin_install_output }}"
+
+    - name: "Create an empty dummy file"
+      file:
+        path: "/tmp/dummy.log"
+        state: touch
+      changed_when: false
+
+    - name: "Create a dummy file of 1MB"
+      command: dd if=/dev/urandom of=/tmp/1MB_dummy.log bs=1MB count=1
+      args:
+        creates: "/tmp/1MB_dummy.log"
+      changed_when: false
+
+    - name: "Run infrared ansible-role-collect-logs"
+      become: false
+      shell: |
+        export PATH=$PATH:/usr/local/sbin:/usr/sbin
+        source {{ infrared_venv }}/bin/activate
+        ir ansible-role-collect-logs --collect_log_types "testing" \
+                                     --artcl_collect_list /tmp/dummy.log,/tmp/1MB_dummy.log \
+                                     --artcl_gzip true \
+                                     --local_working_dir "{{ infrared_location }}" \
+                                     --disable_artifacts_cleanup true
+      args:
+        executable: /bin/bash
+      register: output_collection
+      changed_when: true
+
+    - name: "Debug collection output"
+      debug:
+        msg: "{{ output_collection }}"

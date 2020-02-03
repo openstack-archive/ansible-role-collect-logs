@@ -1,1 +1,44 @@
-../default/molecule.yml
+---
+driver:
+  name: docker
+log: true
+platforms:
+  - name: centos7
+    image: docker.io/pycontribs/centos:7
+    pre_build_image: true
+    # - name: centos8
+    #   image: docker.io/pycontribs/centos:8
+    #   pre_build_image: true
+    # - name: ubuntu
+    #   image: docker.io/pycontribs/ubuntu:latest
+    #   pre_build_image: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: auto
+      forks: 50
+      stdout_callback: yaml
+    ssh_connection:
+      pipelining: true
+  inventory:
+    group_vars:
+      all:
+        local_working_dir: "{{ lookup('env', 'TOX_ENV_DIR') or '~/.cache' }}/log"
+        artcl_gzip: true
+        artcl_min_size: 500000  # ~0.5mb
+        infrared_location: "~/ir"
+        infrared_venv: "{{ infrared_location }}/.infrared"
+verifier:
+  name: ansible
+scenario:
+  test_sequence:
+    - dependency
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - converge
+    - verify
+    - cleanup
+    - destroy

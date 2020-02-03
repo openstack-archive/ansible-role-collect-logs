@@ -21,3 +21,17 @@
       fail:
         msg: "ansible-role-collect-logs not installed"
       when: "'ansible-role-collect-logs' not in plugin_output.stdout"
+
+    - name: Get the stats of collected files
+      stat:
+        path: "{{ item }}"
+      register: collected_files_stats
+      loop:
+        - "{{ infrared_location }}/collected_files/localhost/tmp/dummy.log.gz"
+        - "{{ infrared_location }}/collected_files/localhost/tmp/1MB_dummy.log.gz"
+
+    - name: Ensure all files were collected
+      assert:
+        that:
+          - item.stat.exists
+      loop: "{{ collected_files_stats.results }}"
