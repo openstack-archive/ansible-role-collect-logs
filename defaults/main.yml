@@ -123,6 +123,9 @@ artcl_exclude_list:
   - /etc/alternatives
   - /var/log/journal
 
+# os specific values loaded from tasks/main.yaml
+artcl_collect_pkg_list: []
+
 artcl_gzip: false
 artcl_gzip_min_size_bytes: "10000"
 artcl_tar_gz: false
