@@ -1,8 +1,8 @@
 ---
 - name: gather facts used by role
   setup:
-    gather_subset: "!min,pkg_mgr"
-  when: ansible_pkg_mgr is not defined
+    gather_subset: "!min,pkg_mgr,python"
+  when: "['pkg_mgr', 'python'] | difference(ansible_facts.keys()|list)"
 
 - name: Load operating system specific variables
   include_vars: "{{ item }}"
