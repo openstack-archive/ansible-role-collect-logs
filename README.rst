@@ -27,8 +27,8 @@ exposed with
 Role Variables
 --------------
 
-Collection related
-~~~~~~~~~~~~~~~~~~
+File Collection
+~~~~~~~~~~~~~~~
 
 -  ``artcl_collect_list`` – A list of files and directories to gather
    from the target. Directories are collected recursively and need to
@@ -69,6 +69,34 @@ Collection related
 -  ``artcl_find_max_size`` - Max size of a file in MBs to be included in find
    search, default value is 256. Note: this variable is applied only when
    ``artcl_rsync_collect_list`` is set to false.
+
+-  ``artcl_commands_extras`` - A nested dictionary of additional commands to be
+   run during collection. First level contains the group type, as defined by
+   ``collect_log_types`` list which determines which groups are collected and
+   which ones are skipped.
+
+   Defined keys will override implicit ones from defaults
+   ``artcl_commands`` which is not expected to be changed by user.
+
+   Second level keys are used to uniqly identify a command and determine the
+   default output filename, unless is mentioned via ``capture_file`` property.
+
+   ``cmd`` contains the shell command that would be run.
+
+.. code:: yaml
+
+   artcl_commands_extras:
+     system:
+       disk-space:
+         cmd: df
+         # will save output to /var/log/extras/dist-space.log
+       mounts:
+         cmd: mount -a
+         capture_file: /mounts.txt  # <-- custom capture file location
+     openstack:
+       key2:
+         cmd: touch /foo.txt
+         capture_disable: true # <-- disable implicit std redirection
 
 Documentation generation related
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

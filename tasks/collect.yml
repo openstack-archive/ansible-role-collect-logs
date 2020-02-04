@@ -17,6 +17,35 @@
         src: "odl_extra_logs.j2"
         dest: "/tmp/odl_extra_logs.sh"
 
+    - name: Determine commands to run
+      # combines default dictionary with user defined one
+      # keeps only commands from groups mentioned in collect_log_types
+      run_once: true
+      vars:
+        combined_cmds: "{{ artcl_commands | combine(artcl_commands_extras, recursive=True) }}"
+      set_fact:
+        artcl_commands_flatten: '{{ combined_cmds | dict2items|selectattr("key", "in", collect_log_types) | list | items2dict | flatten_nested_dict }}'
+
+    - name: Run artcl_commands
+      # noqa 305
+      vars:
+        capture_file: |
+          {{ item.capture_file | default( item.name + '.txt') }}
+      shell:
+        # redirection of output to log file, see https://ops.tips/gists/redirect-all-outputs-of-a-bash-script-to-a-file/
+        cmd: |
+          {% if not item.capture_disable | default(False) %}
+          exec >{% if not capture_file.startswith('/') %}/var/log/extra/{% endif %}{{ capture_file }} 2>&1
+          {% endif %}
+          {# do not put anything after the command #}
+          {{ item.cmd }}
+        warn: false
+        executable: bash
+      changed_when: false
+      loop: "{{ artcl_commands_flatten }}"
+      loop_control:
+        label: "{{ item.name }}"
+
 # Change the collect_log_types if you don't want to collect
 # some specific logs
 - import_tasks: collect/system.yml

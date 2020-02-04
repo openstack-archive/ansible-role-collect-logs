@@ -26,6 +26,27 @@
       include_role:
         name: "ansible-role-collect-logs"
 
+    - name: Verify expected combined commands
+      vars:
+        expected:
+          - 'cmd': 'cat /proc/cpuinfo'
+            'capture_file': '/var/log/extra/cpuinfo.txt'
+            'name': 'cpuinfo'
+            'group': 'system'
+          - 'cmd': 'cat /proc/meminfo'
+            'capture_file': '/var/log/extra/meminfo.txt'
+            'name': 'meminfo'
+            'group': 'system'
+          - 'cmd': 'cat /proc/swaps'
+            'capture_file': '/var/log/extra/swaps.txt'
+            'name': 'swaps'
+            'group': 'system'
+      assert:
+        that: artcl_commands_flatten == expected
+        fail_msg: |
+          artcl_commands_flatten had unexpected value {{ artcl_commands_flatten }}
+        success_msg: artcl_commands_flatten had correct value
+
 - name: "Converge publish play"
   hosts: localhost
   tasks:

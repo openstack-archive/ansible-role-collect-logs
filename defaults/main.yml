@@ -162,6 +162,26 @@ artcl_zuul_swift_upload_path: /usr/local/bin
 artcl_collect_sosreport: false
 artcl_sosreport_options: "--batch"
 
+# User defined commands to be executed, combined with default ones.
+artcl_commands_extras: {}
+
+# Implicit commands executed by the role. Keep the dict sorted.
+artcl_commands:
+  system:
+    cpuinfo:
+      cmd: cat /proc/cpuinfo
+      capture_file: /var/log/extra/cpuinfo.txt
+    meminfo:
+      cmd: cat /proc/meminfo
+      capture_file: /var/log/extra/meminfo.txt
+    swaps:
+      cmd: cat /proc/swaps
+      capture_file: /var/log/extra/swaps.txt
+  monitoring: {}
+  network: {}
+  openstack: {}
+  container: {}
+
 # Doc generation specific vars
 artcl_gen_docs: false
 artcl_create_docs_payload:

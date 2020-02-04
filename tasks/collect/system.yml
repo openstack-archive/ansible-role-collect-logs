@@ -14,13 +14,6 @@
     - name: get current selinux status
       shell: "/usr/sbin/getenforce >/var/log/extra/selinux.txt"
 
-    - name: Collecting /proc/cpuinfo|meminfo|swaps
-      shell: "cat /proc/{{ item }} &> /var/log/extra/{{ item }}.txt"
-      with_items:
-        - cpuinfo
-        - meminfo
-        - swaps
-
     - name: Collect installed cron jobs
       shell: |
         for user in $(cut -f1 -d':' /etc/passwd); do \
