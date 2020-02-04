@@ -65,7 +65,6 @@
             CONTAINER_INFO_CMDS=(
                 "${engine} ps --all --size"
                 "${engine} images"
-                "${engine} stats --all --no-stream"
                 "${engine} version"
                 "${engine} info"
             );
