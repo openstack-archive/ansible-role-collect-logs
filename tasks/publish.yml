@@ -140,6 +140,8 @@
     name: create-zuul-based-reproducer
   when: zuul is defined
 
+# This is where upload starts, no local change after this line
+# All tags after this line are marked with "notest" to allow testing (molecule) in absence of access to log servers.
 - name: upload to the artifact server using pubkey auth
   shell: >
     rsync -av
@@ -150,6 +152,7 @@
   retries: 5
   delay: 60
   when: artcl_use_rsync|bool and not artcl_rsync_use_daemon|bool
+  tags: notest
 
 - name: upload to the artifact server using password auth
   environment:
@@ -160,6 +163,7 @@
   retries: 5
   delay: 60
   when: artcl_use_rsync|bool and artcl_rsync_use_daemon|bool
+  tags: notest
 
 - name: upload to swift based artifact server
   shell: swift upload --quiet --header "X-Delete-After:{{ artcl_swift_delete_after }}" {{ artcl_swift_container }}/{{ lookup('env', 'BUILD_TAG') }} *
@@ -174,6 +178,7 @@
   async: "{{ artcl_publish_timeout }}"
   poll: 15
   when: artcl_use_swift|bool
+  tags: notest
 
 - name: use zuul_swift_upload.py to publish the files
   shell: >
@@ -182,9 +187,11 @@
   async: "{{ artcl_publish_timeout }}"
   poll: 15
   when: artcl_use_zuul_swift_upload|bool
+  tags: notest
 
 - name: create the artifact location redirect file
   template:
     src: full_logs.html.j2
     dest: "{{ artcl_collect_dir }}/full_logs.html"
   when: artcl_env != 'tripleo-ci'
+  tags: notest

@@ -9,7 +9,13 @@
         path: "{{ local_working_dir }}"
         state: directory
 
-- name: Converge
+    # Assure we do not have leftovers from previous runs there, not needed in production.
+    - name: Remove collected_files folder
+      file:
+        path: "{{ local_working_dir }}/collected_files"
+        state: absent
+
+- name: "Converge collect play"
   hosts: all
   strategy: free
   tasks:
@@ -19,3 +25,20 @@
         artcl_collect: true
       include_role:
         name: "ansible-role-collect-logs"
+
+- name: "Converge publish play"
+  hosts: localhost
+  tasks:
+    - name: "Include ansible-role-collect-logs :: publish"
+      vars:
+        # disabling collect here is key for testing because collection needs
+        # sudo on targeted hosts, which is not available on molecule, zuul and
+        # some development environments.
+        artcl_collect: false
+        artcl_publish: true
+      include_role:
+        name: "ansible-role-collect-logs"
+
+    - debug:
+        msg: |
+          Collected files should be under {{ local_working_dir }}/collected_files
