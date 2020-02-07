@@ -45,6 +45,12 @@ subparsers:
               list is passed to rsync as an exclude filter and it takes
               precedence over the collection list. For details see the
               “FILTER RULES” topic in the rsync man page.
+          artcl_exclude_list_append:
+            type: ListValue
+            help: |
+              A list of files and directories to be appended in the default
+              exclude list. This is useful for users that want to keep the
+              original list and just add more relevant paths.
           local_working_dir:
             type: Value
             help: |
