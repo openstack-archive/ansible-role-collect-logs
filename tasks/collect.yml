@@ -82,33 +82,45 @@
     loop_var: outer_item
   when: sanitize_lines is defined and sanitize_lines|length
 
-- name: assure collection directory exists
-  delegate_to: localhost
-  file:
-    path: "{{ artcl_collect_dir }}/{{ inventory_hostname }}"
-    state: directory
-    recurse: true
-
-- name: rsync logs
-  synchronize:
-    mode: pull
-    src: /tmp/{{ inventory_hostname }}/
-    dest: "{{ artcl_collect_dir }}/{{ inventory_hostname }}"
-    use_ssh_args: true
-    archive: false
-    recursive: true
-    rsync_opts: "--ignore-errors"
-
-- name: Archive big collected files
+# it makes sense to compress the logs prior
+# to sending them over the wire to the
+# node where they are collected by infra.
+# Regardless of the file size.
+- name: Compress the collected files if configured
   when: artcl_gzip | bool
-  run_once: true
-  delegate_to: localhost
-  shell:
-    cmd: >
-      find {{ artcl_collect_dir }}
-      -size +{{ artcl_gzip_min_size_bytes }}c
-      -type f
-      -not -name "*gz"
-      -exec gzip -f {} +
+  shell: gzip -r ./{{ inventory_hostname }}
+  args:
+    chdir: /tmp
     warn: false
+  changed_when: true
+  tags:
+    - skip_ansible_lint
+
+- name: Create tar archive of logs for faster copying
+  shell:
+    cmd: tar cf {{ inventory_hostname }}.tar {{ inventory_hostname }};
+    chdir: /tmp
+  changed_when: true
+
+- name: Fetch log archive (tar)
+  fetch:
+    src: "/tmp/{{ inventory_hostname }}.tar"
+    dest: "{{ artcl_collect_dir }}/{{ inventory_hostname }}.tar"
+    flat: true
+    validate_checksum: false
+
+- name: Delete temporary log directory after collection
+  file:
+    path: "/tmp/{{ inventory_hostname }}"
+    state: absent
+  ignore_errors: true
+
+- name: Extract the logs and remove tar file
+  shell: |
+    tar xf {{ inventory_hostname }}.tar
+    rm -f {{ inventory_hostname }}.tar
+  args:
+    chdir: "{{ artcl_collect_dir }}"
+    warn: false
+  delegate_to: localhost
   changed_when: true

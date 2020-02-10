@@ -126,9 +126,11 @@ artcl_exclude_list:
 # os specific values loaded from tasks/main.yaml
 artcl_collect_pkg_list: []
 
+# In upstream logs the compression is handled
+# by the storage servers themselves and this
+# can be false.  In other storage servers
+# the role must compress files.
 artcl_gzip: false
-artcl_gzip_min_size_bytes: "10000"
-artcl_tar_gz: false
 
 ## publishing related vars
 artcl_publish: false
