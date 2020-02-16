@@ -2,8 +2,6 @@
 driver:
   name: docker
 log: true
-lint:
-  enabled: false
 platforms:
   - name: centos7
     image: docker.io/pycontribs/centos:7
@@ -34,9 +32,6 @@ provisioner:
         infrared_venv: "{{ infrared_location }}/.infrared"
 verifier:
   name: ansible
-  lint:
-    name: ansible-lint
-    enabled: false
 scenario:
   test_sequence:
     - dependency

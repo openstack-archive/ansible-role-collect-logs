@@ -7,8 +7,6 @@ driver:
       ansible_connection: local
 
 log: true
-lint:
-  enabled: false
 platforms:
   - name: instance
 provisioner:
@@ -25,5 +23,3 @@ provisioner:
         infrared_venv: "{{ infrared_location }}/.infrared"
 verifier:
   name: ansible
-  lint:
-    name: ansible-lint
