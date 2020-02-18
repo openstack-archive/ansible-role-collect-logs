@@ -45,6 +45,10 @@
     - artcl_collect_override is defined
     - artcl_collect_override[inventory_hostname] is defined
 
+- name: Set default exclude list
+  set_fact:
+    artcl_exclude_list: "{{ artcl_exclude_list|default([]) }} + {{ artcl_exclude_list_append|default([]) }}"
+
 - name: Create temp directory before gathering logs
   file:
     dest: "/tmp/{{ inventory_hostname }}"
