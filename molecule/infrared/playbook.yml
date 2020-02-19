@@ -12,45 +12,41 @@
 
     - name: "Create Infrared venv"
       pip:
-        name: "{{ item }}"
+        name:
+          - pbr
+          - pip
+          - setuptools
         virtualenv: "{{ infrared_venv }}"
-      with_items:
-        - pip
-        - setuptools
-        - pbr
 
     - name: "Install Infrared"
       pip:
         name: "."
         virtualenv: "{{ infrared_venv }}"
         chdir: "{{ infrared_location }}"
-      tags:
-        # this task is always changed, the problem is on pip module side:
-        # https://github.com/ansible/ansible/issues/28952
-        - molecule-idempotence-notest
 
     - name: "Create infrared_plugin dir"
       file:
         path: "{{ infrared_location }}/infrared_plugin"
         state: directory
 
+    - name: "Copy ansible-role-collect-logs to test host"
+      synchronize:
+        src: "{{ playbook_dir }}/../../"
+        dest: "{{ ansible_env.HOME }}/artcl-src"
+        rsync_opts:
+          - "--exclude=.tox"
+
     - name: "Install ansible-role-collect-logs plugin"
       shell: |
         export PATH=$PATH:/usr/local/sbin:/usr/sbin
         source {{ infrared_venv }}/bin/activate
-        ir plugin add {{ playbook_dir }}/../../ --src-path infrared_plugin
+        ir plugin add {{ ansible_env.HOME }}/artcl-src --src-path infrared_plugin
       args:
         chdir: "{{ infrared_location }}"
         executable: /bin/bash
       register: plugin_install_output
       changed_when: true
-      tags:
-        # the task is always changed, skip idempotence
-        - molecule-idempotence-notest
 
     - name: "Debug: output from plugin installation task main playbook"
       debug:
         msg: "{{ plugin_install_output }}"
-      tags:
-        # the task depends on a taks which skips idempotence
-        - molecule-idempotence-notest
