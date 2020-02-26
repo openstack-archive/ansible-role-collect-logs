@@ -123,6 +123,13 @@ artcl_exclude_list:
   - /etc/alternatives
   - /var/log/journal
 
+# if true, a rsync filter file is generated for rsync to collect files,
+# if false, find is used to generate list of files to collect for rsync.
+artcl_rsync_collect_list: true
+artcl_find_maxdepth: 4
+# size in MBs
+artcl_find_max_size: 256
+
 # os specific values loaded from tasks/main.yaml
 artcl_collect_pkg_list: []
 

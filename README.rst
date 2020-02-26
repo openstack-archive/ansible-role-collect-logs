@@ -58,6 +58,17 @@ Collection related
    such as openstack logs, network logs, system logs, etc.
    Acceptable values are system, monitoring, network, openstack and container.
 -  ``artcl_gzip``: Archive files, disabled by default.
+-  ``artcl_rsync_collect_list`` - if true, a rsync filter file is generated for
+   ``rsync`` to collect files, if false, ``find`` is used to generate list
+   of files to collect for ``rsync``. ``find`` brings some benefits like
+   searching for files in a certain depth (``artcl_find_maxdepth``) or up to
+   certain size (``artcl_find_max_size``).
+-  ``artcl_find_maxdepth`` - Number of levels of directories below the starting
+   points, default is 4. Note: this variable is applied only when
+   ``artcl_rsync_collect_list`` is set to false.
+-  ``artcl_find_max_size`` - Max size of a file in MBs to be included in find
+   search, default value is 256. Note: this variable is applied only when
+   ``artcl_rsync_collect_list`` is set to false.
 
 Documentation generation related
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -250,7 +261,7 @@ strings in those files with the sanitized_string.
 Usage with InfraRed
 -------------------
 
-Run the following steps to execute the role by
+Run the following steps to execute the role with
 `infrared <https://infrared.readthedocs.io/en/latest/>`__.
 
 1. Install infrared and add ansible-role-collect-logs plugin by providing

@@ -51,6 +51,13 @@ subparsers:
               A list of files and directories to be appended in the default
               exclude list. This is useful for users that want to keep the
               original list and just add more relevant paths.
+          artcl_rsync_collect_list:
+            type: Bool
+            help: |
+              If true, artcl_collect_list is given to rsync to collect
+              logs, otherwise it is given to find to create a list of files
+              to collect for rsync.
+            default: True
           local_working_dir:
             type: Value
             help: |
@@ -150,6 +157,10 @@ subparsers:
             help: |
               Upload data to the InfluxDB database.
             default: False
+          ara_enabled:
+            type: Bool
+            help: |
+              If true, the role will generate ara reports.
           ara_generate_html:
             type: Bool
             help: |
