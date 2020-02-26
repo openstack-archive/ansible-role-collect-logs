@@ -72,6 +72,9 @@
     - name: lvm debug
       shell: "(vgs; pvs; lvs) &> /var/log/extra/lvm.txt"
 
+    - name: disk usage
+      shell: "df -h &> /var/log/extra/disk.txt"
+
     - name: Collect services status
       shell: |
         systemctl list-units --full --all &> /var/log/extra/services.txt
