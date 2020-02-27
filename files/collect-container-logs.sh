@@ -43,9 +43,17 @@ done;
 # Get only failed containers, in a dedicated file
 ${engine} ps -a | grep -vE ' (IMAGE|Exited \(0\)|Up) ' &>> /var/log/extra/failed_containers.log;
 
-for cont in $(${engine} ps | awk {'print $NF'} | grep -v NAMES); do
+# Get inspect infos for all containers even the ones not running.
+for cont in $(${engine} ps -a | awk {'print $NF'} | grep -v NAMES); do
     INFO_DIR=$BASE_CONTAINER_EXTRA/containers/${cont};
     mkdir -p $INFO_DIR;
+    (
+        ${engine} inspect $cont;
+    ) &> $INFO_DIR/${engine}_info.log;
+done;
+
+# Get other infos for running containers
+for cont in $(${engine} ps | awk {'print $NF'} | grep -v NAMES); do
     (
         if [ ${engine} = 'docker' ]; then
             ${engine} top $cont auxw;
@@ -55,8 +63,7 @@ for cont in $(${engine} ps | awk {'print $NF'} | grep -v NAMES); do
         fi
         ${engine} exec $cont top -bwn1;
         ${engine} exec $cont bash -c "\$(command -v dnf || command -v yum) list installed";
-        ${engine} inspect $cont;
-    ) &> $INFO_DIR/${engine}_info.log;
+    ) &>> $INFO_DIR/${engine}_info.log;
 
     container_cp $cont /var/lib/kolla/config_files/config.json $INFO_DIR/config.json;
 
