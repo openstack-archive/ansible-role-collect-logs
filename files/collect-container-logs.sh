@@ -54,6 +54,8 @@ done;
 
 # Get other infos for running containers
 for cont in $(${engine} ps | awk {'print $NF'} | grep -v NAMES); do
+    INFO_DIR=$BASE_CONTAINER_EXTRA/containers/${cont};
+    mkdir -p $INFO_DIR;
     (
         if [ ${engine} = 'docker' ]; then
             ${engine} top $cont auxw;
