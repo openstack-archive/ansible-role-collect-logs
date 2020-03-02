@@ -66,8 +66,8 @@
 # copy the log readme into the base directory.
 - name: copy in the logs README.html
   shell: >
-    if [ -f {{ working_dir }}/src/opendev.org/openstack/tripleo-ci/docs/tripleo-quickstart-logs.html ]; then
-        cp {{ working_dir }}/src/opendev.org/openstack/tripleo-ci/docs/tripleo-quickstart-logs.html {{ artcl_collect_dir }}/README.html;
+    if [ -f {{ artcl_readme_path }} ]; then
+        cp {{ artcl_readme_path }} {{ artcl_readme_file }};
     fi;
   ignore_errors: true
   changed_when: true

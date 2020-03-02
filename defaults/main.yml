@@ -142,7 +142,8 @@ artcl_gzip: false
 ## publishing related vars
 artcl_publish: false
 artcl_env: default
-artcl_readme_file: "{{ artcl_collect_dir }}/README-logs.html"
+artcl_readme_path: "{{ working_dir }}/src/opendev.org/openstack/tripleo-ci/docs/tripleo-quickstart-logs.html"
+artcl_readme_file: "{{ artcl_collect_dir }}/README.html"
 artcl_txt_rename: false
 # give up log upload after 30 minutes
 artcl_publish_timeout: 1800

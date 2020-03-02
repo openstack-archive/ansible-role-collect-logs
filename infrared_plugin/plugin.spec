@@ -98,6 +98,15 @@ subparsers:
             type: Bool
             help: |
               Rename compressed text based files to end with txt.gz extension.
+          artcl_readme_path:
+            type: Value
+            help: |
+              Path to a readme file to be copied to base directory, containing
+              information regarding the logs.
+          artcl_readme_file:
+            type: Value
+            help: |
+              Name of the readme file
           artcl_publish_timeout:
             type: Value
             help: |
