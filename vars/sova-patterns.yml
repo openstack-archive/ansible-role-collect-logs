@@ -669,6 +669,11 @@ patterns:
       msg: "Failed healthcheck of {}."
       pattern: "healthcheck_re"
       tag: "code"
+    - id: 526
+      logstash: "ERROR:root:Image prepare failed: [Errno 17] File exists"
+      msg: "Container image prepare lock error."
+      pattern: "ERROR:root:Image prepare failed: [Errno 17] File exists"
+      tag: "code"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
