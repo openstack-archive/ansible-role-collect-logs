@@ -57,11 +57,9 @@
       include_role:
         name: ansible-role-collect-logs
 
-    # TODO: local_working_dir should be unique per each run - a job should
-    # never fail due to a reason that f.e. the artifacts weren't removed
-    # properly in a previous run
     - name: Delete artifact files from localhost
       file:
         state: absent
-        path: "{{ local_working_dir }}"
+        path: "{{ artcl_collect_dir }}"
       ignore_errors: true
+      when: not disable_artifacts_cleanup | default(false) | bool

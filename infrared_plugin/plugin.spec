@@ -181,3 +181,8 @@ subparsers:
             help: |
               Name of a remote user under which the tasks will be executed.
             default: stack
+          disable_artifacts_cleanup:
+            type: Bool
+            help: |
+                Determines whether to keep collected files
+            default: False
