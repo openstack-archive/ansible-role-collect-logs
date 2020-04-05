@@ -30,8 +30,13 @@
         journalctl -u opendaylight > /var/log/extra/odl/odl_journal.log
       when: odl_rpm_enabled.rc == 0
 
-    - name: Collect container info and logs
-      script: collect-container-logs.sh
-      args:
-        # full path varies across distros
-        executable: bash
+    - name: Copy collection logs script for containers
+      copy:
+        src: collect-container-logs.sh
+        dest: /tmp/collect-container-logs.sh
+
+    - name: Run container logs collection with timeout
+      command: >-
+        timeout --preserve-status -s 15 -k {{ (artcl_container_collect_timeout|int + 30)|string }}
+        {{ artcl_container_collect_timeout|string }} bash -x /tmp/collect-container-logs.sh
+      changed_when: true
