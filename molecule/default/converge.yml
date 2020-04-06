@@ -42,7 +42,7 @@
             'name': 'swaps'
             'group': 'system'
       assert:
-        that: artcl_commands_flatten == expected
+        that: artcl_commands_flatten['data'] == expected
         fail_msg: |
           artcl_commands_flatten had unexpected value {{ artcl_commands_flatten }}
         success_msg: artcl_commands_flatten had correct value
