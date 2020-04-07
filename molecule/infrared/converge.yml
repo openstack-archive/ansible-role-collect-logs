@@ -54,8 +54,15 @@
 
     - name: "Create an empty dummy file"
       file:
-        path: "/tmp/dummy.log"
+        path: "{{ item }}"
         state: touch
+      with_items:
+        - "/tmp/dummy.log"
+        - "/tmp/append.log"
+        - "/tmp/exclude.log"
+        - "/tmp/exclude_append.log"
+        - "/tmp/config.conf"
+        - "/tmp/just_file"
       changed_when: false
 
     - name: "Create a dummy file of 1MB"
@@ -70,7 +77,10 @@
         export PATH=$PATH:/usr/local/sbin:/usr/sbin
         source {{ infrared_venv }}/bin/activate
         ir ansible-role-collect-logs --collect_log_types "testing" \
-                                     --artcl_collect_list /tmp/dummy.log,/tmp/1MB_dummy.log \
+                                     --artcl_collect_list /tmp/*.log,/tmp/just_file \
+                                     --artcl_collect_list_append /tmp/config.conf \
+                                     --artcl_exclude_list /tmp/exclude.log \
+                                     --artcl_exclude_list_append /tmp/exclude_append.log \
                                      --artcl_gzip true \
                                      --local_working_dir "{{ infrared_location }}" \
                                      --disable_artifacts_cleanup true

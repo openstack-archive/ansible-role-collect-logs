@@ -29,9 +29,25 @@
       loop:
         - "{{ infrared_location }}/collected_files/localhost/tmp/dummy.log.gz"
         - "{{ infrared_location }}/collected_files/localhost/tmp/1MB_dummy.log.gz"
+        - "{{ infrared_location }}/collected_files/localhost/tmp/just_file.gz"
+        - "{{ infrared_location }}/collected_files/localhost/tmp/config.conf.gz"
 
     - name: Ensure all files were collected
       assert:
         that:
           - item.stat.exists
       loop: "{{ collected_files_stats.results }}"
+
+    - name: Get the stats of excluded files
+      stat:
+        path: "{{ item }}"
+      register: excluded_files_stats
+      loop:
+        - "{{ infrared_location }}/collected_files/localhost/tmp/exclude.log.gz"
+        - "{{ infrared_location }}/collected_files/localhost/tmp/exclude_append.log.gz"
+
+    - name: Ensure excluded files were not collected
+      assert:
+        that:
+          - not item.stat.exists
+      loop: "{{ excluded_files_stats.results }}"
