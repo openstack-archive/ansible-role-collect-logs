@@ -12,11 +12,13 @@
 - name: Fetch console log
   shell: >
     set -o pipefail &&
-    curl -k "{{ lookup('env', 'BUILD_URL') }}/timestamps/?time=yyyy-MM-dd%20HH:mm:ss.SSS%20|&appendLog&locale=en_GB"
+    curl -k "{{ artcl_build_url }}/timestamps/?time=yyyy-MM-dd%20HH:mm:ss.SSS%20|&appendLog&locale=en_GB"
     > {{ artcl_collect_dir }}/console.log
   args:
     executable: /bin/bash
-  when: lookup('env', 'BUILD_URL')
+  when:
+    - artcl_build_url is defined
+    - artcl_build_url|length > 0
 
 - include: sova.yml
   ignore_errors: true
@@ -100,7 +102,7 @@
   shell: >
     rsync -av
     --quiet -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ artcl_report_server_key|default('') }}"
-    {{ artcl_collect_dir }}/ {{ artcl_rsync_path }}/{{ lookup('env', 'BUILD_TAG') }}
+    {{ artcl_collect_dir }}/ {{ artcl_rsync_path }}/{{ artcl_build_tag }}
   async: "{{ artcl_publish_timeout }}"
   poll: 15
   retries: 5
@@ -110,8 +112,8 @@
 
 - name: upload to the artifact server using password auth
   environment:
-    RSYNC_PASSWORD: "{{ lookup('env', 'RSYNC_PASSWORD') }}"
-  shell: rsync -av --quiet {{ artcl_collect_dir }}/ {{ artcl_rsync_path }}/{{ lookup('env', 'BUILD_TAG') }}  # noqa 305
+    RSYNC_PASSWORD: "{{ artcl_rsync_password | default(omit) }}"
+  shell: rsync -av --quiet {{ artcl_collect_dir }}/ {{ artcl_rsync_path }}/{{ artcl_build_tag }}  # noqa 305
   async: "{{ artcl_publish_timeout }}"
   poll: 15
   retries: 5
@@ -120,7 +122,7 @@
   tags: notest
 
 - name: upload to swift based artifact server
-  shell: swift upload --quiet --header "X-Delete-After:{{ artcl_swift_delete_after }}" {{ artcl_swift_container }}/{{ lookup('env', 'BUILD_TAG') }} *
+  shell: swift upload --quiet --header "X-Delete-After:{{ artcl_swift_delete_after }}" {{ artcl_swift_container }}/{{ artcl_build_tag }} *
   args:
     chdir: "{{ artcl_collect_dir }}"
   changed_when: true

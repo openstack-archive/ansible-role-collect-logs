@@ -10,5 +10,5 @@
     graphite_host: "{{ ara_graphite_server }}"
     ara_mapping: "{{ ara_tasks_map }}"
     ara_data: "{{ ara_data.stdout|to_json }}"
-    graphite_prefix: "{{ ara_graphite_prefix }}"
+    graphite_prefix: "{{ ara_graphite_prefix | default('') }}"
     only_successful_tasks: "{{ ara_only_successful_tasks }}"

@@ -1,10 +1,14 @@
 ---
 # formally in tq common and tqe extras-common
-local_working_dir: "{{ lookup('env', 'HOME') }}/.quickstart"
+# zuul does not allow use of lookup env plugin (security), so we cannot use them
+# defaults but we can load non-zuul values from vars.
+local_working_dir: "{{ zuul_work_dir | default('~') }}/.quickstart"
 artcl_collect_dir: "{{ local_working_dir }}/collected_files"
 working_dir: "/home/{{ undercloud_user }}"
 undercloud_user: stack
 
+
+artcl_build_tag: "{{ zuul.build | default('') }}"  # overriden by vars/unsecure.yml
 
 artcl_collect: true
 artcl_collect_list:
@@ -148,7 +152,7 @@ artcl_txt_rename: false
 # give up log upload after 30 minutes
 artcl_publish_timeout: 1800
 artcl_artifact_url: "file://{{ local_working_dir }}"
-artcl_full_artifact_url: "{{ artcl_artifact_url }}/{{ lookup('env', 'BUILD_TAG') }}/"
+artcl_full_artifact_url: "{{ artcl_artifact_url }}/{{ artcl_build_tag }}/"
 artcl_use_rsync: false
 artcl_rsync_use_daemon: false
 artcl_container_collect_timeout: 1800  # 30 mins
@@ -349,7 +353,6 @@ artcl_logstash_files:
 ara_enabled: true
 ara_overcloud_db_path: "/var/lib/mistral/overcloud/ara_overcloud.sqlite"
 ara_generate_html: true
-ara_graphite_prefix: "tripleo.{{ lookup('env', 'STABLE_RELEASE')|default('master', true) }}.{{ lookup('env', 'TOCI_JOBTYPE') }}."
 ara_only_successful_tasks: true
 ara_tasks_map:
   "overcloud-deploy : Deploy the overcloud": overcloud.deploy.seconds
@@ -374,7 +377,7 @@ influxdb_port: 8086
 influxdb_user:
 influxdb_password:
 influxdb_dbname: testdb
-influxdb_data_file_path: "{{ lookup('env', 'LOCAL_WORKING_DIR')|default('/tmp', true) }}/influxdb_data"
+influxdb_data_file_path: "{{ local_working_dir }}/influxdb_data"
 influxdb_create_data_file: true
 odl_extra_log_dir: /var/log/extra/odl
 odl_extra_info_log: "{{ odl_extra_log_dir }}/odl_info.log"

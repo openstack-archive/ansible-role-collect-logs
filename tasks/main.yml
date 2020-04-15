@@ -4,6 +4,10 @@
     gather_subset: "!min,pkg_mgr,python"
   when: "['pkg_mgr', 'python'] | difference(ansible_facts.keys()|list)"
 
+- name: Load unsecure.yml defaults when outside zuul
+  when: zuul is not defined
+  include_vars: unsecure.yml
+
 - name: Load operating system specific variables
   include_vars: "{{ item }}"
   failed_when: false

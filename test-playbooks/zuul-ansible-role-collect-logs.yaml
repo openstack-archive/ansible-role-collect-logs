@@ -1,0 +1,6 @@
+---
+- hosts: all
+  tasks:
+    - name: include ansible-role-collect-logs role
+      include_role:
+        name: collect-logs

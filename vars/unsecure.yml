@@ -1,0 +1,10 @@
+---
+# these vars are defaults overrides which are loaded only when the role is
+# running in an unsecured environment (outside zuul).
+# * any call env lookup plugin under zuul would generate a runtime exception
+ara_graphite_prefix: "tripleo.{{ lookup('env', 'STABLE_RELEASE')|default('master', true) }}.{{ lookup('env', 'TOCI_JOBTYPE') }}."
+artcl_build_url: "{{ lookup('env', 'BUILD_URL') }}"
+artcl_build_tag: "{{ lookup('env', 'BUILD_TAG') }}"
+artcl_rsync_password: "{{ lookup('env', 'RSYNC_PASSWORD') }}"
+influxdb_data_file_path: "{{ lookup('env', 'LOCAL_WORKING_DIR')|default('/tmp', true) }}/influxdb_data"
+local_working_dir: "{{ zuul_work_dir | default(lookup('env', 'HOME')) }}/.quickstart"

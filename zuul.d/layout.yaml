@@ -1,4 +1,13 @@
 ---
+- job:
+    name: zuul-ansible-role-collect-logs
+    description: Validate that zuul can use that role.
+    parent: base
+    run: test-playbooks/zuul-ansible-role-collect-logs.yaml
+    roles:
+      - zuul: opendev.org/openstack/ansible-role-collect-logs
+        name: collect-logs
+
 - project:
     templates:
       - tripleo-undercloud-jobs
@@ -15,6 +24,7 @@
         - tripleo-ci-centos-8-scenario002-standalone
         - tripleo-ci-centos-8-scenario010-ovn-provider-standalone
         - tripleo-ci-centos-8-containers-multinode
+        - zuul-ansible-role-collect-logs
     gate:
       jobs: *jobs
       queue: tripleo
