@@ -18,13 +18,14 @@
         dest: "/tmp/odl_extra_logs.sh"
 
     - name: Determine commands to run
-      # combines default dictionary with user defined one
-      # keeps only commands from groups mentioned in collect_log_types
       run_once: true
       vars:
         combined_cmds: "{{ artcl_commands | combine(artcl_commands_extras, recursive=True) }}"
-      set_fact:
-        artcl_commands_flatten: '{{ combined_cmds | dict2items|selectattr("key", "in", collect_log_types) | list | items2dict | flatten_nested_dict }}'
+      # combines default dictionary with user defined one
+      # keeps only commands from groups mentioned in collect_log_types
+      flatten_nested_dict:
+        data: "{{ combined_cmds | dict2items|selectattr('key', 'in', collect_log_types) | list | items2dict }}"
+      register: artcl_commands_flatten
 
     - name: Run artcl_commands
       # noqa 305
@@ -42,7 +43,7 @@
         warn: false
         executable: bash
       changed_when: false
-      loop: "{{ artcl_commands_flatten }}"
+      loop: "{{ artcl_commands_flatten.data }}"
       loop_control:
         label: "{{ item.name }}"
 
