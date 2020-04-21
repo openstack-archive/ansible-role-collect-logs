@@ -172,12 +172,24 @@ artcl_commands:
     cpuinfo:
       cmd: cat /proc/cpuinfo
       capture_file: /var/log/extra/cpuinfo.txt
+    dmesg:
+      cmd: dmesg
     meminfo:
       cmd: cat /proc/meminfo
       capture_file: /var/log/extra/meminfo.txt
+    pcs:
+      cmd: |
+        if type pcs &>/dev/null; then
+          echo "+ pcs status"
+          pcs status
+          echo "+ pcs config"
+          pcs config
+        fi
     swaps:
       cmd: cat /proc/swaps
       capture_file: /var/log/extra/swaps.txt
+    top:
+      cmd: top -b -n 1
   monitoring: {}
   network: {}
   openstack: {}
