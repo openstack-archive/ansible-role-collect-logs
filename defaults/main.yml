@@ -191,7 +191,25 @@ artcl_commands:
     top:
       cmd: top -b -n 1
   monitoring: {}
-  network: {}
+  network:
+    ovn:
+      cmd: |
+        if type ovs-vsctl &>/dev/null; then
+          function sbctl() {
+            SBDB=$(sudo ovs-vsctl get open . external_ids:ovn-remote | sed -e 's/\"//g');
+            timeout -k 10 5 sudo podman exec ovn_controller ovn-sbctl --db=$SBDB $1
+          }
+          function nbctl() {
+            NBDB=$(sudo ovs-vsctl get open . external_ids:ovn-remote | sed -e 's/\"//g' | sed -e 's/6642/6641/g');
+            timeout -k 10 5 sudo podman exec ovn_controller ovn-nbctl --db=$NBDB $1
+          }
+          echo "Output of ovn-sbctl show"
+          sbctl show
+          echo "\nOutput of ovn-nbctl show"
+          nbctl show
+          echo "\nOutput of ovn-sbctl lflow-list"
+          sbctl lflow-list
+        fi
   openstack: {}
   container: {}
 
