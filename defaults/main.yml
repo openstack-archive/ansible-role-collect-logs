@@ -296,7 +296,26 @@ artcl_commands:
           echo "\nOutput of ovn-sbctl lflow-list"
           sbctl lflow-list
         fi
-  openstack: {}
+  openstack:
+    baremetal_list:
+      cmd: |
+        if [[ -e {{ working_dir }}/stackrc ]]; then
+          source {{ working_dir }}/stackrc
+          openstack baremetal node list
+        fi
+    nova_list:
+      cmd: |
+        if [[ -e {{ working_dir }}/stackrc ]]; then
+          source {{ working_dir }}/stackrc
+          openstack server list
+        fi
+    openstack-status:
+      cmd: |
+        if type openstack-status &> /dev/null; then
+          . ~/keystonerc_admin
+          openstack-status
+        fi
+      when: "'controller' in inventory_hostname"
   container: {}
 
 # Doc generation specific vars

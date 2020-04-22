@@ -29,6 +29,7 @@
 
     - name: Run artcl_commands
       # noqa 305
+      # noqa 102 :: No Jinja2 in when
       vars:
         capture_file: "{{ item.capture_file | default( item.name + '.txt') }}"
       shell:
@@ -42,6 +43,7 @@
         warn: false
         executable: bash
       changed_when: false
+      when: "{{ item.when | default(true) }}"
       loop: "{{ artcl_commands_flatten.data }}"
       loop_control:
         label: "{{ item.name }}"
@@ -59,9 +61,6 @@
 
 - import_tasks: collect/monitoring.yml
   when: "'monitoring' in collect_log_types"
-
-- import_tasks: collect/openstack.yml
-  when: "'openstack' in collect_log_types"
 
 - name: Set default collect list
   set_fact:
