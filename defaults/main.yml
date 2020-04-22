@@ -151,6 +151,7 @@ artcl_artifact_url: "file://{{ local_working_dir }}"
 artcl_full_artifact_url: "{{ artcl_artifact_url }}/{{ lookup('env', 'BUILD_TAG') }}/"
 artcl_use_rsync: false
 artcl_rsync_use_daemon: false
+artcl_container_collect_timeout: 1800  # 30 mins
 
 artcl_use_swift: false
 # clean up the logs after 31 days
