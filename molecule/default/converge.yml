@@ -18,6 +18,20 @@
 - name: "Converge collect play"
   hosts: all
   strategy: free
+  vars:
+    expected:
+      - 'cmd': 'cat /proc/cpuinfo'
+        'capture_file': '/var/log/extra/cpuinfo.txt'
+        'name': 'cpuinfo'
+        'group': 'system'
+      - 'cmd': 'cat /proc/meminfo'
+        'capture_file': '/var/log/extra/meminfo.txt'
+        'name': 'meminfo'
+        'group': 'system'
+      - 'cmd': 'cat /proc/swaps'
+        'capture_file': '/var/log/extra/swaps.txt'
+        'name': 'swaps'
+        'group': 'system'
   tasks:
 
     # brief call used a very short override artcl_commands, enough to validate
@@ -41,25 +55,19 @@
         name: "ansible-role-collect-logs"
 
     - name: Verify expected combined commands
-      vars:
-        expected:
-          - 'cmd': 'cat /proc/cpuinfo'
-            'capture_file': '/var/log/extra/cpuinfo.txt'
-            'name': 'cpuinfo'
-            'group': 'system'
-          - 'cmd': 'cat /proc/meminfo'
-            'capture_file': '/var/log/extra/meminfo.txt'
-            'name': 'meminfo'
-            'group': 'system'
-          - 'cmd': 'cat /proc/swaps'
-            'capture_file': '/var/log/extra/swaps.txt'
-            'name': 'swaps'
-            'group': 'system'
       assert:
         that: artcl_commands_flatten['data'] == expected
         fail_msg: |
           artcl_commands_flatten had unexpected value {{ artcl_commands_flatten }}
         success_msg: artcl_commands_flatten had correct value
+
+    - name: Verify that expected files where collected and they are not empty
+      delegate_to: localhost
+      stat:
+        path: "{{ local_working_dir }}/collected_files/{{ inventory_hostname }}{{ item.capture_file }}"
+      register: st
+      failed_when: not st.stat.exists or st.stat.size == 0
+      loop: "{{ expected }}"
 
     - name: "Include ansible-role-collect-logs :: collect (full)"
       vars:
