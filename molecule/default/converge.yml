@@ -20,9 +20,23 @@
   strategy: free
   tasks:
 
-    - name: "Include ansible-role-collect-logs :: collect"
+    # brief call used a very short override artcl_commands, enough to validate
+    # that the combining of the commands works. Later we import the role with
+    # its default artcl_commands in order to test these commands, too.
+    - name: "Include ansible-role-collect-logs :: collect (brief)"
       vars:
         artcl_collect: true
+        artcl_commands:
+          system:
+            cpuinfo:
+              cmd: cat /proc/cpuinfo
+              capture_file: /var/log/extra/cpuinfo.txt
+            meminfo:
+              cmd: cat /proc/meminfo
+              capture_file: /var/log/extra/meminfo.txt
+            swaps:
+              cmd: cat /proc/swaps
+              capture_file: /var/log/extra/swaps.txt
       include_role:
         name: "ansible-role-collect-logs"
 
@@ -46,6 +60,12 @@
         fail_msg: |
           artcl_commands_flatten had unexpected value {{ artcl_commands_flatten }}
         success_msg: artcl_commands_flatten had correct value
+
+    - name: "Include ansible-role-collect-logs :: collect (full)"
+      vars:
+        artcl_collect: true
+      include_role:
+        name: "ansible-role-collect-logs"
 
 - name: "Converge publish play"
   hosts: localhost
