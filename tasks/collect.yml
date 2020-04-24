@@ -30,8 +30,7 @@
     - name: Run artcl_commands
       # noqa 305
       vars:
-        capture_file: |
-          {{ item.capture_file | default( item.name + '.txt') }}
+        capture_file: "{{ item.capture_file | default( item.name + '.txt') }}"
       shell:
         # redirection of output to log file, see https://ops.tips/gists/redirect-all-outputs-of-a-bash-script-to-a-file/
         cmd: |
