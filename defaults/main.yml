@@ -190,6 +190,88 @@ artcl_commands:
       capture_file: /var/log/extra/swaps.txt
     top:
       cmd: top -b -n 1
+    rpm-list:
+      cmd: rpm -qa | sort -f
+    package-list-installed:
+      cmd: "{{ ansible_pkg_mgr }} list installed"
+    repolist:
+      cmd: "{{ ansible_pkg_mgr }} repolist -v"
+    selinux:
+      cmd: /usr/sbin/getenforce
+    installed_crons:
+      cmd: |
+        for user in $(cut -f1 -d':' /etc/passwd); do
+        echo $user; crontab -u $user -l | grep -v '^$\|^\s*\#\|^\s*PATH'
+        done
+    import-delorean:
+      # used by OSP Release Engineering to import into internal builds
+      cmd: >
+          repoquery --disablerepo='*' --enablerepo='delorean'
+          -a --qf '%{sourcerpm}'|sort -u|sed 's/.src.rpm//g'
+    import-delorean-deps:
+      # used by OSP Release Engineering to import into internal builds
+      cmd: >
+        repoquery --disablerepo='*' --enablerepo='delorean-*-deps'
+        -a --qf '%{sourcerpm}'|sort -u|sed 's/.src.rpm//g'
+    failed_services:
+      cmd: >
+        systemctl -t service --failed --no-legend | awk '{print $1}'
+        | xargs -r -n1 journalctl -u
+    lsof:
+      cmd: >
+        lsof -P -n &> /var/log/extra/lsof.txt
+    pstree:
+      cmd: pstree -p
+    sysctl:
+      cmd: sysctl -a
+    haproxy-stats:
+      cmd: >
+        pgrep haproxy && \
+        test -S /var/lib/haproxy/stats && \
+        echo 'show info;show stat;show table' | socat /var/lib/haproxy/stats stdio || \
+        echo "No HAProxy or no socket on host"
+    lsmod:
+      cmd: lsmod
+    lspci:
+      cmd: lspci
+    pip:
+      cmd: "{{ ansible_python.executable }} -m pip list"
+    lvm:
+      cmd: |
+        vgs
+        pvs
+        lvs
+    disk:
+      cmd: |
+        df -h
+    services:
+      cmd: |
+        systemctl list-units --full --all
+        systemctl status "*"
+    denials:
+      cmd: >
+        grep -i denied /var/log/audit/audit*
+    seqfaults:
+      cmd: >
+        grep -v ansible-command /var/log/messages | grep segfault
+    oom-killers.txt:
+      cmd: |
+        grep -v ansible-command /var/log/messages | grep oom-killer
+    delorean-logs:
+      cmd: >
+        if [[ -e /home/{{ undercloud_user }}/DLRN/data/repos ]]; then
+        rm -rf /tmp/delorean_logs && mkdir /tmp/delorean_logs;
+        find /home/{{ undercloud_user }}/DLRN/data/repos/ -name '*.log' -exec cp --parents \{\} /tmp/delorean_logs/ \; ;
+        find /home/{{ undercloud_user }}/DLRN/ -name 'projects.ini' -exec cp \{\} /tmp/delorean_logs/ \; ;
+        find /tmp/delorean_logs -name '*.log' -exec gzip \{\} \; ;
+        find /tmp/delorean_logs -name '*.log.gz' -exec sh -c 'x="{}"; mv "$x" "${x%.log.gz}.log.txt.gz"' \; ;
+        rm -rf {{ artcl_collect_dir }}/delorean_logs && mkdir {{ artcl_collect_dir }}/delorean_logs;
+        mv /tmp/delorean_logs/home/{{ undercloud_user }}/DLRN/data/repos/* {{ artcl_collect_dir }}/delorean_logs/;
+        mv /tmp/delorean_logs/projects.ini {{ artcl_collect_dir }}/delorean_logs/;
+        fi
+      capture_disable: true
+    journal:
+      cmd: journalctl --since=-4h --lines=100000
   monitoring: {}
   network:
     ovn:
