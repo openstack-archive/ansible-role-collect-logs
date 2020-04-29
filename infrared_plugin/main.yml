@@ -4,6 +4,7 @@
 # This section collects data from the nodes
 - hosts: "{{ other.openstack_nodes }}"
   remote_user: "{{ other.remote_user }}"
+  ignore_errors: true
   tasks:
 
     - name: Remap infrared parameters to role variables
@@ -18,6 +19,7 @@
 # This section takes care of preparing the collected data for publishing
 # and for publishing itself
 - hosts: localhost
+  ignore_errors: true
   tasks:
 
     - name: Remap infrared parameters to role variables
@@ -43,7 +45,6 @@
       args:
         chdir: "{{ artcl_collect_dir }}"
         executable: /bin/bash
-      ignore_errors: true
 
     - name: delete the tar file after extraction
       shell: |
@@ -51,7 +52,6 @@
       args:
         chdir: "{{ artcl_collect_dir }}"
         executable: /bin/bash
-      ignore_errors: true
 
     - name: Ansible role collect logs
       include_role:
@@ -61,5 +61,4 @@
       file:
         state: absent
         path: "{{ artcl_collect_dir }}"
-      ignore_errors: true
       when: not disable_artifacts_cleanup | default(false) | bool
