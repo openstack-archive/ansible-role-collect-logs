@@ -201,7 +201,9 @@ artcl_commands:
     repolist:
       cmd: "{{ ansible_pkg_mgr }} repolist -v"
     selinux:
-      cmd: /usr/sbin/getenforce
+      cmd: |
+        /usr/sbin/sestatus -v
+        /usr/sbin/sestatus -b
     installed_crons:
       cmd: |
         for user in $(cut -f1 -d':' /etc/passwd); do
