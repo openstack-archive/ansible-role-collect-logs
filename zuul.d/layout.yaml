@@ -9,6 +9,8 @@
         name: collect-logs
 
 - project:
+    vars:
+      fail_logs_collection: true
     templates:
       - tripleo-undercloud-jobs
     check:
