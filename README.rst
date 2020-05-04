@@ -97,6 +97,7 @@ File Collection
        key2:
          cmd: touch /foo.txt
          capture_disable: true # <-- disable implicit std redirection
+         when: "1 > 2"  # <-- optional condition
 
 Documentation generation related
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
