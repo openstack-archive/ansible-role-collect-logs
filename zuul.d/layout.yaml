@@ -24,7 +24,6 @@
         # outcome was produced (they still rely on manual verification).
         - tripleo-ci-centos-8-scenario001-standalone
         - tripleo-ci-centos-8-scenario002-standalone
-        - tripleo-ci-centos-8-scenario010-ovn-provider-standalone
         - tripleo-ci-centos-8-containers-multinode
         - zuul-ansible-role-collect-logs
     gate:
