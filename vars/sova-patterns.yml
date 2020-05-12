@@ -674,6 +674,11 @@ patterns:
       msg: "Container image prepare lock error."
       pattern: "ERROR:root:Image prepare failed: [Errno 17] File exists"
       tag: "code"
+    - id: 527
+      logstash: "not enough free physical ports."
+      msg: "Not enough ports."
+      pattern: "not enough free physical ports."
+      tag: "infra"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
