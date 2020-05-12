@@ -513,6 +513,11 @@ patterns:
       msg: "Unauthorized error from container registry."
       pattern: '"code":"UNAUTHORIZED","message":"authentication required"'
       tag: "infra"
+    - id: 202
+      logstash: 'Failed to allocate memory: Cannot allocate memory'
+      msg: "Memory allocation failure for."
+      pattern: 'Failed to allocate memory: Cannot allocate memory'
+      tag: "infra"
   "ironic-conductor":
     - id: 300
       logstash: "Timeout reached while waiting for callback for node"
