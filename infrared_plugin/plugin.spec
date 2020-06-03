@@ -70,6 +70,10 @@ subparsers:
             help: |
               A directory on the executor host within local_working_dir where
               the logs should be gathered, without a trailing slash.
+          artcl_build_url:
+            type: Value
+            help: |
+              Build URL used for fetching console.log
           artcl_gzip:
             type: Bool
             help: |
