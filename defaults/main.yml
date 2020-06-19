@@ -368,6 +368,7 @@ artcl_logstash_files:
   - /home/*/tempest.log
   - /var/log/bootstrap-subnodes.log
   - /var/log/tripleo-container-image-prepare.log
+  - /var/log/ipaserver-install.log
 
 # ara_graphite_server: graphite.tripleo.org
 # if ara_enabled is false, no ara tasks will be executed
