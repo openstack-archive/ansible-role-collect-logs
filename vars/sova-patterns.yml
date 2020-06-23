@@ -502,6 +502,16 @@ patterns:
       pattern: 'unbound_var_re'
       tag: "code"
       logstash: ": unbound variable"
+    - id: 87
+      msg: "Standalone failed."
+      pattern: 'Playbook run of multinode-standalone.yml failed'
+      tag: "code"
+      logstash: "Playbook run of multinode-standalone.yml failed"
+    - id: 88
+      msg: "Timeout."
+      pattern: 'async task did not complete within the requested time'
+      tag: "code"
+      logstash: "async task did not complete within the requested time"
   "errors":
     - id: 200
       logstash: 'Image prepare failed: Pulling image failed:'
