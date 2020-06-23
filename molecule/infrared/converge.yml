@@ -77,11 +77,13 @@
         export PATH=$PATH:/usr/local/sbin:/usr/sbin
         source {{ infrared_venv }}/bin/activate
         ir ansible-role-collect-logs --collect_log_types "testing" \
+                                     --artcl_collect_dir {{ infrared_location }}/collected_files_test \
                                      --artcl_collect_list /tmp/*.log,/tmp/just_file \
                                      --artcl_collect_list_append /tmp/config.conf \
                                      --artcl_exclude_list /tmp/exclude.log \
                                      --artcl_exclude_list_append /tmp/exclude_append.log \
                                      --artcl_gzip true \
+                                     --artcl_rsync_collect_list false \
                                      --local_working_dir "{{ infrared_location }}" \
                                      --disable_artifacts_cleanup true
       args:
