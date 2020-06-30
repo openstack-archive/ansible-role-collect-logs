@@ -76,7 +76,8 @@
       shell: |
         export PATH=$PATH:/usr/local/sbin:/usr/sbin
         source {{ infrared_venv }}/bin/activate
-        ir ansible-role-collect-logs --collect_log_types "testing" \
+        ir ansible-role-collect-logs --openstack_nodes localhost \
+                                     --collect_log_types "testing" \
                                      --artcl_collect_dir {{ infrared_location }}/collected_files_test \
                                      --artcl_collect_list /tmp/*.log,/tmp/just_file \
                                      --artcl_collect_list_append /tmp/config.conf \
