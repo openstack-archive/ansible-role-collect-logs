@@ -306,13 +306,7 @@ Run the following steps to execute the role with
 
        (infrared)$ ir plugin list
 
-3. From infrared directory symlink roles path:
-
-   .. code-block::
-
-       $ ln -s $(pwd)/plugins $(pwd)/plugins/ansible-role-collect-logs/infrared_plugin/roles
-
-4. Run the plugin:
+3. Run the plugin:
 
    .. code-block::
 
