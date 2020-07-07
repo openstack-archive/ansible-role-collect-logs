@@ -43,7 +43,7 @@
         warn: false
         executable: bash
       changed_when: false
-      when: "{{ item.when | default(true) }}"
+      when: item.when | default(true)
       loop: "{{ artcl_commands_flatten.data }}"
       loop_control:
         label: "{{ item.name }}"
