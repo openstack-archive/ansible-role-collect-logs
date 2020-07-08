@@ -56,6 +56,7 @@
     - name: Ansible role collect logs
       include_role:
         name: ansible-role-collect-logs
+      when: artcl_publish|default(false)|bool
 
     - name: Delete artifact files from localhost
       file:
