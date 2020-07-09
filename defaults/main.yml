@@ -170,6 +170,11 @@ artcl_sosreport_options: "--batch"
 # User defined commands to be executed, combined with default ones.
 artcl_commands_extras: {}
 
+# Used to determine which ignore_errors strategy to use. Defaults to true
+# but for testing purposes we may want to make it false, to avoid false
+# positives.
+artcl_ignore_errors: true
+
 # Implicit commands executed by the role. Keep the dict sorted.
 artcl_commands:
   system:

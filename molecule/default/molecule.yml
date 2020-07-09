@@ -26,15 +26,19 @@ provisioner:
     group_vars:
       all:
         local_working_dir: "{{ lookup('env', 'TOX_ENV_DIR') or '~/.cache' }}/log"
+        artcl_ignore_errors: false
 verifier:
   name: ansible
 scenario:
+  # custom because "idempotence" is not yet supported by the role
   test_sequence:
     - dependency
     - cleanup
     - destroy
     - syntax
     - create
+    - prepare
     - converge
+    - verify
     - cleanup
     - destroy
