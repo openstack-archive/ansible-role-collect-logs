@@ -352,28 +352,31 @@ artcl_logstash_files:
   - /home/*/overcloud_failed_prepare_resources.log
   - /home/*/overcloud-full.log
   - /home/*/overcloud_image_build.log
+  - /home/*/overcloud_image_upload.log
+  - /home/*/overcloud_import_nodes.log
+  - /home/*/overcloud_introspect.log
   - /home/*/overcloud_prep_containers.log
   - /home/*/overcloud_prep_images.log
   - /home/*/overcloud_prep_network.log
   - /home/*/overcloud_validate.log
-  - /home/*/standalone_deploy.log
-  - /home/*/*upgrade*.log
-  - /home/*/*update*.log
+  - /home/*/pkg_mgr_mirror_error.log
+  - /home/*/pkg_mgr_mirror.log
   - /home/*/repo_setup.log
   - /home/*/repo_setup.sh.*.log
+  - /home/*/standalone_deploy.log
+  - /home/*/tempest.log
+  - /home/*/undercloud_custom_tht_script.log
   - /home/*/undercloud_install.log
   - /home/*/undercloud_reinstall.log
-  - /home/*/undercloud_custom_tht_script.log
+  - /home/*/*update*.log
+  - /home/*/*upgrade*.log
   - /home/*/upgrade-undercloud-repo.sh.log
   - /home/*/validate-overcloud-ipmi-connection.log
   - /home/*/vxlan_networking.sh.log
   - /home/*/workload_launch.log
-  - /home/*/pkg_mgr_mirror_error.log
-  - /home/*/pkg_mgr_mirror.log
-  - /home/*/tempest.log
   - /var/log/bootstrap-subnodes.log
-  - /var/log/tripleo-container-image-prepare.log
   - /var/log/ipaserver-install.log
+  - /var/log/tripleo-container-image-prepare.log
 
 # ara_graphite_server: graphite.tripleo.org
 # if ara_enabled is false, no ara tasks will be executed
