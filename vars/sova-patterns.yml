@@ -694,6 +694,11 @@ patterns:
       msg: "Not enough ports."
       pattern: "not enough free physical ports."
       tag: "infra"
+    - id: 528
+      logstash: "playbook: /usr/share/ansible/tripleo-playbooks/cli-baremetal-introspect.yaml, Run Status: failed"
+      msg: "Introspection failed."
+      pattern: "playbook: /usr/share/ansible/tripleo-playbooks/cli-baremetal-introspect.yaml, Run Status: failed"
+      tag: "infra"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
