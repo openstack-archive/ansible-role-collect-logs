@@ -709,6 +709,11 @@ patterns:
       msg: "Providing node failed."
       pattern: "playbook: /usr/share/ansible/tripleo-playbooks/cli-overcloud-node-provide.yaml, Run Status: failed"
       tag: "infra"
+    - id: 530
+      logstash: "Exception introspecting nodes"
+      msg: "Introspection FAIL."
+      pattern: "Exception introspecting nodes"
+      tag: "infra"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
