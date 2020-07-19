@@ -512,6 +512,11 @@ patterns:
       pattern: 'async task did not complete within the requested time'
       tag: "code"
       logstash: "async task did not complete within the requested time"
+    - id: 89
+      msg: "Nodes aren't manageable."
+      pattern: 'FAILED - RETRYING: Wait until nodes will be manageable (1 retries left)'
+      tag: "infra"
+      logstash: "FAILED - RETRYING: Wait until nodes will be manageable (1 retries left)"
   "errors":
     - id: 200
       logstash: 'Image prepare failed: Pulling image failed:'
