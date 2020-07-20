@@ -109,12 +109,12 @@ patterns:
       tag: "code"
     - id: 7
       logstash: "Error contacting Ironic server: Node"
-      msg: "Ironic introspection FAIL."
+      msg: "Introspection failed."
       pattern: "Error contacting Ironic server: Node "
       tag: "code"
     - id: 8
       logstash: "Introspection completed with errors:"
-      msg: "Ironic introspection FAIL."
+      msg: "Introspection failed."
       pattern: "Introspection completed with errors:"
       tag: "code"
     - id: 9
@@ -354,7 +354,7 @@ patterns:
       tag: "infra"
     - id: 58
       logstash: "Exception introspecting nodes"
-      msg: "Introspection FAIL."
+      msg: "Introspection failed."
       pattern: "Exception introspecting nodes"
       tag: "code"
     - id: 59
@@ -517,6 +517,11 @@ patterns:
       pattern: 'FAILED - RETRYING: Wait until nodes will be manageable (1 retries left)'
       tag: "infra"
       logstash: "FAILED - RETRYING: Wait until nodes will be manageable (1 retries left)"
+    - id: 90
+      msg: "Tempest failed."
+      pattern: 'Playbook run of baremetal-full-overcloud-validate.yml failed'
+      tag: "infra"
+      logstash: "Playbook run of baremetal-full-overcloud-validate.yml failed"
   "errors":
     - id: 200
       logstash: 'Image prepare failed: Pulling image failed:'
@@ -711,7 +716,7 @@ patterns:
       tag: "infra"
     - id: 530
       logstash: "Exception introspecting nodes"
-      msg: "Introspection FAIL."
+      msg: "Introspection failed."
       pattern: "Exception introspecting nodes"
       tag: "infra"
   "bmc":
