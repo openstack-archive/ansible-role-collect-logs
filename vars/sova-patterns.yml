@@ -538,6 +538,11 @@ patterns:
       msg: "Memory allocation failure for."
       pattern: 'Failed to allocate memory: Cannot allocate memory'
       tag: "infra"
+    - id: 203
+      logstash: 'Timeout reached while waiting for callback for node'
+      msg: 'Node provision timeout.'
+      pattern: 'Timeout reached while waiting for callback for node'
+      tag: 'infra'
   "ironic-conductor":
     - id: 300
       logstash: "Timeout reached while waiting for callback for node"
