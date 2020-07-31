@@ -520,8 +520,13 @@ patterns:
     - id: 90
       msg: "Tempest failed."
       pattern: 'Playbook run of baremetal-full-overcloud-validate.yml failed'
-      tag: "infra"
+      tag: "code"
       logstash: "Playbook run of baremetal-full-overcloud-validate.yml failed"
+    - id: 91
+      msg: "Undercloud failed."
+      pattern: 'Playbook run of baremetal-full-undercloud.yml failed'
+      tag: "code"
+      logstash: "Playbook run of baremetal-full-undercloud.yml failed"
   "errors":
     - id: 200
       logstash: 'Image prepare failed: Pulling image failed:'

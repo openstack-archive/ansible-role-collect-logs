@@ -8,6 +8,8 @@
     roles:
       - zuul: opendev.org/openstack/ansible-role-collect-logs
         name: collect-logs
+    irrelevant-files:
+      - ^vars/sova-patterns.yml$
 
 - project:
     vars:
