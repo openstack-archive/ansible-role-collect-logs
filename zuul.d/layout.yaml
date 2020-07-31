@@ -4,6 +4,7 @@
     description: Validate that zuul can use that role.
     parent: base
     run: test-playbooks/zuul-ansible-role-collect-logs.yaml
+    voting: false
     roles:
       - zuul: opendev.org/openstack/ansible-role-collect-logs
         name: collect-logs
