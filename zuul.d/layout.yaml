@@ -25,9 +25,15 @@
         # consider implementing functional tests for them, especially as
         # running full integration does not effectively validates that the
         # outcome was produced (they still rely on manual verification).
-        - tripleo-ci-centos-8-scenario001-standalone
-        - tripleo-ci-centos-8-scenario002-standalone
-        - tripleo-ci-centos-8-containers-multinode
+        - tripleo-ci-centos-8-scenario001-standalone:
+            irrelevant-files:
+              - ^vars/sova-patterns.yml$
+        - tripleo-ci-centos-8-scenario002-standalone:
+            irrelevant-files:
+              - ^vars/sova-patterns.yml$
+        - tripleo-ci-centos-8-containers-multinode:
+            irrelevant-files:
+              - ^vars/sova-patterns.yml$
         - zuul-ansible-role-collect-logs
     gate:
       jobs: *jobs
