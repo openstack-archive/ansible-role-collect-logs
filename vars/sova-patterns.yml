@@ -729,6 +729,16 @@ patterns:
       msg: "Introspection failed."
       pattern: "Exception introspecting nodes"
       tag: "infra"
+    - id: 531
+      logstash: 'Went to status ERROR due to "Message: No valid host was found'
+      msg: "No valid host was found."
+      pattern: 'Went to status ERROR due to "Message: No valid host was found'
+      tag: "code"
+    - id: 532
+      logstash: '429 Client Error: Too Many Requests for url'
+      msg: "Containers: too many requests."
+      pattern: '429 Client Error: Too Many Requests for url:'
+      tag: "infra"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
