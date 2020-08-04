@@ -548,6 +548,11 @@ patterns:
       msg: 'Node provision timeout.'
       pattern: 'Timeout reached while waiting for callback for node'
       tag: 'infra'
+    - id: 204
+      msg: "Containers failed to start."
+      pattern: "check logs in /var/log/containers/stdouts/"
+      tag: "code"
+      logstash: "check logs in /var/log/containers/stdouts/"
   "ironic-conductor":
     - id: 300
       logstash: "Timeout reached while waiting for callback for node"
