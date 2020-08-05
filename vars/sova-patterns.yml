@@ -744,6 +744,11 @@ patterns:
       msg: "Containers: too many requests."
       pattern: '429 Client Error: Too Many Requests for url:'
       tag: "infra"
+    - id: 533
+      pattern: "FATAL | Provision instances"
+      logstash: "FATAL | Provision instances"
+      msg: "Failed to provision nodes."
+      tag: "infra"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
