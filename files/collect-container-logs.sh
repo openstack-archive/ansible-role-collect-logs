@@ -66,7 +66,7 @@ for cont in $(${engine} ps | awk {'print $NF'} | grep -v NAMES); do
         fi
         ${engine} exec $cont vmstat -s
         ${engine} exec $cont ps axfo %mem,size,rss,vsz,pid,args
-        ${engine} exec $cont bash -c "\$(command -v dnf || command -v yum) list installed";
+        ${engine} exec -u root $cont bash -c "\$(command -v dnf || command -v yum) list installed";
     ) &>> $INFO_DIR/${engine}_info.log;
 
     container_cp $cont /var/lib/kolla/config_files/config.json $INFO_DIR/config.json;
