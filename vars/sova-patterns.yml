@@ -743,12 +743,17 @@ patterns:
       logstash: '429 Client Error: Too Many Requests for url'
       msg: "Containers: too many requests."
       pattern: '429 Client Error: Too Many Requests for url:'
-      tag: "infra"
+      tag: "code"
     - id: 533
       pattern: "FATAL | Provision instances"
       logstash: "FATAL | Provision instances"
       msg: "Failed to provision nodes."
       tag: "infra"
+    - id: 534
+      logstash: 'tripleo_common.image.exception.ImageRateLimitedException'
+      msg: "Containers: too many requests to registry."
+      pattern: 'tripleo_common.image.exception.ImageRateLimitedException'
+      tag: "code"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
