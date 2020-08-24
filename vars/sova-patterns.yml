@@ -754,6 +754,11 @@ patterns:
       msg: "Containers: too many requests to registry."
       pattern: 'tripleo_common.image.exception.ImageRateLimitedException'
       tag: "code"
+    - id: 535
+      logstash: 'Error running container image prepare: Rate Limited while requesting'
+      msg: "Containers: too many requests to registry."
+      pattern: 'Error running container image prepare: Rate Limited while requesting'
+      tag: "code"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
