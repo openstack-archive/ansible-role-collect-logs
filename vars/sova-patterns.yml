@@ -753,12 +753,22 @@ patterns:
       logstash: 'tripleo_common.image.exception.ImageRateLimitedException'
       msg: "Containers: too many requests to registry."
       pattern: 'tripleo_common.image.exception.ImageRateLimitedException'
-      tag: "code"
+      tag: "infra"
     - id: 535
       logstash: 'Error running container image prepare: Rate Limited while requesting'
       msg: "Containers: too many requests to registry."
       pattern: 'Error running container image prepare: Rate Limited while requesting'
-      tag: "code"
+      tag: "infra"
+    - id: 536
+      logstash: 'All mirrors were tried'
+      msg: "Packages download failure."
+      pattern: 'All mirrors were tried'
+      tag: "infra"
+    - id: 537
+      logstash: 'Error: Error downloading packages'
+      msg: "Packages download failure."
+      pattern: 'Error: Error downloading packages'
+      tag: "infra"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
