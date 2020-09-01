@@ -351,6 +351,7 @@ artcl_logstash_files:
   - /home/*/overcloud_deploy_post.log
   - /home/*/overcloud_failed_prepare_resources.log
   - /home/*/overcloud-full.log
+  - /home/*/build-err.log
   - /home/*/overcloud_image_build.log
   - /home/*/overcloud_image_upload.log
   - /home/*/overcloud_import_nodes.log
