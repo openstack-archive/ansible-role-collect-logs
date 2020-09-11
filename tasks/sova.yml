@@ -13,5 +13,6 @@
       "ironic-conductor": "/var/log/containers/ironic/ironic-conductor.log"
       syslog: "/var/log/journal.txt"
       logstash: "/var/log/extra/logstash.txt"
+      selinux: "/var/log/extra/denials.txt"
     result: "{{ ansible_user_dir }}/workspace/logs/failures_file"
     result_file_dir: "{{ ansible_user_dir }}/workspace/logs"
