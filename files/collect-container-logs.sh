@@ -63,7 +63,8 @@ for cont in $(${engine} ps | awk {'print $NF'} | grep -v NAMES); do
         elif [ ${engine} = 'podman' ]; then
             ${engine} top $cont;
         fi
-        ${engine} exec $cont top -bwn1;
+        ${engine} exec $cont vmstat -s
+        ${engine} exec $cont ps axfo %mem,size,rss,vsz,pid,args
         ${engine} exec $cont bash -c "\$(command -v dnf || command -v yum) list installed";
     ) &>> $INFO_DIR/${engine}_info.log;
 
