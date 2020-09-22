@@ -41,7 +41,9 @@
           {# do not put anything after the command #}
           {{ item.cmd }}
         warn: false
-        executable: bash
+      args:
+        chdir: /var/log/extra
+        executable: /usr/bin/bash
       changed_when: false
       when: item.when | default(true)
       loop: "{{ artcl_commands_flatten.data }}"
