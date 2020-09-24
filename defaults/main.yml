@@ -205,6 +205,12 @@ artcl_commands:
       cmd: "{{ ansible_pkg_mgr }} list installed"
     repolist:
       cmd: "{{ ansible_pkg_mgr }} repolist -v"
+    record_available_packages:
+      cmd: |
+        for i in `{{ ansible_pkg_mgr }}  repolist --enabled -v | grep Repo-id | awk '{print $3}'`;do
+        repoquery --repo $i
+        done
+      capture_file: /var/log/extra/all_available_packages.txt
     selinux:
       cmd: |
         /usr/sbin/sestatus -v
