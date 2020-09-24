@@ -52,6 +52,17 @@ subparsers:
               A list of files and directories to be appended in the default
               exclude list. This is useful for users that want to keep the
               original list and just add more relevant paths.
+          artcl_commands:
+            type: NestedDict
+            help: |
+              Collect commands executed by the role. Keep the dict sorted.
+              Example: --artcl_commands <group_type>.<command name>.cmd=<command>
+              Note: group types to be collected are defined by collect_log_types
+              Example2: --artcl_commands system.cpuinfo.cmd="cat /proc/cpuinfo"
+          artcl_commands_extras:
+            type: NestedDict
+            help: |
+              Commands to be executed, combined with artcl_commands.
           artcl_rsync_collect_list:
             type: Bool
             help: |
