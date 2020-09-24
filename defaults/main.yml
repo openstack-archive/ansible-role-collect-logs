@@ -197,8 +197,10 @@ artcl_commands:
     swaps:
       cmd: cat /proc/swaps
       capture_file: /var/log/extra/swaps.txt
-    top:
-      cmd: top -b -n 1
+    vmstat:
+      cmd: vmstat -s
+    ps:
+      cmd: ps axfo %mem,size,rss,vsz,pid,args
     rpm-list:
       cmd: rpm -qa | sort -f
     package-list-installed:
