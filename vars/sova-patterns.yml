@@ -775,3 +775,9 @@ patterns:
       msg: 'Introspection failed, cannot get IP address'
       tag: 'infra'
       pattern: 'socket.error: [Errno 99] Cannot assign requested address'
+  "selinux":
+    - id: 700
+      logstash: 'denied'
+      msg: 'selinux denials found'
+      tag: 'code'
+      pattern: 'denied'
