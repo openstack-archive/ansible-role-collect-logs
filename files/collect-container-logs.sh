@@ -31,6 +31,7 @@ CONTAINER_INFO_CMDS=(
     "${engine} version"
     "${engine} info"
     "${engine} volume ls"
+    "${engine} network ls"
 );
 
 for cmd in "${CONTAINER_INFO_CMDS[@]}"; do
