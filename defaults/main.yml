@@ -209,8 +209,8 @@ artcl_commands:
       cmd: "{{ ansible_pkg_mgr }} repolist -v"
     record_available_packages:
       cmd: |
-        for i in `{{ ansible_pkg_mgr }}  repolist --enabled -v | grep Repo-id | awk '{print $3}'`;do
-        repoquery --repo $i
+        for i in `{{ ansible_pkg_mgr }}  repolist enabled -v | grep Repo-id | awk '{print $3}' | awk -F / '{print $1}'`;do
+        repoquery --repoid $i -a
         done
       capture_file: /var/log/extra/all_available_packages.txt
     selinux:
