@@ -11,10 +11,11 @@
 - {{ exclude_path }}
 {% endfor %}
 
-# Include all subdirectories in the check
+# Include all subdirectories and log files in the check
 # See "INCLUDE/EXCLUDE PATTERN RULES" section about --recursive
 # in the rsync man page
 + */
++ *.log
 
 # Include paths
 {% for include_path in collect_list|default([]) %}
