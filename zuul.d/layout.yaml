@@ -15,7 +15,7 @@
     vars:
       fail_logs_collection: true
     templates:
-      - tripleo-undercloud-jobs
+      - tripleo-undercloud-jobs-pipeline
     check:
       jobs: &jobs
         - openstack-tox-linters
