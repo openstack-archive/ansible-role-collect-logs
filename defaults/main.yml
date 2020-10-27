@@ -343,6 +343,7 @@ artcl_docs_source_dir: "{{ local_working_dir }}/usr/local/share/ansible/roles/co
 artcl_docs_build_dir: "{{ artcl_collect_dir }}/docs/build"
 artcl_verify_sphinx_build: false
 artcl_logstash_files:
+  - /home/*/container_image_build.log
   - /home/*/deployed_server_prepare.txt
   - /home/*/docker_journalctl.log
   - /home/*/failed_deployment_list.log
