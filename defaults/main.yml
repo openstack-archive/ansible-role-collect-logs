@@ -126,6 +126,10 @@ artcl_exclude_list:
   - /etc/pki/ca-trust/extracted
   - /etc/alternatives
   - /var/log/journal
+  - overlay*
+  - root
+  - console*primary.log
+  - anaconda*
 
 # if true, a rsync filter file is generated for rsync to collect files,
 # if false, find is used to generate list of files to collect for rsync.
