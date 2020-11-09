@@ -25,10 +25,27 @@
         # consider implementing functional tests for them, especially as
         # running full integration does not effectively validates that the
         # outcome was produced (they still rely on manual verification).
-        - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario001-standalone:
-            irrelevant-files:
+        - tripleo-ci-centos-8-content-provider:
+            irrelevant-files: &irrelevant_sa
+              - ^.*\.md$
+              - ^.*\.rst$
+              - ^doc/.*$
+              - ^etc/.*$
+              - ^metadata.json$
+              - ^releasenotes/.*$
+              # do not put requirements.txt here, as it can have a huge impact
+              - ^test-requirements.txt$
+              - ^lower-constraints.txt$
+              - ^spec/.*$
+              - ^Puppetfile.*$
+              - tox.ini
+              - ^setup.*$
               - ^vars/sova-patterns.yml$
+              - ^.ansible-lint$
+              - ^.pre-commit-config.yaml$
+              - ^.yamllint$
+        - tripleo-ci-centos-8-scenario001-standalone:
+            irrelevant-files: *irrelevant_sa
             vars: &c8_content_provider
               consumer_job: true
               tags:
@@ -36,13 +53,11 @@
             dependencies: &c8_content_deps
               - tripleo-ci-centos-8-content-provider
         - tripleo-ci-centos-8-scenario002-standalone:
-            irrelevant-files:
-              - ^vars/sova-patterns.yml$
+            irrelevant-files: *irrelevant_sa
             vars: *c8_content_provider
             dependencies: *c8_content_deps
         - tripleo-ci-centos-8-containers-multinode:
-            irrelevant-files:
-              - ^vars/sova-patterns.yml$
+            irrelevant-files: *irrelevant_sa
             vars: &multi_consumer_vars
               consumer_job: true
               build_container_imags: true
