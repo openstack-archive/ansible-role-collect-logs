@@ -39,7 +39,6 @@
               - ^spec/.*$
               - ^Puppetfile.*$
               - tox.ini
-              - ^setup.*$
               - ^vars/sova-patterns.yml$
               - ^.ansible-lint$
               - ^.pre-commit-config.yaml$
