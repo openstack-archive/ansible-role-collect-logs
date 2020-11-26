@@ -90,6 +90,19 @@
     dest: "/tmp/{{ inventory_hostname }}-rsync-filter"
   when: artcl_rsync_collect_list|bool
 
+# This task needs to be finished before generating find list of files
+# to collect (Create find list file task) otherwise not all the container
+# log files may be found and thus not collected later
+- name: Wait for container logs collection if not finished yet
+  become: true
+  async_status:
+    jid: "{{ container_collection.ansible_job_id }}"
+  register: container_collection_result
+  until: container_collection_result.finished
+  delay: 10
+  retries: 60
+  when: "'container' in collect_log_types"
+
 - name: Create find list file
   become: true
   shell: >
@@ -103,16 +116,6 @@
     -print0 > /tmp/{{ inventory_hostname }}-rsync-list
   failed_when: false
   when: not artcl_rsync_collect_list|bool
-
-- name: Wait for container logs collection if not finished yet
-  become: true
-  async_status:
-    jid: "{{ container_collection.ansible_job_id }}"
-  register: container_collection_result
-  until: container_collection_result.finished
-  delay: 10
-  retries: 60
-  when: "'container' in collect_log_types"
 
 - name: Gather the logs to /tmp
   become: true
