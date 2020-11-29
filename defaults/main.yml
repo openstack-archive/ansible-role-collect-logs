@@ -197,6 +197,8 @@ artcl_commands:
           pcs status
           echo "+ pcs config"
           pcs config
+          echo "+ pcs cluster cib"
+          pcs cluster cib
         fi
     swaps:
       cmd: cat /proc/swaps
