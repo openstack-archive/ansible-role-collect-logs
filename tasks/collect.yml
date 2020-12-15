@@ -43,7 +43,7 @@
         warn: false
       args:
         chdir: /var/log/extra
-        executable: /usr/bin/bash
+        executable: /bin/bash
       changed_when: false
       when: item.when | default(true)
       loop: "{{ artcl_commands_flatten.data }}"
