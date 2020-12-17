@@ -26,7 +26,7 @@ mkdir -p $BASE_CONTAINER_EXTRA;
 ALL_FILE=$BASE_CONTAINER_EXTRA/${engine}_allinfo.log;
 
 CONTAINER_INFO_CMDS=(
-    "${engine} ps --all --size"
+    "${engine} ps --all"
     "${engine} images"
     "${engine} version"
     "${engine} info"
