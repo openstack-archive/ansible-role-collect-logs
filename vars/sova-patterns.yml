@@ -184,7 +184,7 @@ patterns:
       tag: "infra"
     - id: 24
       logstash: "cd: /opt/stack/new/delorean/data/repos: No such file or directory"
-      msg: "Delorean failed to build the change under review."
+      msg: "Delorean FAIL."
       pattern: "cd: /opt/stack/new/delorean/data/repos: No such file or directory"
       tag: "code"
     - id: 25
@@ -527,6 +527,12 @@ patterns:
       pattern: 'Playbook run of baremetal-full-undercloud.yml failed'
       tag: "code"
       logstash: "Playbook run of baremetal-full-undercloud.yml failed"
+    - id: 92
+      msg: "Delorean FAIL."
+      pattern: '/home/zuul/dlrn.log'
+      tag: "code"
+      logstash: "/home/zuul/dlrn.log"
+
   "errors":
     - id: 200
       logstash: 'Image prepare failed: Pulling image failed:'
@@ -781,3 +787,9 @@ patterns:
       msg: 'selinux denials found'
       tag: 'code'
       pattern: 'denied'
+  "registry_log":
+    - id: 800
+      logstash: 'err.detail="invalid checksum digest format"'
+      msg: 'Invalid checksum format.'
+      tag: 'infra'
+      pattern: 'err.detail="invalid checksum digest format"'

@@ -13,6 +13,7 @@
       "ironic-conductor": "/var/log/containers/ironic/ironic-conductor.log"
       syslog: "/var/log/journal.txt"
       logstash: "/var/log/extra/logstash.txt"
+      registry_log: "/var/log/extra/podman/containers/docker_registry/stdout.log"
     result: "{{ ansible_user_dir }}/workspace/logs/failures_file"
     result_file_dir: "{{ ansible_user_dir }}/workspace/logs"
 
