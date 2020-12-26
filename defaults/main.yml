@@ -322,13 +322,13 @@ artcl_commands:
       cmd: |
         if [[ -e {{ working_dir }}/stackrc ]]; then
           source {{ working_dir }}/stackrc
-          openstack baremetal node list
+          openstack baremetal node list --long
         fi
     nova_list:
       cmd: |
         if [[ -e {{ working_dir }}/stackrc ]]; then
           source {{ working_dir }}/stackrc
-          openstack server list
+          openstack server list --long
         fi
     openstack-status:
       cmd: |
