@@ -213,6 +213,12 @@ artcl_commands:
       cmd: "{{ ansible_pkg_mgr }} list installed"
     repolist:
       cmd: "{{ ansible_pkg_mgr }} repolist -v"
+    dnf-module-list:
+      cmd: "{{ ansible_pkg_mgr }} module list"
+      when: ansible_distribution_major_version|int >= 8
+    dnf-module-list-enabled:
+      cmd: "{{ ansible_pkg_mgr }} module list --enabled"
+      when: ansible_distribution_major_version|int >= 8
     record_available_packages:
       cmd: |
         for i in `{{ ansible_pkg_mgr }}  repolist enabled -v | grep Repo-id | awk '{print $3}' | awk -F / '{print $1}'`;do
