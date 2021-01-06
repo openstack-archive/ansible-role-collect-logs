@@ -775,6 +775,11 @@ patterns:
       msg: "Packages download failure."
       pattern: 'Error: Error downloading packages'
       tag: "infra"
+    - id: 538
+      logstash: 'conflicts with file from package'
+      msg: "Packages conflict."
+      pattern: 'conflicts with file from package'
+      tag: "code"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
