@@ -532,6 +532,11 @@ patterns:
       pattern: '/home/zuul/dlrn.log'
       tag: "code"
       logstash: "/home/zuul/dlrn.log"
+    - id: 93
+      msg: "Packages download failure."
+      pattern: 'Failed to download packages: Cannot download'
+      tag: "infra"
+      logstash: "Failed to download packages: Cannot download"
 
   "errors":
     - id: 200
