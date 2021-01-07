@@ -780,6 +780,11 @@ patterns:
       msg: "Packages conflict."
       pattern: 'conflicts with file from package'
       tag: "code"
+    - id: 539
+      logstash: 'Errors during downloading metadata for repository'
+      msg: "Packages download failure."
+      pattern: 'Errors during downloading metadata for repository'
+      tag: "infra"
   "bmc":
     - id: 600
       logstash: 'socket.error: [Errno 99] Cannot assign requested address'
