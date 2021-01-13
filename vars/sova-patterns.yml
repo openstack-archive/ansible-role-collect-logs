@@ -254,7 +254,7 @@ patterns:
       tag: "code"
     - id: 38
       logstash: "... FAILED"
-      msg: "Tempest tests FAILED."
+      msg: "Tempest tests failed."
       pattern: "... FAILED"
       tag: "code"
     - id: 39
@@ -393,7 +393,7 @@ patterns:
       pattern: "setup script run by this job failed - exit code: 143"
       tag: "infra"
     - id: 65
-      msg: "Tempest test failure."
+      msg: "Tempest tests failed."
       pattern: "oooq_tempest_fail"
       tag: "code"
       logstash: "oooq_tempest_fail"
@@ -518,7 +518,7 @@ patterns:
       tag: "infra"
       logstash: "FAILED - RETRYING: Wait until nodes will be manageable (1 retries left)"
     - id: 90
-      msg: "Tempest failed."
+      msg: "Tempest tests failed."
       pattern: 'Playbook run of baremetal-full-overcloud-validate.yml failed'
       tag: "code"
       logstash: "Playbook run of baremetal-full-overcloud-validate.yml failed"
@@ -537,7 +537,11 @@ patterns:
       pattern: 'Failed to download packages: Cannot download'
       tag: "infra"
       logstash: "Failed to download packages: Cannot download"
-
+    - id: 94
+      msg: "Packages download failure."
+      pattern: '"assertion": "tempest_tests_run.rc == 0"'
+      tag: "code"
+      logstash: '"assertion": "tempest_tests_run.rc == 0"'
   "errors":
     - id: 200
       logstash: 'Image prepare failed: Pulling image failed:'
@@ -712,7 +716,7 @@ patterns:
       tag: "infra"
     - id: 524
       logstash: ' ... FAILED'
-      msg: 'Tempest test failed.'
+      msg: 'Tempest tests failed.'
       tag: "code"
       pattern: ' ... FAILED'
     - id: 525
