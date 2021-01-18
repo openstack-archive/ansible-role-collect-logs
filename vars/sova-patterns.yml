@@ -538,7 +538,7 @@ patterns:
       tag: "infra"
       logstash: "Failed to download packages: Cannot download"
     - id: 94
-      msg: "Packages download failure."
+      msg: "Tempest tests failed."
       pattern: '"assertion": "tempest_tests_run.rc == 0"'
       tag: "code"
       logstash: '"assertion": "tempest_tests_run.rc == 0"'
