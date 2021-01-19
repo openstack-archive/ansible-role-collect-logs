@@ -542,6 +542,11 @@ patterns:
       pattern: '"assertion": "tempest_tests_run.rc == 0"'
       tag: "code"
       logstash: '"assertion": "tempest_tests_run.rc == 0"'
+    - id: 95
+      msg: "Packages download failure."
+      pattern: 'Cannot download repodata/repomd.xml: All mirrors were tried'
+      tag: "infra"
+      logstash: "Cannot download repodata/repomd.xml: All mirrors were tried"
   "errors":
     - id: 200
       logstash: 'Image prepare failed: Pulling image failed:'
