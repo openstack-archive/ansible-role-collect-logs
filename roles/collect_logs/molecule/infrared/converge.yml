@@ -33,7 +33,7 @@
 
     - name: "Copy ansible-role-collect-logs to test host"
       synchronize:
-        src: "{{ playbook_dir }}/../../"
+        src: "{{ playbook_dir }}/../../../../"
         dest: "{{ ansible_env.HOME }}/artcl-src"
         rsync_opts:
           - "--exclude=.tox"

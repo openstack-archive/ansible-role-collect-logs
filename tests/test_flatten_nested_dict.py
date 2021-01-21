@@ -1,5 +1,6 @@
 import pytest  # noqa
-import flatten_nested_dict
+import os
+import sys
 from common.utils import (
     AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args,
 )
@@ -21,6 +22,12 @@ data:
     name: cpuinfo
     group: system
 """
+
+# Temporary hack until we adopt official ansible-test unit-testing
+dir = os.path.join(os.path.dirname(__file__), "../roles/collect_logs/library")
+sys.path.append(dir)
+print(dir)
+import flatten_nested_dict  # noqa: E402
 
 
 class TestFlattenNestedDict(ModuleTestCase):

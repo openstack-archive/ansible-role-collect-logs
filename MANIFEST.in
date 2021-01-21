@@ -1,0 +1,5 @@
+global-exclude __pycache__
+exclude infrared_plugin
+exclude zuul.d
+exclude test-playbooks
+exclude plugins

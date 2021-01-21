@@ -2,5 +2,8 @@
 - hosts: all
   tasks:
     - name: include ansible-role-collect-logs role
+      vars:
+        artcl_collect: true
+        artcl_publish: true
       include_role:
-        name: collect-logs
+        name: collect_logs

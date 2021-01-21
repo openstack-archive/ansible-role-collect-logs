@@ -24,7 +24,7 @@
 
     - name: Ansible role collect logs
       include_role:
-        name: ansible-role-collect-logs
+        name: collect_logs
 
 # This section takes care of preparing the collected data for publishing
 # and for publishing itself
@@ -65,7 +65,7 @@
 
     - name: Ansible role collect logs
       include_role:
-        name: ansible-role-collect-logs
+        name: collect_logs
       when: artcl_publish|default(false)|bool
 
     - name: Delete artifact files from localhost

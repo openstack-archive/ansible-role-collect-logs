@@ -37,7 +37,7 @@
     # brief call used a very short override artcl_commands, enough to validate
     # that the combining of the commands works. Later we import the role with
     # its default artcl_commands in order to test these commands, too.
-    - name: "Include ansible-role-collect-logs :: collect (brief)"
+    - name: "Include collect_logs :: collect (brief)"
       vars:
         artcl_collect: true
         artcl_commands:
@@ -52,7 +52,7 @@
               cmd: cat /proc/swaps
               capture_file: /var/log/extra/swaps.txt
       include_role:
-        name: "ansible-role-collect-logs"
+        name: collect_logs
 
     - name: Verify expected combined commands
       assert:
@@ -73,7 +73,7 @@
       vars:
         artcl_collect: true
       include_role:
-        name: "ansible-role-collect-logs"
+        name: collect_logs
 
 - name: "Converge publish play"
   hosts: localhost
@@ -86,7 +86,7 @@
         artcl_collect: false
         artcl_publish: true
       include_role:
-        name: "ansible-role-collect-logs"
+        name: collect_logs
 
     - debug:
         msg: |

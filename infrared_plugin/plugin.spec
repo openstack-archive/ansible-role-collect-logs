@@ -3,7 +3,7 @@
 config:
   plugin_type: other
   entry_point: main.yml
-  roles_path: ../
+  roles_path: ../roles/
 subparsers:
   ansible-role-collect-logs:
     description: An Ansible role for aggregating logs from different nodes.

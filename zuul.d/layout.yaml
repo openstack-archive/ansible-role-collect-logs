@@ -1,12 +1,20 @@
 ---
 - job:
+    name: tox-ansible-test-sanity
+    description: Runs ansible-test sanity (tox -e sanity)
+    parent: tox
+    vars:
+      tox_envlist: sanity  # dynamic tox env added by tox-ansible
+      # we want to run sanity only on py36 instead of implicit 2.6-3.9 range
+      tox_extra_args: -- --python 3.6
+
+- job:
     name: zuul-ansible-role-collect-logs
     description: Validate that zuul can use that role.
     parent: base
     run: test-playbooks/zuul-ansible-role-collect-logs.yaml
     roles:
       - zuul: opendev.org/openstack/ansible-role-collect-logs
-        name: collect-logs
     irrelevant-files:
       - ^vars/sova-patterns.yml$
 
@@ -19,6 +27,8 @@
       jobs: &jobs
         - openstack-tox-linters
         - openstack-tox-molecule
+        - tox-ansible-test-sanity:
+            voting: false  # until we fix reported errors
         # Limit the number of jobs executed while still assuring a relevant
         # level of coverage. If specific tasks are to be tested we should
         # consider implementing functional tests for them, especially as

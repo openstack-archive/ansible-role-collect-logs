@@ -1,4 +1,4 @@
-collect-logs
+collect_logs
 ============
 
 Ansible role for aggregating logs from different nodes.
@@ -221,7 +221,7 @@ Example Role Playbook
    - name: Gather logs
      hosts: all:!localhost
      roles:
-       - collect-logs
+       - collect_logs
 
 ** Note:
   The tasks that collect data from the nodes are executed with ignore_errors.

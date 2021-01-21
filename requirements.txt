@@ -1,2 +1,3 @@
 pbr>=1.6
-ansible>=2.5,<2.10
+# Do not remove 2.10, ansible-test and tox-ansible require it
+ansible>=2.5,<2.11

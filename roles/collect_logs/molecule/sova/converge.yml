@@ -2,9 +2,9 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include ansible-role-collect-logs"
+    - name: Include collect_logs
       include_role:
-        name: "ansible-role-collect-logs"
+        name: collect_logs
         tasks_from: sova.yml
       tags:
         - molecule-idempotence-notest
