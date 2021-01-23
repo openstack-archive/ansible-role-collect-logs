@@ -178,12 +178,15 @@
     state: absent
   ignore_errors: true
 
-- name: Extract the logs and remove tar file
-  shell: |
-    tar xf {{ inventory_hostname }}.tar
-    rm -f {{ inventory_hostname }}.tar
-  args:
-    chdir: "{{ artcl_collect_dir }}"
-    warn: false
+- name: Extract the logs archive
+  unarchive:
+    src: "{{ artcl_collect_dir }}/{{ inventory_hostname }}.tar"
+    dest: "{{ artcl_collect_dir }}"
+    remote_src: true
   delegate_to: localhost
-  changed_when: true
+
+- name: Remove logs archive
+  file:
+    path: "{{ artcl_collect_dir }}/{{ inventory_hostname }}.tar"
+    state: absent
+  delegate_to: localhost
