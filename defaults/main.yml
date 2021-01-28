@@ -86,8 +86,8 @@ artcl_collect_list:
   - /etc/
   - /home/*/undercloud-ansible-*
   - /home/*/.instack/install-undercloud.log
-  - /home/*/stackrc
-  - /home/*/overcloudrc*
+  - /home/*/*rc
+  - /home/*/*rc.v3
   - /home/*/*.log
   - /home/*/*.json
   - /home/*/*.conf
@@ -96,7 +96,6 @@ artcl_collect_list:
   - /home/*/*.sh
   - /home/*/*.rst
   - /home/*/*.pem
-  - /home/*/deploy-overcloudrc
   - /home/*/network-environment.yaml
   - /home/*/skip_file
   - /home/*/*.subunit
