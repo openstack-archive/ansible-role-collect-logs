@@ -17,7 +17,7 @@ The JSON file describing your Overcloud baremetal nodes, is called
 
 Each node description should contains required fields:
 
-* ``pm_type`` - driver for Ironic nodes, see `Ironic Drivers`_ for details
+* ``pm_type`` - driver for Ironic nodes
 
 * ``pm_addr`` - node BMC IP address (hypervisor address in case of virtual
   environment)

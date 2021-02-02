@@ -34,4 +34,4 @@ As such, the setup requires that:
 
 Refer to the following diagram for more information
 
-i.. image:: _images/TripleO_Network_Diagram_.jpg
+.. image:: _images/TripleO_Network_Diagram_.jpg

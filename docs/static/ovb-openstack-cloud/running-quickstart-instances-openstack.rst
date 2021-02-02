@@ -16,8 +16,7 @@ Openstack Virtual Baremetal <https://github.com/openstack/openstack-virtual-bare
 The following are assumed to have been completed before following this document:
 
 * An Openstack cloud exists and has been set up
-  (and configured as described in
-  [Patching the Host Cloud](https://openstack-virtual-baremetal.readthedocs.io/en/latest/host-cloud/patches.html).
+  (and configured as described in `Patching the Host Cloud`_.
   if the cloud is pre-Mitaka release). From the Mitaka release the cloud should
   not require patching
 * The undercloud image under test has been uploaded to Glance in the Openstack cloud.
@@ -26,6 +25,9 @@ The following are assumed to have been completed before following this document:
 
 Below is an example `env.yaml` file used to create the heat stack that will support a
 tripleo-quickstart undercloud and overcloud deployment with network isolation:
+
+
+.. _Patching the Host Cloud: https://openstack-virtual-baremetal.readthedocs.io/en/latest/host-cloud/patches.html
 
 ::
 

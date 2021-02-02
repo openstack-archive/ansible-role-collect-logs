@@ -32,7 +32,7 @@ File Collection
 
 -  ``artcl_collect_list`` – A list of files and directories to gather
    from the target. Directories are collected recursively and need to
-   end with a “/” to get collected. Should be specified as a YaML list,
+   end with a '/' to get collected. Should be specified as a YaML list,
    e.g.:
 
 .. code:: yaml
@@ -48,7 +48,7 @@ File Collection
 -  ``artcl_exclude_list`` – A list of files and directories to exclude
    from collecting. This list is passed to rsync as an exclude filter
    and it takes precedence over the collection list. For details see the
-   “FILTER RULES” topic in the rsync man page.
+   'FILTER RULES' topic in the rsync man page.
 -  ``artcl_exclude_list_append`` – A list of files and directories to be
    appended in the default exclude list. This is useful for users that want to
    keep the original list and just add more relevant paths.
@@ -231,7 +231,7 @@ Templated Bash to rST Conversion Notes
 --------------------------------------
 
 Templated bash scripts used during deployment are converted to rST files
-during the ``create-docs`` portion of the role’s call. Shell scripts are
+during the ``create-docs`` portion of the role's call. Shell scripts are
 fed into an awk script and output as restructured text. The awk script
 has several simple rules:
 

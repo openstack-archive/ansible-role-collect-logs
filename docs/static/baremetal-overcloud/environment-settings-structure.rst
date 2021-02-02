@@ -11,41 +11,43 @@ Example Directory Structure
 
 Each baremetal environment will need a directory structured as follows:
 
-|-- environment_name
-|    |-- instackenv.json
-|    |-- vendor_specific_setup
-|    |-- <architecture diagram/explanation document>
-|    |-- network_configs
-|    |    |--<network-islation-type-1>
-|    |    |    |-- <network-environment.yaml file>
-|    |    |    |-- env_settings.yml
-|    |    |    |-- nic_configs
-|    |    |    |    |-- ceph-storage.yaml
-|    |    |    |    |-- cinder-storage.yaml
-|    |    |    |    |-- compute.yaml
-|    |    |    |    |-- controller.yaml
-|    |    |    |    |-- swift-storage.yaml
-|    |    |    |-- config_files
-|    |    |    |    |--config.yml
-|    |    |    |    |--<other config files>
-|    |    |    |-- requirements_files
-|    |    |    |    |--requirements1.yml
-|    |    |    |    |--requirements2.yml
-|    |    |--<network-islation-type-2>
-|    |    |    |-- <network-environment.yaml file>
-|    |    |    |-- env_settings.yml
-|    |    |    |-- nic_configs
-|    |    |    |    |-- ceph-storage.yaml
-|    |    |    |    |-- cinder-storage.yaml
-|    |    |    |    |-- compute.yaml
-|    |    |    |    |-- controller.yaml
-|    |    |    |    |-- swift-storage.yaml
-|    |    |    |-- config_files
-|    |    |    |    |--config.yml
-|    |    |    |    |--<other config files>
-|    |    |    |-- requirements_files
-|    |    |    |    |--requirements1.yml
-|    |    |    |    |--requirements2.yml
+::
+
+   |-- environment_name
+   |    |-- instackenv.json
+   |    |-- vendor_specific_setup
+   |    |-- <architecture diagram/explanation document>
+   |    |-- network_configs
+   |    |    |--<network-islation-type-1>
+   |    |    |    |-- <network-environment.yaml file>
+   |    |    |    |-- env_settings.yml
+   |    |    |    |-- nic_configs
+   |    |    |    |    |-- ceph-storage.yaml
+   |    |    |    |    |-- cinder-storage.yaml
+   |    |    |    |    |-- compute.yaml
+   |    |    |    |    |-- controller.yaml
+   |    |    |    |    |-- swift-storage.yaml
+   |    |    |    |-- config_files
+   |    |    |    |    |--config.yml
+   |    |    |    |    |--<other config files>
+   |    |    |    |-- requirements_files
+   |    |    |    |    |--requirements1.yml
+   |    |    |    |    |--requirements2.yml
+   |    |    |--<network-islation-type-2>
+   |    |    |    |-- <network-environment.yaml file>
+   |    |    |    |-- env_settings.yml
+   |    |    |    |-- nic_configs
+   |    |    |    |    |-- ceph-storage.yaml
+   |    |    |    |    |-- cinder-storage.yaml
+   |    |    |    |    |-- compute.yaml
+   |    |    |    |    |-- controller.yaml
+   |    |    |    |    |-- swift-storage.yaml
+   |    |    |    |-- config_files
+   |    |    |    |    |--config.yml
+   |    |    |    |    |--<other config files>
+   |    |    |    |-- requirements_files
+   |    |    |    |    |--requirements1.yml
+   |    |    |    |    |--requirements2.yml
 
 
 Explanation of Directory Contents

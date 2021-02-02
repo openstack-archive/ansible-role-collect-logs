@@ -1,7 +1,7 @@
 Virtual Environment
 ===================
 
-|project| Quickstart can be used in a virtual environment using virtual machines instead
+Quickstart can be used in a virtual environment using virtual machines instead
 of actual baremetal. However, one baremetal machine ( VIRTHOST ) is still
 needed to act as the host for the virtual machines.
 
@@ -28,7 +28,7 @@ Currently the virthost machine must be running a recent Red Hat-based Linux
 distribution (CentOS 7, RHEL 7, Fedora 22 - only CentOS 7 is currently tested),
 but we hope to add support for non-Red Hat distributions too.
 
-|project| Quickstart currently supports the following operating systems:
+Quickstart currently supports the following operating systems:
 
 * CentOS 7 x86_64
 
