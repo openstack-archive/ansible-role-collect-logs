@@ -14,7 +14,6 @@
 # limitations under the License.
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-from ansible.module_utils.basic import AnsibleModule
 
 
 ANSIBLE_METADATA = {
@@ -25,9 +24,8 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 module: flatten_nested_dict
-author:
-  - "Sorin Sbarnea (@ssbarnea)"
-version_added: '2.7'
+author: Red Hat (@RedHatOfficial)
+version_added: '2.7.0'
 short_description: Flattens a nested dictionary into a list
 notes: []
 description:
@@ -38,11 +36,6 @@ options:
       - Nested dictionary
     required: True
     type: dict
-  result:
-    description:
-      - List of commands to run.
-    type: list
-    elements: dict
 """
 EXAMPLES = """
 - name: Determine commands to run
@@ -63,13 +56,18 @@ data:
         'group': 'system'
 """
 
+from ansible.module_utils.basic import AnsibleModule  # noqa: E402
+
 
 def main():
     result = {'data': [], 'changed': False}
     module = AnsibleModule(
-        argument_spec=dict(
-            data=dict(type='dict', default={}),
-        ))
+        argument_spec={
+            'data': {
+                'type': 'dict',
+                'required': True
+            }
+        })
     try:
 
         for group, commands in module.params['data'].items():

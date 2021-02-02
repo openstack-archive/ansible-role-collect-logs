@@ -16,10 +16,13 @@
 # Usage: openstack stack event list -f json overcloud | \
 #        heat-deploy-times.py [list of resource names]
 # If no resource names are provided, all of the resources will be output.
-
+from __future__ import (absolute_import, division, print_function)
 import json
 import sys
 import time
+
+
+__metaclass__ = type
 
 
 def process_events(all_events, events):

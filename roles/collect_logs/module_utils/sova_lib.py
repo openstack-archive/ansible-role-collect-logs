@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +11,7 @@
 # implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+from __future__ import (absolute_import, division, print_function)
 import gzip
 import logging
 import yaml
@@ -23,6 +22,7 @@ except ImportError:
     import re as regex_module
 
 
+__metaclass__ = type
 logging.basicConfig(
     format=('%(asctime)s - %(name)s - %(levelname)s - '
             '%(module)s.%(funcName)s:%(lineno)d - %(message)s'))
@@ -51,7 +51,7 @@ class Pattern(object):
                 if regexp.get('multiline'):
                     flags.append(regex_module.MULTILINE)
                 self.regexes[regexp.get('name')] = regex_module.compile(
-                    r'{}'.format(regexp.get('regex')), *flags)
+                    r'{0}'.format(regexp.get('regex')), *flags)
 
     def setup_patterns(self):
         self._patterns = self.config.get('patterns', {})
@@ -95,8 +95,9 @@ def parse(text_file, patterns):
             line_matched = line_match(
                 p["pattern"], text, exclude=p.get("exclude"))
             if line_matched:
-                log.debug("Found pattern {} in file {}".format(
-                    repr(p), text_file))
+                log.debug(
+                    "Found pattern %s in file %s",
+                    repr(p), text_file)
                 ids.append(p["id"])
                 msgs.append(p["msg"].format(line_matched))
     return list(set(ids)), list(set(msgs))

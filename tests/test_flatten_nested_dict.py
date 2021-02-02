@@ -1,3 +1,4 @@
+from __future__ import (absolute_import, division, print_function)
 import pytest  # noqa
 import os
 import sys
@@ -7,6 +8,7 @@ from common.utils import (
 import yaml
 
 
+__metaclass__ = type
 SAMPLE_INPUT_1 = """
 data:
   system:

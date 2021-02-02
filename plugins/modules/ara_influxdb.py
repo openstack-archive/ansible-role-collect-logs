@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -11,68 +11,85 @@
 # implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import (absolute_import, division, print_function)
 
+__metaclass__ = type
 DOCUMENTATION = '''
 ---
 module: ara_influxdb
-version_added: "1.0"
+version_added: "1.0.0"
+author: Red Hat (@RedHatOfficial)
 short_description: Send ARA stats to InfluxDB
-description:
-    - Python ansible module to send ARA stats to InfluxDB timeseries database
+description: |
+    Python ansible module to send ARA stats to InfluxDB timeseries database
 options:
   influxdb_url:
-    description:
-      - The URL of HTTP API of InfluxDB server:
-        for example https://influxdb.example.com
+    description: |
+      The URL of HTTP API of InfluxDB server:
+      for example https://influxdb.example.com
     required: True
+    type: str
   influxdb_port:
-    description:
-      - The port of HTTP API of InfluxDB server, by default is 8086
+    description: |
+      The port of HTTP API of InfluxDB server, by default is 8086
     required: True
+    type: int
   influxdb_user:
-    description:
-      - User for authentication to InfluxDB server
+    description: |
+      User for authentication to InfluxDB server
     required: False
+    type: str
   influxdb_password:
-    description:
-      - Password for authentication to InfluxDB server
+    description: |
+      Password for authentication to InfluxDB server
     required: False
+    type: str
   influxdb_db:
-    description:
-      - Database name in InfluxDB server for sending data to it
+    description: |
+      Database name in InfluxDB server for sending data to it
     required: True
+    type: str
   measurement:
-    description:
-      - Name of Influx measurement in database
+    description: |
+      Name of Influx measurement in database
     required: True
+    type: str
   data_file:
-    description:
-      - Path to file to save InfluxDB data in it
+    description: |
+      Path to file to save InfluxDB data in it
     required: True
+    type: str
   ara_data:
-    description:
-      - List of ARA results: ara result list --all -f json
+    description: |
+      List of ARA results: ara result list --all -f json
     required: True
+    type: str
   only_successful_tasks:
-    description:
-      - Whether to send only successful tasks, ignoring skipped and failed,
-        by default True.
+    description: |
+      Whether to send only successful tasks, ignoring skipped and failed,
+      by default True.
     required: True
+    type: bool
   mapped_fields:
-    description:
-      - Whether to use configured static map of fields and tasks,
-        by default True.
+    description: |
+      Whether to use configured static map of fields and tasks,
+      by default True.
     required: False
+    default: True
+    type: bool
   standard_fields:
-    description:
-      - Whether to send standard fields of each job, i.e. times,
-        by default True.
+    description: >
+      Whether to send standard fields of each job, i.e. times,
+      by default True.
     required: False
+    default: True
+    type: bool
   longest_tasks:
-    description:
-      - Whether to to print only longest tasks and how many,
-        by default 0.
+    description: >
+      Whether to to print only longest tasks and how many,
+      by default 0.
     required: False
+    type: int
 '''
 
 EXAMPLES = '''
@@ -102,9 +119,6 @@ import datetime  # noqa pylint: disable=C0413
 import json  # noqa pylint: disable=C0413
 import os  # noqa pylint: disable=C0413
 import re  # noqa pylint: disable=C0413
-import requests  # noqa pylint: disable=C0413
-
-from requests.auth import HTTPBasicAuth  # noqa pylint: disable=C0413
 
 
 SCHEME = '{measure},{tags} {fields} {timestamp}'
@@ -441,6 +455,9 @@ def send(file_path, in_url, in_port, in_user, in_pass, in_db):
     :param in_db: InfluxDB database name
     :return: True if sent successfully, otherwise False
     '''
+    import requests  # noqa pylint: disable=C0413
+    from requests.auth import HTTPBasicAuth  # noqa pylint: disable=C0413
+
     url = in_url.rstrip("/")
     if in_port != 80:
         url += ":%d" % in_port

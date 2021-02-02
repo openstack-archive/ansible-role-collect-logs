@@ -16,11 +16,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
-import os
-from copy import deepcopy
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.sova_lib import Pattern, parse
-
 
 ANSIBLE_METADATA = {
     'metadata_version': '0.1',
@@ -30,9 +25,8 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 module: sova
-author:
-  - "Sagi Shnaidman (@sshnaidm)"
-version_added: '2.7'
+author: Sagi Shnaidman (@sshnaidm)
+version_added: '2.7.0'
 short_description: Parse CI jobs files for known failures
 notes: []
 description:
@@ -59,6 +53,9 @@ options:
         created file Overcloud_failed_on_host.log in this directory.
         It helps to know what is the reason without opening actually the file.
     type: path
+  config:
+    description: config
+    type: dict
 """
 EXAMPLES = """
 - name: Run sova task
@@ -110,6 +107,10 @@ file_written:
     sample: '/var/log/result_file'
 """
 
+import os  # noqa: E402
+from copy import deepcopy  # noqa: E402
+from ansible.module_utils.basic import AnsibleModule  # noqa: E402
+
 
 def format_msg_filename(text):
     for s in (" ", ":", ".", "/", ",", "'", ):
@@ -118,10 +119,11 @@ def format_msg_filename(text):
 
 
 def main():
+
     module = AnsibleModule(
         argument_spec=dict(
             config=dict(type='dict', default={}),
-            files=dict(type='dict', default={}),
+            files=dict(type='dict', required=True),
             result=dict(type='path'),
             result_file_dir=dict(type='path'),
         ))
@@ -136,6 +138,10 @@ def main():
         results = {"processed_files": [], 'changed': False}
         module.exit_json(**results)
     dict_patterns = deepcopy(module.params['config'])
+
+    # from sova_lib import Pattern, parse
+    from ansible.module_utils.sova_lib import Pattern, parse
+
     pattern = Pattern(dict_patterns)
     PATTERNS = pattern.patterns
     for name in module.params['files']:

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -11,37 +11,50 @@
 # implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import (absolute_import, division, print_function)
 
-import ast
-import datetime
-import socket
-
+__metaclass__ = type
 DOCUMENTATION = '''
 ---
 module: ara_graphite
-version_added: "1.0"
+version_added: "1.0.0"
+author: Red Hat (@RedHatOfficial)
 short_description: Send ARA stats to graphite
-description:
-    - Python ansible module to send ARA stats to graphite
+description: >
+    Python ansible module to send ARA stats to graphite
 options:
   graphite_host:
-    description:
-      - The hostname of the Graphite server with optional port:
-        graphite.example.com:2004. The default port is 2003
+    description: >
+      The hostname of the Graphite server with optional port:
+      graphite.example.com:2004. The default port is 2003
     required: True
+    type: str
+  graphite_prefix:
+    description:
+      - TBD
+    type: str
+  graphite_port:
+    description:
+      - TBD
+    default: 2003
+    type: int
   ara_mapping:
-    description:
-      - Mapping task names to Graphite paths
+    description: >
+      Mapping task names to Graphite paths
     required: True
+    type: dict
   ara_data:
-    description:
-      - List of ARA results: ara result list --all -f json
+    description: >
+      List of ARA results: ara result list --all -f json
     required: True
-  ara_only_successful:
-    description:
-      - Whether to send only successful tasks, ignoring skipped and failed,
-        by default True.
-    required: True
+    type: str
+  only_successful_tasks:
+    description: >
+      Whether to send only successful tasks, ignoring skipped and failed,
+      by default True.
+    required: False
+    default: True
+    type: bool
 '''
 
 EXAMPLES = '''
@@ -55,6 +68,10 @@ EXAMPLES = '''
     ara_mapping:
         - "Name of task that deploys overcloud": overcloud.deploy.seconds
 '''
+
+import ast  # noqa: E402
+import datetime  # noqa: E402
+import socket  # noqa: E402
 
 
 def stamp(x):
@@ -110,8 +127,8 @@ def send(data, gr_host, gr_port, prefix):
     s.settimeout(3.0)
     try:
         s.connect((gr_host, gr_port))
-    except Exception as e:
-        return False, str(e)
+    except Exception as exc:
+        return False, str(exc)
     for content in data:
         s.send(prefix + " ".join([str(i) for i in content]) + "\n")
     s.close()
@@ -144,7 +161,9 @@ def send_stats(gr_host, gr_port, mapping, json_data, prefix, only_ok):
 
 
 def main():
-    module = AnsibleModule(  # noqa
+    from ansible.module_utils.basic import AnsibleModule
+
+    module = AnsibleModule(
         argument_spec=dict(
             graphite_host=dict(required=True, type='str'),
             graphite_port=dict(required=False, type='int', default=2003),
@@ -163,8 +182,6 @@ def main():
                         module.params['only_successful_tasks'])
     module.exit_json(**result)
 
-
-from ansible.module_utils.basic import *  # noqa
 
 if __name__ == "__main__":
     main()
