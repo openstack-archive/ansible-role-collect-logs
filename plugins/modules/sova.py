@@ -108,10 +108,101 @@ file_written:
     sample: '/var/log/result_file'
 """
 
+import gzip  # noqa: E402
+import logging  # noqa: E402
 import os  # noqa: E402
 from copy import deepcopy  # noqa: E402
 
 from ansible.module_utils.basic import AnsibleModule  # noqa: E402
+
+try:
+    import regex as regex_module
+except ImportError:
+    import re as regex_module
+
+
+__metaclass__ = type
+logging.basicConfig(
+    format=(
+        "%(asctime)s - %(name)s - %(levelname)s - "
+        "%(module)s.%(funcName)s:%(lineno)d - %(message)s"
+    )
+)
+log = logging.getLogger("parser")
+log.setLevel(logging.ERROR)
+
+
+class Pattern(object):
+    def __init__(self, data):
+        self.data = data
+        self.load_yaml()
+        self.setup_regexes()
+        self.setup_patterns()
+
+    def load_yaml(self):
+        import yaml
+
+        if isinstance(self.data, dict):
+            self.config = self.data
+        else:
+            self.config = yaml.safe_load(self.data)
+
+    def setup_regexes(self):
+        self.regexes = {}
+        if self.config:
+            for regexp in self.config.get("regexes", []):
+                flags = []
+                if regexp.get("multiline"):
+                    flags.append(regex_module.MULTILINE)
+                self.regexes[regexp.get("name")] = regex_module.compile(
+                    r"{0}".format(regexp.get("regex")), *flags
+                )
+
+    def setup_patterns(self):
+        self._patterns = self.config.get("patterns", {})
+        if self._patterns:
+            for key in self._patterns:
+                for p in self._patterns[key]:
+                    if p["pattern"] in self.regexes:
+                        p["pattern"] = self.regexes[p["pattern"]]
+                    if p["logstash"] in self.regexes:
+                        p["logstash"] = self.regexes[p["logstash"]]
+
+    @property
+    def patterns(self):
+        return self._patterns
+
+
+def line_match(pat, line, exclude=None):
+    if isinstance(pat, str):
+        return pat in line
+    found = pat.search(line)
+    if not found:
+        return False
+    if found.groups():
+        if exclude:
+            if any([i in found.group(1) for i in exclude]):
+                return False
+        return found.group(1)
+    return True
+
+
+def parse(text_file, patterns):
+    ids = []
+    msgs = []
+    if text_file.split(".")[-1] == "gz":
+        open_func = gzip.open
+    else:
+        open_func = open
+    with open_func(text_file, "rt") as finput:
+        text = finput.read()
+        for p in patterns:
+            line_matched = line_match(p["pattern"], text, exclude=p.get("exclude"))
+            if line_matched:
+                log.debug("Found pattern %s in file %s", repr(p), text_file)
+                ids.append(p["id"])
+                msgs.append(p["msg"].format(line_matched))
+    return list(set(ids)), list(set(msgs))
 
 
 def format_msg_filename(text):
@@ -148,9 +239,6 @@ def main():
         results = {"processed_files": [], "changed": False}
         module.exit_json(**results)
     dict_patterns = deepcopy(module.params["config"])
-
-    # from sova_lib import Pattern, parse
-    from ansible.module_utils.sova_lib import Pattern, parse
 
     pattern = Pattern(dict_patterns)
     PATTERNS = pattern.patterns

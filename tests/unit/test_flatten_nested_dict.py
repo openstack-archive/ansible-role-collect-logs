@@ -1,16 +1,36 @@
 from __future__ import absolute_import, division, print_function
 
-import os
-import sys
-
-import pytest  # noqa
+import pytest
 import yaml
-from common.utils import (
-    AnsibleExitJson,
-    AnsibleFailJson,
-    ModuleTestCase,
-    set_module_args,
-)
+
+try:
+    # ansible-test style imports
+    from ansible_collections.tripleo.collect_logs.plugins.module_utils.test_utils import (
+        AnsibleExitJson,
+        AnsibleFailJson,
+        ModuleTestCase,
+        set_module_args,
+    )
+    from ansible_collections.tripleo.collect_logs.plugins.modules import (
+        flatten_nested_dict,
+    )
+except ImportError:
+    # avoid collection errors running: pytest --collect-only
+    import os
+    import sys
+
+    plugins_path = os.path.join(os.path.dirname(__file__), "../../plugins/")
+    plugins_path = os.path.realpath(plugins_path)
+    sys.path.append("%s/%s" % (plugins_path, "module_utils"))
+    sys.path.append("%s/%s" % (plugins_path, "modules"))
+    import flatten_nested_dict
+    from test_utils import (
+        AnsibleExitJson,
+        AnsibleFailJson,
+        ModuleTestCase,
+        set_module_args,
+    )
+
 
 __metaclass__ = type
 SAMPLE_INPUT_1 = """
@@ -28,12 +48,6 @@ data:
     name: cpuinfo
     group: system
 """
-
-# Temporary hack until we adopt official ansible-test unit-testing
-dir = os.path.join(os.path.dirname(__file__), "../roles/collect_logs/library")
-sys.path.append(dir)
-print(dir)
-import flatten_nested_dict  # noqa: E402
 
 
 class TestFlattenNestedDict(ModuleTestCase):
