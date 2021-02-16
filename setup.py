@@ -12,12 +12,11 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 import setuptools
 
 __metaclass__ = type
 
 
-setuptools.setup(
-    setup_requires=['pbr'],
-    pbr=True)
+setuptools.setup(setup_requires=["pbr"], pbr=True)

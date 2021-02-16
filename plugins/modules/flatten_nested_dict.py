@@ -13,13 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 
 ANSIBLE_METADATA = {
-    'metadata_version': '0.1',
-    'status': ['preview'],
-    'supported_by': 'community'
+    "metadata_version": "0.1",
+    "status": ["preview"],
+    "supported_by": "community",
 }
 
 DOCUMENTATION = """
@@ -60,21 +61,15 @@ from ansible.module_utils.basic import AnsibleModule  # noqa: E402
 
 
 def main():
-    result = {'data': [], 'changed': False}
-    module = AnsibleModule(
-        argument_spec={
-            'data': {
-                'type': 'dict',
-                'required': True
-            }
-        })
+    result = {"data": [], "changed": False}
+    module = AnsibleModule(argument_spec={"data": {"type": "dict", "required": True}})
     try:
 
-        for group, commands in module.params['data'].items():
+        for group, commands in module.params["data"].items():
             for cmd_name, cmd_dict in commands.items():
-                cmd_dict['name'] = cmd_name
-                cmd_dict['group'] = group
-                result['data'].append(cmd_dict)
+                cmd_dict["name"] = cmd_name
+                cmd_dict["group"] = group
+                result["data"].append(cmd_dict)
 
     except Exception as e:
         module.fail_json(msg=str(e))
@@ -82,5 +77,5 @@ def main():
     module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

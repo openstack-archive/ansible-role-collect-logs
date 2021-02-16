@@ -1,7 +1,16 @@
 ---
 repos:
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.7.0
+    hooks:
+      - id: isort
+  - repo: https://github.com/python/black.git
+    rev: 20.8b1
+    hooks:
+      - id: black
+        language_version: python3
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.4.0
+    rev: v3.4.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -10,18 +19,25 @@ repos:
       - id: check-executables-have-shebangs
       - id: check-merge-conflict
       - id: debug-statements
-      - id: flake8
       - id: check-yaml
         files: .*\.(yaml|yml)$
+  - repo: https://gitlab.com/pycqa/flake8.git
+    rev: 3.8.4
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-absolute-import
+          - flake8-black>=0.1.1
+        language_version: python3
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.18.0
+    rev: v1.26.0
     hooks:
       - id: yamllint
         files: \.(yaml|yml)$
         types: [file, yaml]
         entry: yamllint --strict -f parsable
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: 9da220ae3a11c10c10ee43284ad6cad6d8ba52b7
+    rev: v5.0.0
     hooks:
       - id: ansible-lint
         always_run: true
@@ -31,7 +47,7 @@ repos:
         verbose: true
         entry: env ANSIBLE_LIBRARY=./library ansible-lint --force-color -v .
   - repo: https://github.com/openstack-dev/bashate.git
-    rev: 0.6.0
+    rev: 2.0.0
     hooks:
       - id: bashate
         entry: bashate --error . --verbose --ignore=E006,E040

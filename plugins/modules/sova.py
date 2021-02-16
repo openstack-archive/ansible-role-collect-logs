@@ -14,13 +14,14 @@
 # limitations under the License.
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 
 ANSIBLE_METADATA = {
-    'metadata_version': '0.1',
-    'status': ['preview'],
-    'supported_by': 'community'
+    "metadata_version": "0.1",
+    "status": ["preview"],
+    "supported_by": "community",
 }
 
 DOCUMENTATION = """
@@ -109,11 +110,19 @@ file_written:
 
 import os  # noqa: E402
 from copy import deepcopy  # noqa: E402
+
 from ansible.module_utils.basic import AnsibleModule  # noqa: E402
 
 
 def format_msg_filename(text):
-    for s in (" ", ":", ".", "/", ",", "'", ):
+    for s in (
+        " ",
+        ":",
+        ".",
+        "/",
+        ",",
+        "'",
+    ):
         text = text.replace(s, "_")
     return "_" + text.rstrip("_") + ".log"
 
@@ -122,77 +131,82 @@ def main():
 
     module = AnsibleModule(
         argument_spec=dict(
-            config=dict(type='dict', default={}),
-            files=dict(type='dict', required=True),
-            result=dict(type='path'),
-            result_file_dir=dict(type='path'),
-        ))
-    if not module.params['files']:
+            config=dict(type="dict", default={}),
+            files=dict(type="dict", required=True),
+            result=dict(type="path"),
+            result_file_dir=dict(type="path"),
+        )
+    )
+    if not module.params["files"]:
         module.fail_json(msg="Files for logs parsing have to be provided!")
     existing_files = []
-    for pattern_file in module.params['files']:
-        file_ = module.params['files'][pattern_file]
+    for pattern_file in module.params["files"]:
+        file_ = module.params["files"][pattern_file]
         if os.path.exists(file_):
             existing_files.append(file_)
     if not existing_files:
-        results = {"processed_files": [], 'changed': False}
+        results = {"processed_files": [], "changed": False}
         module.exit_json(**results)
-    dict_patterns = deepcopy(module.params['config'])
+    dict_patterns = deepcopy(module.params["config"])
 
     # from sova_lib import Pattern, parse
     from ansible.module_utils.sova_lib import Pattern, parse
 
     pattern = Pattern(dict_patterns)
     PATTERNS = pattern.patterns
-    for name in module.params['files']:
+    for name in module.params["files"]:
         if name not in PATTERNS:
-            module.fail_json(msg="File name %s wasn't found in [%s]" % (
-                name, ", ".join(list(PATTERNS.keys()))))
+            module.fail_json(
+                msg="File name %s wasn't found in [%s]"
+                % (name, ", ".join(list(PATTERNS.keys())))
+            )
 
     messages, tags = [], []
-    for name, file_ in module.params['files'].items():
-        if module.params['files'][name] not in existing_files:
+    for name, file_ in module.params["files"].items():
+        if module.params["files"][name] not in existing_files:
             continue
         ids, msgs = parse(file_, PATTERNS[name])
-        found = [i for i in PATTERNS[name] if i['id'] in ids]
-        msg_tags = [i['tag'] for i in found if i.get('tag')]
+        found = [i for i in PATTERNS[name] if i["id"] in ids]
+        msg_tags = [i["tag"] for i in found if i.get("tag")]
         messages += msgs
         tags += msg_tags
     messages = list(set(messages))
     tags = list(set(tags))
-    if 'infra' in tags:
-        reason = 'infra'
-    elif 'code' in tags:
-        reason = 'code'
+    if "infra" in tags:
+        reason = "infra"
+    elif "code" in tags:
+        reason = "code"
     else:
-        reason = 'unknown'
+        reason = "unknown"
     text = " ".join(messages) or "No failure reason found"
     file_name = format_msg_filename(text)
-    result = {'changed': True, "processed_files": existing_files}
-    result.update({'message': text})
-    result.update({'tags': tags})
-    if module.params['result'] and messages:
+    result = {"changed": True, "processed_files": existing_files}
+    result.update({"message": text})
+    result.update({"tags": tags})
+    if module.params["result"] and messages:
         try:
-            with open(module.params['result'], "w") as f:
+            with open(module.params["result"], "w") as f:
                 f.write(text + "\n")
                 f.write("Reason: " + reason + "\n")
-            result.update({'file_written': module.params['result']})
+            result.update({"file_written": module.params["result"]})
         except Exception as e:
             module.fail_json(
-                msg="Can't write result to file %s: %s" % (
-                    module.params['result'], str(e)))
-    if module.params['result_file_dir']:
-        log_file = os.path.join(module.params['result_file_dir'], file_name)
+                msg="Can't write result to file %s: %s"
+                % (module.params["result"], str(e))
+            )
+    if module.params["result_file_dir"]:
+        log_file = os.path.join(module.params["result_file_dir"], file_name)
         try:
             with open(log_file, "w") as f:
                 f.write(text + "\n")
                 f.write("Reason: " + reason + "\n")
-            result.update({'file_name_written': log_file})
+            result.update({"file_name_written": log_file})
         except Exception as e:
             module.fail_json(
-                msg="Can't write result to file %s: %s" % (log_file, str(e)))
+                msg="Can't write result to file %s: %s" % (log_file, str(e))
+            )
     module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

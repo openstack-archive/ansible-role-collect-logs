@@ -1,12 +1,16 @@
-from __future__ import (absolute_import, division, print_function)
-import pytest  # noqa
+from __future__ import absolute_import, division, print_function
+
 import os
 import sys
-from common.utils import (
-    AnsibleExitJson, AnsibleFailJson, ModuleTestCase, set_module_args,
-)
-import yaml
 
+import pytest  # noqa
+import yaml
+from common.utils import (
+    AnsibleExitJson,
+    AnsibleFailJson,
+    ModuleTestCase,
+    set_module_args,
+)
 
 __metaclass__ = type
 SAMPLE_INPUT_1 = """
@@ -33,15 +37,14 @@ import flatten_nested_dict  # noqa: E402
 
 
 class TestFlattenNestedDict(ModuleTestCase):
-
     def test_invalid_args(self):
         set_module_args(
             data="invalid",
         )
         with pytest.raises(AnsibleFailJson) as context:
             flatten_nested_dict.main()
-        assert context.value.args[0]['failed'] is True
-        assert 'msg' in context.value.args[0]
+        assert context.value.args[0]["failed"] is True
+        assert "msg" in context.value.args[0]
 
     def test_empty(self):
         set_module_args(
@@ -49,14 +52,11 @@ class TestFlattenNestedDict(ModuleTestCase):
         )
         with pytest.raises(AnsibleExitJson) as context:
             flatten_nested_dict.main()
-        assert context.value.args[0] == {'data': [], 'changed': False}
+        assert context.value.args[0] == {"data": [], "changed": False}
 
     def test_one(self):
-        set_module_args(
-            data=yaml.safe_load(SAMPLE_INPUT_1)['data']
-        )
+        set_module_args(data=yaml.safe_load(SAMPLE_INPUT_1)["data"])
         with pytest.raises(AnsibleExitJson) as context:
             flatten_nested_dict.main()
-        assert context.value.args[0]['changed'] is False
-        assert context.value.args[0]['data'] == \
-            yaml.safe_load(SAMPLE_OUTPUT_1)['data']
+        assert context.value.args[0]["changed"] is False
+        assert context.value.args[0]["data"] == yaml.safe_load(SAMPLE_OUTPUT_1)["data"]

@@ -11,9 +11,11 @@
 # implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 import gzip
 import logging
+
 import yaml
 
 try:
@@ -24,9 +26,12 @@ except ImportError:
 
 __metaclass__ = type
 logging.basicConfig(
-    format=('%(asctime)s - %(name)s - %(levelname)s - '
-            '%(module)s.%(funcName)s:%(lineno)d - %(message)s'))
-log = logging.getLogger('parser')
+    format=(
+        "%(asctime)s - %(name)s - %(levelname)s - "
+        "%(module)s.%(funcName)s:%(lineno)d - %(message)s"
+    )
+)
+log = logging.getLogger("parser")
 log.setLevel(logging.ERROR)
 
 
@@ -46,22 +51,23 @@ class Pattern(object):
     def setup_regexes(self):
         self.regexes = {}
         if self.config:
-            for regexp in self.config.get('regexes', []):
+            for regexp in self.config.get("regexes", []):
                 flags = []
-                if regexp.get('multiline'):
+                if regexp.get("multiline"):
                     flags.append(regex_module.MULTILINE)
-                self.regexes[regexp.get('name')] = regex_module.compile(
-                    r'{0}'.format(regexp.get('regex')), *flags)
+                self.regexes[regexp.get("name")] = regex_module.compile(
+                    r"{0}".format(regexp.get("regex")), *flags
+                )
 
     def setup_patterns(self):
-        self._patterns = self.config.get('patterns', {})
+        self._patterns = self.config.get("patterns", {})
         if self._patterns:
             for key in self._patterns:
                 for p in self._patterns[key]:
-                    if p['pattern'] in self.regexes:
-                        p['pattern'] = self.regexes[p['pattern']]
-                    if p['logstash'] in self.regexes:
-                        p['logstash'] = self.regexes[p['logstash']]
+                    if p["pattern"] in self.regexes:
+                        p["pattern"] = self.regexes[p["pattern"]]
+                    if p["logstash"] in self.regexes:
+                        p["logstash"] = self.regexes[p["logstash"]]
 
     @property
     def patterns(self):
@@ -92,12 +98,9 @@ def parse(text_file, patterns):
     with open_func(text_file, "rt") as finput:
         text = finput.read()
         for p in patterns:
-            line_matched = line_match(
-                p["pattern"], text, exclude=p.get("exclude"))
+            line_matched = line_match(p["pattern"], text, exclude=p.get("exclude"))
             if line_matched:
-                log.debug(
-                    "Found pattern %s in file %s",
-                    repr(p), text_file)
+                log.debug("Found pattern %s in file %s", repr(p), text_file)
                 ids.append(p["id"])
                 msgs.append(p["msg"].format(line_matched))
     return list(set(ids)), list(set(msgs))
