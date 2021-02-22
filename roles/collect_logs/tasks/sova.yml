@@ -1,12 +1,18 @@
 ---
-- name: Include sova patterns
-  include_vars:
-    file: sova-patterns.yml
-    name: pattern_config
+- name: Load sova patterns from URL
+  uri:
+    url: https://raw.githubusercontent.com/rdo-infra/queries/main/output/sova-patterns.json
+    method: GET
+    return_content: true
+    status_code: 200
+    body_format: json
+  retries: 3  # to avoid accidental failures due to networking or rate limiting
+  delay: 60
+  register: pattern_config
 
 - name: Run sova task
   sova:
-    config: "{{ pattern_config }}"
+    config: "{{ pattern_config.json }}"
     files:
       console: "{{ ansible_user_dir }}/workspace/logs/quickstart_install.log"
       errors: "/var/log/errors.txt"
@@ -17,9 +23,9 @@
     result: "{{ ansible_user_dir }}/workspace/logs/failures_file"
     result_file_dir: "{{ ansible_user_dir }}/workspace/logs"
 
-- name: Run sova task
+- name: Run sova task (denials)
   sova:
-    config: "{{ pattern_config }}"
+    config: "{{ pattern_config.json }}"
     files:
       selinux: "/var/log/extra/denials.txt"
     result: "{{ ansible_user_dir }}/workspace/logs/selinux_denials.log"
