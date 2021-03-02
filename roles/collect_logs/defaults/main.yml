@@ -277,6 +277,9 @@ artcl_commands:
     disk:
       cmd: |
         df -h
+    shell_variables:
+      cmd: |
+        set
     services:
       cmd: |
         systemctl list-units --full --all
