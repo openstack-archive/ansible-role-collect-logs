@@ -1,7 +1,7 @@
 ---
 - name: Load sova patterns from URL
   uri:
-    url: https://raw.githubusercontent.com/rdo-infra/queries/main/output/sova-patterns.json
+    url: https://opendev.org/openstack/tripleo-ci-health-queries/raw/branch/master/output/sova-patterns.json
     method: GET
     return_content: true
     status_code: 200
