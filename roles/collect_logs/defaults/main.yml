@@ -182,7 +182,10 @@ artcl_ignore_errors: true
 artcl_commands:
   system:
     cpuinfo:
-      cmd: cat /proc/cpuinfo
+      cmd: |
+        cat /proc/cpuinfo
+        echo ""
+        grep -s -H '' /sys/module/{kvm_intel,kvm_amd}/parameters/nested
       capture_file: /var/log/extra/cpuinfo.txt
     dmesg:
       cmd: dmesg
