@@ -219,10 +219,11 @@ artcl_commands:
       cmd: "{{ ansible_pkg_mgr }} module list --enabled"
       when: ansible_distribution_major_version|int >= 8
     record_available_packages:
+      # the timeout is like a fail-safe from collect_logs point of view,
+      # we encountered an issue when repolist query took several minutes
+      # which lead to timeouts and unfinished log collections
       cmd: |
-        for i in `{{ ansible_pkg_mgr }}  repolist enabled -v | grep Repo-id | awk '{print $3}' | awk -F / '{print $1}'`;do
-        repoquery --repoid $i -a
-        done
+        timeout 120 repoquery -a --qf "%{ui_from_repo} %{name}" | sort
       capture_file: /var/log/extra/all_available_packages.txt
     selinux:
       cmd: |
