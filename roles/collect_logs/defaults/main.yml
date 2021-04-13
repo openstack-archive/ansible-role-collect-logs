@@ -404,6 +404,7 @@ artcl_logstash_files:
   - /var/log/ipaserver-install.log
   - /var/log/tripleo-container-image-prepare.log
   - /var/log/extra/journal_errors.txt
+  - /var/log/ceph/cephadm.log
 
 # ara_graphite_server: graphite.tripleo.org
 # if ara_enabled is false, no ara tasks will be executed
