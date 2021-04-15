@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/PyCQA/isort
-    rev: 5.7.0
+    rev: 5.8.0
     hooks:
       - id: isort
   - repo: https://github.com/python/black.git
@@ -22,22 +22,15 @@ repos:
       - id: check-yaml
         files: .*\.(yaml|yml)$
   - repo: https://gitlab.com/pycqa/flake8.git
-    rev: 3.8.4
+    rev: 3.9.1
     hooks:
       - id: flake8
         additional_dependencies:
           - flake8-absolute-import
           - flake8-black>=0.1.1
         language_version: python3
-  - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.26.0
-    hooks:
-      - id: yamllint
-        files: \.(yaml|yml)$
-        types: [file, yaml]
-        entry: yamllint --strict -f parsable
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v5.0.0
+    rev: v5.0.7
     hooks:
       - id: ansible-lint
         always_run: true

@@ -3,15 +3,17 @@ driver:
   name: docker
 log: true
 platforms:
-  - name: centos7
-    image: docker.io/pycontribs/centos:7
+  # - name: centos7
+  #   image: quay.io/pycontribs/centos:centos7
+  #   pre_build_image: true
+  - name: centos8
+    # image below is based on official quay.io/centos/centos:stream8 but
+    # it has python preinstalled on it.
+    image: quay.io/pycontribs/centos:stream8
     pre_build_image: true
-    # - name: centos8
-    #   image: docker.io/pycontribs/centos:8
-    #   pre_build_image: true
-    # - name: ubuntu
-    #   image: docker.io/pycontribs/ubuntu:latest
-    #   pre_build_image: true
+  # - name: debian
+  #   image: quay.io/pycontribs/python:3.8-slim-buster
+  #   pre_build_image: true
 provisioner:
   name: ansible
   config_options:
