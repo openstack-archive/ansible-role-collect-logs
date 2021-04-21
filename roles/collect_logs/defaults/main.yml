@@ -281,9 +281,12 @@ artcl_commands:
       cmd: |
         systemctl list-units --full --all
         systemctl status "*"
-    denials:
+    selinux_denials:
       cmd: >
         grep -i denied /var/log/audit/audit*
+    selinux_denials_detail:
+      cmd: >
+        sealert -a /var/log/extra/selinux_denials.txt
     seqfaults:
       cmd: >
         grep -v ansible-command /var/log/messages | grep segfault
