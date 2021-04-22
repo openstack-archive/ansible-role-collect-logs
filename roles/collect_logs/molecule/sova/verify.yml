@@ -1,13 +1,24 @@
 ---
 - hosts: all
   tasks:
+
+    - name: Ls {{ ansible_user_dir }}/workspace/logs/  # remove before merge
+      command: ls -la {{ ansible_user_dir }}/workspace/logs/
+      changed_when: false
+      register: test_output
+
+    - name: debug test  # remove before merge
+      debug: var=test_output
+
     - name: Ensure all files exists
       stat:
-        path: "{{ ansible_user_dir }}/workspace/logs/failures_file"
+        path: "{{ item }}"
       register: failures_file
       loop:
         - "{{ ansible_user_dir }}/workspace/logs/failures_file"
         - "{{ ansible_user_dir }}/workspace/logs/_No_valid_host_was_found.log"
+      loop_control:
+        label: '{{ item.split("/")[-1] }}'
 
     - name: Ensure all files exists - test
       assert:
