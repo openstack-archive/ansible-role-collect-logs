@@ -27,6 +27,13 @@
         data: "{{ combined_cmds | dict2items|selectattr('key', 'in', collect_log_types) | list | items2dict }}"
       register: artcl_commands_flatten
 
+    - name: install setools
+      ansible.builtin.package:
+        name:
+          - setools
+          - setroubleshoot
+        state: present
+
     - name: Run artcl_commands
       # noqa 305
       # noqa 102 :: No Jinja2 in when
