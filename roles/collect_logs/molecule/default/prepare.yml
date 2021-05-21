@@ -9,6 +9,7 @@
         content: |
           2000-00-00T00:00:00.000Z | this is sparta
         dest: /var/log/bootstrap-subnodes.log
+        mode: 0644
 
     - name: Remove /var/log/extra/logstash.txt
       file:

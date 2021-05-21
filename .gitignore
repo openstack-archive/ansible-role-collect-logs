@@ -71,3 +71,6 @@ releasenotes/build
 # ansible retry files
 *.retry
 ansible_role_collect_logs.egg-info
+
+# buit collection
+*.tar.gz

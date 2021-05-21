@@ -7,19 +7,39 @@ authors:
 readme: README.rst
 
 build_ignore:
+  - "**/.mypy_cache"
+  - "**/.pytest_cache"
+  - "*.egg-info"
+  - .DS_Store
   - .ansible
+  - .benchmarks
   - .cache
+  - .eggs
+  - .envrc
   - .github
   - .gitignore
-  - .pytest_cache
-  - .vscode
-  - .tox
-  - dist
-  - tox.ini
-  - .eggs
+  - .gitreview
   - .mypy_cache
-  - "*.egg-info"
-  - modules
-  - module_utils
+  - .pre-commit-config.yaml
+  - .pytest_cache
+  - .quickstart
+  - .tox
+  - .vscode
+  - .yamllint
+  - ansible.cfg
+  - bindep.txt
+  - build
+  - dist
+  - docs/source/_build
   - infrared_plugin
+  - module_utils
+  - modules
+  - pyproject.toml
+  - report.html
+  - roles/collect_logs/library
   - scripts
+  - setup.cfg
+  - setup.py
+  - test-playbooks
+  - tox.ini
+  - zuul.d

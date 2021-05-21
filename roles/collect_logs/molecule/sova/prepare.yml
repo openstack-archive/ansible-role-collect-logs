@@ -7,9 +7,11 @@
       file:
         path: '{{ ansible_user_dir }}/workspace/logs/'
         state: directory
+        mode: 0755
 
     - name: Create a sample console file
       copy:
         content: |
           No valid host was found. There are not enough hosts
         dest: '{{ ansible_user_dir }}/workspace/logs/quickstart_install.log'
+        mode: 0644

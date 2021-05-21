@@ -17,6 +17,7 @@
     measurement: "{{ influxdb_measurement }}"
     data_file: "{{ influxdb_data_file_path }}"
     only_successful_tasks: "{{ influxdb_only_successful_tasks }}"
+  no_log: true
 
 - name: Get ARA json data for undercloud
   become: true
@@ -40,6 +41,7 @@
     standard_fields: false
     longest_tasks: 15
   when: ara_root_data.stdout != "[]"
+  no_log: true
 
 - name: Get ARA json data for overcloud
   shell: "{{ local_working_dir }}/bin/ara result list --all -f json"  # noqa 305
@@ -64,3 +66,4 @@
     standard_fields: false
     longest_tasks: 15
   when: ara_oc_data.stdout != "[]"
+  no_log: true

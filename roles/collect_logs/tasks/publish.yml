@@ -61,7 +61,7 @@
   with_items:
     - "{{ local_working_dir }}/*.sh"
     - "{{ local_working_dir }}/*.log"
-  ignore_errors: true
+  ignore_errors: true  # noqa:  ignore-errors
   changed_when: true
 
 # the doc footer for logging has been removed.
@@ -71,7 +71,7 @@
     if [ -f {{ artcl_readme_path }} ]; then
         cp {{ artcl_readme_path }} {{ artcl_readme_file }};
     fi;
-  ignore_errors: true
+  ignore_errors: true  # noqa: ignore-errors
   changed_when: true
 
 - name: Rename compressed text based files to end with txt.gz extension
@@ -98,8 +98,8 @@
 
 # This is where upload starts, no local change after this line
 # All tags after this line are marked with "notest" to allow testing (molecule) in absence of access to log servers.
-- name: upload to the artifact server using pubkey auth
-  shell: >
+- name: upload to the artifact server using pubkey auth  # noqa: command-instead-of-module
+  command: >
     rsync -av
     --quiet -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null {{ artcl_report_server_key|default('') }}"
     {{ artcl_collect_dir }}/ {{ artcl_rsync_path }}/{{ artcl_build_tag }}
@@ -110,10 +110,10 @@
   when: artcl_use_rsync|bool and not artcl_rsync_use_daemon|bool
   tags: notest
 
-- name: upload to the artifact server using password auth
+- name: upload to the artifact server using password auth  # noqa: command-instead-of-module
   environment:
     RSYNC_PASSWORD: "{{ artcl_rsync_password | default(omit) }}"
-  shell: rsync -av --quiet {{ artcl_collect_dir }}/ {{ artcl_rsync_path }}/{{ artcl_build_tag }}  # noqa 305
+  command: rsync -av --quiet {{ artcl_collect_dir }}/ {{ artcl_rsync_path }}/{{ artcl_build_tag }}
   async: "{{ artcl_publish_timeout }}"
   poll: 15
   retries: 5
@@ -149,5 +149,6 @@
   template:
     src: full_logs.html.j2
     dest: "{{ artcl_collect_dir }}/full_logs.html"
+    mode: 0644
   when: artcl_env != 'tripleo-ci'
   tags: notest

@@ -12,12 +12,15 @@
       when: odl_container_enabled.rc != 0
 
 
-    - name: check if ODL is enabled via rpm
+    - name: check if ODL is enabled via rpm  # noqa: command-instead-of-module
       shell: rpm -qa | grep opendaylight
       register: odl_rpm_enabled
 
     - name: Create ODL log directory
-      file: dest="{{ odl_extra_log_dir }}" state=directory
+      file:
+        dest: "{{ odl_extra_log_dir }}"
+        state: directory
+        mode: 0755
       when: (odl_rpm_enabled.rc == 0) or (odl_container_enabled.rc == 0)
 
     - name: Collect OVS outputs for ODL
@@ -34,6 +37,7 @@
       copy:
         src: collect-container-logs.sh
         dest: /tmp/collect-container-logs.sh
+        mode: 0755
 
     - name: Run container logs collection with timeout
       command: >-

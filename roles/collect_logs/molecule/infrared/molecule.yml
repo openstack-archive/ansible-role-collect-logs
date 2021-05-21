@@ -45,3 +45,5 @@ scenario:
     - verify
     - cleanup
     - destroy
+markers:
+  - xfail  # https://projects.engineering.redhat.com/browse/RHOSINFRA-4174

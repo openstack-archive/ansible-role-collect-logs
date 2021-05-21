@@ -8,6 +8,7 @@
       file:
         path: "{{ local_working_dir }}"
         state: directory
+        mode: 0755
 
     # Assure we do not have leftovers from previous runs there, not needed in production.
     - name: Remove collected_files folder
@@ -88,6 +89,7 @@
       include_role:
         name: collect_logs
 
-    - debug:
+    - name: Display stats
+      debug:
         msg: |
           Collected files should be under {{ local_working_dir }}/collected_files

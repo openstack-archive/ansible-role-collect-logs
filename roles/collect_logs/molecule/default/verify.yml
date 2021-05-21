@@ -4,5 +4,5 @@
   tasks:
 
     - name: Check logstash.txt contains expected data
-      shell: grep -q "this is sparta" /var/log/extra/logstash.txt
+      command: grep -q "this is sparta" /var/log/extra/logstash.txt
       changed_when: false

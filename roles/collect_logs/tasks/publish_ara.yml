@@ -21,11 +21,11 @@
         {{ local_working_dir }}/bin/ara generate html {{ local_working_dir }}/ara_oooq_oc;
         {{ local_working_dir }}/bin/ara task list --all -f json > {{ artcl_collect_dir }}/ara.oooq.oc.json;
         cp -r {{ local_working_dir }}/ara_oooq_oc {{ artcl_collect_dir }}/;
-      ignore_errors: true
+      ignore_errors: true  # noqa: ignore-errors
       environment:
         ARA_DATABASE: 'sqlite:///{{ ara_overcloud_db_path }}'
 
-- name: Copy ara files to ara-report directories
+- name: Copy ara files to ara-report directories  # noqa: deprecated-command-syntax
   shell: |
     mkdir -p {{ artcl_collect_dir }}/{{ item.dir }}/ara-report;
     cp {{ item.file }} {{ artcl_collect_dir }}/{{ item.dir }}/ara-report/ansible.sqlite;

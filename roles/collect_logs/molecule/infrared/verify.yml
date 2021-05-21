@@ -24,7 +24,7 @@
 
     - name: Get directory with collected log files
       stat:
-        path: "{{ infrared_location}}/collected_files_test"
+        path: "{{ infrared_location }}/collected_files_test"
       register:
         collected_files_dir
 

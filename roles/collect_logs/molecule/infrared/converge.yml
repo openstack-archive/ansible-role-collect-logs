@@ -30,6 +30,7 @@
       file:
         path: "{{ infrared_location }}/infrared_plugin"
         state: directory
+        mode: 0755
 
     - name: "Copy ansible-role-collect-logs to test host"
       synchronize:
@@ -56,6 +57,7 @@
       file:
         path: "{{ item }}"
         state: touch
+        mode: 0644
       with_items:
         - "/tmp/dummy.log"
         - "/tmp/append.log"
