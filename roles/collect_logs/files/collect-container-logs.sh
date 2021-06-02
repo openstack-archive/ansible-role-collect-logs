@@ -73,6 +73,17 @@ for cont in $(${engine} ps | awk '{print $NF}' | grep -v NAMES); do
 
     container_cp "$cont" /var/lib/kolla/config_files/config.json "$INFO_DIR/config.json";
 
+    # Capture rpms updated from more recent repos
+    update_repos="gating delorean-current"
+    if ls /etc/yum.repos.d/*-component.repo 1> /dev/null 2>&1; then
+        component_name=$(cat $(ls /etc/yum.repos.d/*-component.repo) | grep "name=" | sed "s/name=//g")
+        update_repos="${update_repos} ${component_name}"
+    fi
+    echo "*** ${cont} rpm update info ***" >> "$BASE_CONTAINER_EXTRA/container_updates_info.log"
+    for repo in $update_repos; do
+        cat "$INFO_DIR/${engine}_info.log" | grep "@${repo}" >> "$BASE_CONTAINER_EXTRA/container_updates_info.log"
+    done;
+
     # NOTE(flaper87): This should go away. Services should be
     # using a `logs` volume
     # NOTE(mandre) Do not copy logs if the containers is bind mounting /var/log directory
