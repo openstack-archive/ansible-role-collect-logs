@@ -12,7 +12,7 @@
         else
           ERR_NAME=errors.txt;
         fi;
-        mv /tmp/errors.txt /var/log/extra/${ERR_NAME}.txt
+        mv /tmp/errors.txt /var/log/extra/${ERR_NAME}
 
     # logstash.txt file format expects to follow a strict format (console) like:
     # TIMESTAMP_ISO8601 | message

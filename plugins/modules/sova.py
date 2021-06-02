@@ -63,7 +63,7 @@ EXAMPLES = """
   sova:
     files:
       console: /var/log/job-output.txt.gz
-      errors: /var/log/errors.txt.txt.gz
+      errors: /var/log/errors.txt.gz
       "ironic-conductor": /var/log/ironic-conductor.log.txt.gz
       syslog: /var/log/journal.txt.gz
       logstash: /var/log/logstash.txt.gz
@@ -79,7 +79,7 @@ processed_files:
     type: list
     sample: [
         "/tmp/var/log/job-output.txt.gz",
-        "/tmp/var/log/errors.txt.txt.gz",
+        "/tmp/var/log/errors.txt.gz",
         "/tmp/var/log/ironic-conductor.log.txt.gz"
         ]
 message:
