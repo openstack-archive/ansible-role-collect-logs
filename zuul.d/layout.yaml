@@ -5,8 +5,8 @@
     parent: tox
     vars:
       tox_envlist: sanity  # dynamic tox env added by tox-ansible
-      # we want to run sanity only on py36 instead of implicit 2.6-3.9 range
-      tox_extra_args: -- --python 3.6
+      # we want to run sanity only on py38 instead of implicit 2.6-3.9 range
+      tox_extra_args: -- --python 3.8
 
 - job:
     name: tox-ansible-test-units
