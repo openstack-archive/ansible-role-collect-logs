@@ -381,6 +381,7 @@ artcl_logstash_files:
   - /home/*/overcloud_delete.log
   - /home/*/overcloud_deploy.log
   - /home/*/overcloud_deploy_post.log
+  - /var/log/tempest/tempest/tempest_run.log
   - /home/*/overcloud_failed_prepare_resources.log
   - /home/*/overcloud-full.log
   - /home/*/build-err.log
