@@ -30,53 +30,48 @@
 - project:
     vars:
       fail_logs_collection: true
-    templates:
-      - tripleo-undercloud-jobs-pipeline
     check:
       jobs: &jobs
         - openstack-tox-linters
         - openstack-tox-molecule
         - tox-ansible-test-sanity
         - tox-ansible-test-units
+        - zuul-ansible-role-collect-logs
+    experimental:
+      jobs:
         # Limit the number of jobs executed while still assuring a relevant
         # level of coverage. If specific tasks are to be tested we should
         # consider implementing functional tests for them, especially as
         # running full integration does not effectively validates that the
         # outcome was produced (they still rely on manual verification).
-        - tripleo-ci-centos-8-content-provider:
+        - tripleo-ci-centos-8-scenario001-standalone:
             irrelevant-files: &irrelevant_sa
+              # do not put requirements.txt here, as it can have a huge impact
               - ^.*\.md$
               - ^.*\.rst$
-              - ^doc/.*$
-              - ^etc/.*$
-              - ^metadata.json$
-              - ^releasenotes/.*$
-              # do not put requirements.txt here, as it can have a huge impact
-              - ^test-requirements.txt$
-              - ^lower-constraints.txt$
-              - ^spec/.*$
-              - ^Puppetfile.*$
-              - tox.ini
-              - ^vars/sova-patterns.yml$
               - ^.ansible-lint$
               - ^.pre-commit-config.yaml$
               - ^.yamllint$
-        - tripleo-ci-centos-8-scenario001-standalone:
-            irrelevant-files: *irrelevant_sa
-            vars: &c8_content_provider
-              consumer_job: true
+              - ^Puppetfile.*$
+              - ^doc/.*$
+              - ^etc/.*$
+              - ^lower-constraints.txt$
+              - ^metadata.json$
+              - ^releasenotes/.*$
+              - ^spec/.*$
+              - ^test-requirements.txt$
+              - ^vars/sova-patterns.yml$
+              - ^zuul.d/tox\.yaml$
+              - tox.ini
+            vars:
+              consumer_job: false
+              build_container_images: true
               tags:
                 - standalone
-            dependencies: &c8_content_deps
-              - tripleo-ci-centos-8-content-provider
-        - tripleo-ci-centos-8-scenario002-standalone:
-            irrelevant-files: *irrelevant_sa
-            vars: *c8_content_provider
-            dependencies: *c8_content_deps
         - tripleo-ci-centos-8-containers-multinode:
             irrelevant-files: *irrelevant_sa
-            vars: &multi_consumer_vars
-              consumer_job: true
+            vars:
+              consumer_job: false
               build_container_imags: true
               tags:
                 - undercloud-setup
@@ -90,8 +85,6 @@
                 - overcloud-deploy
                 - overcloud-post-deploy
                 - overcloud-validate
-            dependencies: *c8_content_deps
-        - zuul-ansible-role-collect-logs
     gate:
       jobs: *jobs
       queue: tripleo
