@@ -215,6 +215,7 @@ def format_msg_filename(text):
         "'",
     ):
         text = text.replace(s, "_")
+        text = text[:100]
     return "_" + text.rstrip("_") + ".log"
 
 
