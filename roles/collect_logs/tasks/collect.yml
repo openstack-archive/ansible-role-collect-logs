@@ -36,6 +36,12 @@
           - setroubleshoot
         state: present
 
+    - name: install custom consolidation script
+      ansible.builtin.copy:
+        dest: /usr/local/bin/consolidate-avc.pl
+        src: consolidate-avc.pl
+        mode: 0555
+
     - name: Run artcl_commands
       # noqa 305
       # noqa 102 :: No Jinja2 in when
