@@ -293,7 +293,7 @@ artcl_commands:
         /usr/bin/perl /usr/local/bin/consolidate-avc.pl /var/log/extra/selinux_denials.txt
     selinux_denials_detail:
       cmd: >
-        sealert -S -a /var/log/extra/selinux_consolidated_avc.txt
+        sealert -a /var/log/extra/selinux_consolidated_avc.txt
     seqfaults:
       cmd: >
         grep -v ansible-command /var/log/messages | grep segfault
