@@ -3,6 +3,8 @@
   hosts: all
   tasks:
     - name: Include collect_logs
+      vars:
+        sova_config_file: "{{ ansible_user_dir }}/workspace/logs/sova_config.json"
       include_role:
         name: collect_logs
         tasks_from: sova.yml

@@ -9,10 +9,20 @@
   retries: 3  # to avoid accidental failures due to networking or rate limiting
   delay: 60
   register: pattern_config
+  when: sova_config_file is not defined
+
+- name: Load sova patterns from local file
+  command: cat "{{ sova_config_file }}"
+  register: sova_config_file_output
+  when: sova_config_file is defined
+
+- name: Set sova_config json content
+  set_fact:
+    sova_config: "{{ (sova_config_file is defined) | ternary((sova_config_file_output.stdout | from_json), pattern_config.json) }}"
 
 - name: Run sova task
   sova:
-    config: "{{ pattern_config.json }}"
+    config: "{{ sova_config }}"
     files:
       console: "{{ ansible_user_dir }}/workspace/logs/quickstart_install.log"
       errors: "/var/log/errors.txt"
@@ -25,7 +35,7 @@
 
 - name: Run sova task (denials)
   sova:
-    config: "{{ pattern_config.json }}"
+    config: "{{ sova_config }}"
     files:
       selinux: "/var/log/extra/denials.txt"
     result: "{{ ansible_user_dir }}/workspace/logs/selinux_denials.log"
