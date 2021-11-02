@@ -1,24 +1,30 @@
 ---
-- name: Load sova patterns from URL
-  uri:
-    url: https://opendev.org/openstack/tripleo-ci-health-queries/raw/branch/master/output/sova-pattern-generated.json
-    method: GET
-    return_content: true
-    status_code: 200
-    body_format: json
-  retries: 3  # to avoid accidental failures due to networking or rate limiting
-  delay: 60
-  register: pattern_config
+- block:
+    - name: Load sova patterns from URL
+      uri:
+        url: https://opendev.org/openstack/tripleo-ci-health-queries/raw/branch/master/output/sova-pattern-generated.json
+        method: GET
+        return_content: true
+        status_code: 200
+        body_format: json
+      retries: 3  # to avoid accidental failures due to networking or rate limiting
+      delay: 60
+      register: pattern_config
+
+    - name: Set sova_config from URL content
+      set_fact:
+        sova_config: "{{ pattern_config.json }}"
   when: sova_config_file is not defined
 
-- name: Load sova patterns from local file
-  command: cat "{{ sova_config_file }}"
-  register: sova_config_file_output
-  when: sova_config_file is defined
+- block:
+    - name: Load sova patterns from local file
+      command: cat "{{ sova_config_file }}"
+      register: sova_config_file_output
 
-- name: Set sova_config json content
-  set_fact:
-    sova_config: "{{ (sova_config_file is defined) | ternary((sova_config_file_output.stdout | from_json), pattern_config.json) }}"
+    - name: Set sova_config from local file
+      set_fact:
+        sova_config: "{{ sova_config_file_output.stdout | from_json }}"
+  when: sova_config_file is defined
 
 - name: Run sova task
   sova:
