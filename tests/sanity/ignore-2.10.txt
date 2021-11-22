@@ -2,3 +2,4 @@ plugins/modules/ara_graphite.py validate-modules:missing-gplv3-license
 plugins/modules/ara_influxdb.py validate-modules:missing-gplv3-license
 plugins/modules/flatten_nested_dict.py validate-modules:missing-gplv3-license
 plugins/modules/sova.py validate-modules:missing-gplv3-license
+plugins/modules/sova.py pylint:use-a-generator
