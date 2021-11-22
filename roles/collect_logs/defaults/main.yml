@@ -202,6 +202,12 @@ artcl_commands:
           echo "+ pcs cluster cib"
           pcs cluster cib
         fi
+    pcs_cpu_throttle:
+      cmd: |
+        if type pcs &>/dev/null; then
+          echo "+ high CPU throttling events"
+          grep throttle_check_thresholds /var/log/pacemaker/pacemaker.log
+        fi
     swaps:
       cmd: cat /proc/swaps
       capture_file: /var/log/extra/swaps.txt
@@ -422,6 +428,7 @@ artcl_logstash_files:
   - /var/log/ipaserver-install.log
   - /var/log/tripleo-container-image-prepare.log
   - /var/log/extra/journal_errors.txt
+  - /var/log/extra/pcs_cpu_throttle.txt
   - /var/log/ceph/cephadm.log
   - /var/log/extra/errors.txt
 
