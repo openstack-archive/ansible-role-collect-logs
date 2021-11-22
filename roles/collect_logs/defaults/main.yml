@@ -317,6 +317,14 @@ artcl_commands:
       cmd: journalctl --since=-4h --lines=100000
     journal_errors:
       cmd: journalctl --since=-4h -p err --output=short-iso
+    rabbitmq:
+      cmd: |
+        if type pcs &>/dev/null; then
+          echo "+ rabbitmq cookie"
+          podman exec rabbitmq-bundle-podman-0 rabbitmqctl eval 'erlang:get_cookie().'
+          echo "+ rabbitmq report"
+          podman exec rabbitmq-bundle-podman-0 rabbitmqctl report
+        fi
   monitoring: {}
   network:
     ovn:
