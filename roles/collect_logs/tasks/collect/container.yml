@@ -44,6 +44,6 @@
         timeout --preserve-status -s 15 -k {{ (artcl_container_collect_timeout|int + 30)|string }}
         {{ artcl_container_collect_timeout|string }} bash -x /tmp/collect-container-logs.sh
       changed_when: true
-      async: 600
+      async: "{{ artcl_container_collect_timeout }}"
       poll: 0
       register: container_collection
