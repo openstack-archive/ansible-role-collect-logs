@@ -1,6 +1,6 @@
 ---
 driver:
-  name: docker
+  name: podman
 log: true
 platforms:
   # - name: centos7
@@ -22,8 +22,6 @@ provisioner:
       forks: 50
       stdout_callback: yaml
       timeout: 30
-    ssh_connection:
-      pipelining: true
   inventory:
     group_vars:
       all:

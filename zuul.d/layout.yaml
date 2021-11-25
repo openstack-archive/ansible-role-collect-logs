@@ -27,13 +27,21 @@
     irrelevant-files:
       - ^vars/sova-patterns.yml$
 
+- job:
+    description: Molecule job
+    name: tripleo-logs-tox-molecule
+    parent: tripleo-tox-molecule
+    pre-run:
+      - zuul.d/playbooks/pre.yml
+    timeout: 3600
+
 - project:
     vars:
       fail_logs_collection: true
     check:
       jobs: &jobs
         - openstack-tox-linters
-        - openstack-tox-molecule
+        - tripleo-logs-tox-molecule
         - tox-ansible-test-sanity
         - tox-ansible-test-units
         - zuul-ansible-role-collect-logs
