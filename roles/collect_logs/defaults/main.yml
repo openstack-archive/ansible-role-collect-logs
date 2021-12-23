@@ -209,6 +209,16 @@ artcl_commands:
           echo "+ high CPU throttling events"
           grep throttle_check_thresholds /var/log/pacemaker/pacemaker.log
         fi
+    chrony:
+      cmd: |
+        echo "+ chrony tracking"
+        chronyc tracking
+        echo "+ chrony sources"
+        chronyc sources -a -v
+        echo "+ chrony source stats"
+        chronyc sourcestats -a -v
+        echo "+ chrony activity"
+        chronyc activity
     swaps:
       cmd: cat /proc/swaps
       capture_file: /var/log/extra/swaps.txt
