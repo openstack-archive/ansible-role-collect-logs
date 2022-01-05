@@ -63,6 +63,18 @@ subparsers:
             type: NestedDict
             help: |
               Commands to be executed, combined with artcl_commands.
+          artcl_find_maxdepth:
+            type: Value
+            help: |
+              Max depth passed to find via -maxdepth arg, it makes effect only
+              when artcl_rsync_collect_list is set to False.
+            default: 4
+          artcl_find_max_size:
+            type: Value
+            help: |
+              Max file size passed to find via -size arg, it makes effect only
+              when artcl_rsync_collect_list is set to False.
+            default: 256
           artcl_rsync_collect_list:
             type: Bool
             help: |
