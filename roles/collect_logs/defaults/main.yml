@@ -347,7 +347,7 @@ artcl_commands:
         echo "+ slow req_ids";
         find /var/log/containers -type f -name '*.log'
         -not -path '*/stdouts/*' -not -path '*httpd*'
-        -exec grep -HE '(time:|held |waited )([3-9][0-9]\.|[0-9]{3,}\.)' {} \;;
+        -exec grep -HE '(time:\s?|held |waited )([3-9][0-9]\.|[0-9]{3,}\.)' {} \;;
         echo "+ slow haproxy api calls";
         grep -E '([0-9]+\/){3,}[3-9][0-9]{4,}/?' /var/log/containers/haproxy/haproxy.log
   monitoring: {}
