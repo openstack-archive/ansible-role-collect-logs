@@ -86,11 +86,6 @@
     executable: /bin/bash
   when: artcl_txt_rename|bool
 
-- name: Create the reproducer script
-  include_role:
-    name: create-reproducer-script
-  when: ansible_env.TOCI_JOBTYPE is defined
-
 - name: Create the zuul-based reproducer script if we are running on zuul
   include_role:
     name: create-zuul-based-reproducer
