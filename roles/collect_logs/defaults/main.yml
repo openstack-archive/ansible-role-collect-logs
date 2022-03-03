@@ -220,6 +220,16 @@ artcl_commands:
         chronyc sourcestats -a -v
         echo "+ chrony activity"
         chronyc activity
+    ipa:
+      cmd: |
+        if type ipa &>/dev/null; then
+          echo "+ ipa env"
+          ipa env
+          echo "+ ipa config-show"
+          ipa config-show --all
+          echo "+ ipa dnsconfig-show"
+          ipa dnsconfig-show --all
+        fi
     swaps:
       cmd: cat /proc/swaps
       capture_file: /var/log/extra/swaps.txt
