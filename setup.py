@@ -19,4 +19,4 @@ import setuptools
 __metaclass__ = type
 
 
-setuptools.setup(setup_requires=["pbr"], pbr=True)
+setuptools.setup(setup_requires=["pbr"], pbr=True, py_modules=[])
