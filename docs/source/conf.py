@@ -64,10 +64,10 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"TripleO"
-copyright = u"2016, RDO CI Team"
-bug_tracker = u"Bugzilla"
-bug_tracker_url = u"https://bugzilla.redhat.com"
+project = "TripleO"
+copyright = "2016, RDO CI Team"
+bug_tracker = "Bugzilla"
+bug_tracker_url = "https://bugzilla.redhat.com"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
