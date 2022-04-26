@@ -17,6 +17,9 @@
           echo "### IPTables (IPv${ipv})" &>> /var/log/extra/network.txt;
           test $ipv -eq 4 && iptables-save &>> /var/log/extra/network.txt;
           test $ipv -eq 6 && ip6tables-save &>> /var/log/extra/network.txt;
+          echo "### IPTables Stats (IPv${ipv})" &>> /var/log/extra/network.txt;
+          test $ipv -eq 4 && iptables -vnL &>> /var/log/extra/network.txt;
+          test $ipv -eq 6 && ip6tables -vnL &>> /var/log/extra/network.txt;
         done;
         (for NS in $(ip netns list | cut -f 1 -d " "); do
           for ipv in 4 6; do
