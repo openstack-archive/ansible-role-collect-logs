@@ -366,15 +366,20 @@ artcl_commands:
     ovn:
       cmd: |
         if type ovs-vsctl &>/dev/null; then
+          function pod_exec() {
+            timeout -k 10 5 sudo podman exec ovn_controller $@
+          }
           function sbctl() {
             SBDB=$(sudo ovs-vsctl get open . external_ids:ovn-remote | sed -e 's/\"//g');
-            timeout -k 10 5 sudo podman exec ovn_controller ovn-sbctl --db=$SBDB $1
+            pod_exec ovn-sbctl --db=$SBDB $1
           }
           function nbctl() {
             NBDB=$(sudo ovs-vsctl get open . external_ids:ovn-remote | sed -e 's/\"//g' | sed -e 's/6642/6641/g');
-            timeout -k 10 5 sudo podman exec ovn_controller ovn-nbctl --db=$NBDB $1
+            pod_exec ovn-nbctl --db=$NBDB $1
           }
-          echo "Output of ovn-sbctl show"
+          echo "Output of ovs-vsctl get open . external_ids"
+          pod_exec ovs-vsctl get open . external_ids
+          echo "\nOutput of ovn-sbctl show"
           sbctl show
           echo "\nOutput of ovn-nbctl show"
           nbctl show
