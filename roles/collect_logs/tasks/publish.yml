@@ -50,10 +50,11 @@
     gunzip {{ artcl_collect_dir }}/tempest.{xml,html}.gz || true;
   changed_when: true
 
-- name: Copy testrepository.subunit file to the root of collect_dir for os_tempest
+- name: Copy and unzip testrepository.subunit file to the root of {{ artcl_collect_dir }} for os_tempest
   shell: >
-    cp {{ artcl_collect_dir }}/undercloud/var/log/tempest/testrepository.subunit.gz {{ artcl_collect_dir }}/testrepository.subunit.gz || true
-  when: use_os_tempest is defined
+    cp {{ artcl_collect_dir }}/undercloud/var/log/tempest/testrepository.subunit* {{ artcl_collect_dir }} || true;
+    gunzip {{ artcl_collect_dir }}/testrepository.subunit.gz || true;
+  changed_when: true
 
 - name: Fetch .sh and .log files from local working directory on localhost
   shell: >
