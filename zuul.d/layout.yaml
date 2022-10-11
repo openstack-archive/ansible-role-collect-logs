@@ -38,6 +38,7 @@
 - project:
     vars:
       fail_logs_collection: true
+    queue: tripleo
     check:
       jobs: &jobs
         - openstack-tox-linters
@@ -95,7 +96,6 @@
                 - overcloud-validate
     gate:
       jobs: *jobs
-      queue: tripleo
     post:
       jobs:
         - publish-openstack-python-branch-tarball
