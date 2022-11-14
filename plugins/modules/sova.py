@@ -181,7 +181,7 @@ def line_match(pat, line, exclude=None):
         return False
     if found.groups():
         if exclude:
-            if any([i in found.group(1) for i in exclude]):
+            if any(i in found.group(1) for i in exclude):
                 return False
         return found.group(1)
     return True
