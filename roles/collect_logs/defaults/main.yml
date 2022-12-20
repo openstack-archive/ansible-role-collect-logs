@@ -80,7 +80,7 @@ artcl_collect_list:
   - /var/log/tacker/
   - /var/log/tempest/
   - /var/log/trove/
-  - /var/log/tripleo-container-image-prepare.log
+  - /var/log/tripleo-container-image-prepare.*.log
   - /var/log/vitrage/
   - /var/log/watcher/
   - /var/log/zaqar/
