@@ -120,61 +120,84 @@
   retries: "{{ ((artcl_container_collect_timeout|int) / 10)|int }}"
   when: "'container' in collect_log_types"
 
-- name: Create find list file
-  become: true
-  shell: >
-    find {{ collect_list|join(' ') }}
-    -maxdepth {{ artcl_find_maxdepth }}
-    -type f \
-    -size -{{ artcl_find_max_size }}M
-    {% if artcl_exclude_list is defined %}
-    -not -path {{ artcl_exclude_list|map('quote')|join(' -not -path ') }}
-    {% endif %}
-    -print0 > /tmp/{{ inventory_hostname }}-rsync-list
-  failed_when: false
-  when: not artcl_rsync_collect_list|bool
+- name: Find and move logfiles generic case (typically without compression)
+  when: not (artcl_gzip | bool) or ( sanitize_lines is defined and sanitize_lines|length ) or ( artcl_rsync_collect_list|bool )
+  block:
+    - name: Create find list file
+      become: true
+      shell: >
+        find {{ collect_list|join(' ') }}
+        -maxdepth {{ artcl_find_maxdepth }}
+        -type f \
+        -size -{{ artcl_find_max_size }}M
+        {% if artcl_exclude_list is defined %}
+        -not -path {{ artcl_exclude_list|map('quote')|join(' -not -path ') }}
+        {% endif %}
+        -print0 > /tmp/{{ inventory_hostname }}-rsync-list
+      failed_when: false
+      when: not artcl_rsync_collect_list|bool
 
-- name: Gather the logs to /tmp
-  become: true
-  shell: >
-    set -o pipefail &&
-    rsync --quiet --recursive --copy-links --prune-empty-dirs --ignore-errors
-    {% if artcl_rsync_collect_list|bool %}
-    --filter '. /tmp/{{ inventory_hostname }}-rsync-filter'
-    {% else %}
-    --from0 --files-from=/tmp/{{ inventory_hostname }}-rsync-list
-    {% endif %}
-    / /tmp/{{ inventory_hostname }};
-    find /tmp/{{ inventory_hostname }} -type d -print0 | xargs -0 chmod 755;
-    find /tmp/{{ inventory_hostname }} -type f -print0 | xargs -0 chmod 644;
-    find /tmp/{{ inventory_hostname }} -not -type f -not -type d -delete;
-    {# chown can fail with: chown: invalid spec: '0:' #}
-    chown -R {{ ansible_user | default(ansible_effective_user_id) }}: /tmp/{{ inventory_hostname }} || true;
-  args:
-    executable: /bin/bash
-  changed_when: true
+    - name: Gather the logs to /tmp
+      become: true
+      shell: >
+        set -o pipefail &&
+        rsync --quiet --recursive --copy-links --prune-empty-dirs --ignore-errors
+        {% if artcl_rsync_collect_list|bool %}
+        --filter '. /tmp/{{ inventory_hostname }}-rsync-filter'
+        {% else %}
+        --from0 --files-from=/tmp/{{ inventory_hostname }}-rsync-list
+        {% endif %}
+        / /tmp/{{ inventory_hostname }};
+        find /tmp/{{ inventory_hostname }} -type d -print0 | xargs -0 chmod 755;
+        find /tmp/{{ inventory_hostname }} -type f -print0 | xargs -0 chmod 644;
+        find /tmp/{{ inventory_hostname }} -not -type f -not -type d -delete;
+        {# chown can fail with: chown: invalid spec: '0:' #}
+        chown -R {{ ansible_user | default(ansible_effective_user_id) }}: /tmp/{{ inventory_hostname }} || true;
+      args:
+        executable: /bin/bash
+      changed_when: true
 
-# See README section 'Sanitizing Log Strings'
-- name: Sanitize logs to remove sensitive details
-  include_tasks: sanitize_log_strings.yaml
-  loop: "{{ sanitize_lines }}"
-  loop_control:
-    loop_var: outer_item
-  when: sanitize_lines is defined and sanitize_lines|length
+    # See README section 'Sanitizing Log Strings'
+    - name: Sanitize logs to remove sensitive details
+      include_tasks: sanitize_log_strings.yaml
+      loop: "{{ sanitize_lines }}"
+      loop_control:
+        loop_var: outer_item
+      when: sanitize_lines is defined and sanitize_lines|length
 
-# it makes sense to compress the logs prior
-# to sending them over the wire to the
-# node where they are collected by infra.
-# Regardless of the file size.
-- name: Compress the collected files if configured
-  when: artcl_gzip | bool
-  shell: gzip -r ./{{ inventory_hostname }}
-  args:
-    chdir: /tmp
-    warn: false
-  changed_when: true
-  tags:
-    - skip_ansible_lint
+    # it makes sense to compress the logs prior
+    # to sending them over the wire to the
+    # node where they are collected by infra.
+    # Regardless of the file size.
+    - name: Compress the collected files if configured
+      when: artcl_gzip | bool
+      shell: gzip -r ./{{ inventory_hostname }}
+      args:
+        chdir: /tmp
+        warn: false
+      changed_when: true
+      tags:
+        - skip_ansible_lint
+
+- name: Create gz compressed log files to the /tmp (special case)
+  when:
+    - artcl_gzip | bool
+    - not ( sanitize_lines is defined and sanitize_lines|length )
+    - not ( artcl_rsync_collect_list|bool )
+  block:
+    - name: On the fly compress copy
+      become: true
+      shell: >
+        find {{ collect_list|join(' ') }}
+        -maxdepth {{ artcl_find_maxdepth }}
+        -type f \
+        -size -{{ artcl_find_max_size }}M
+        {% if artcl_exclude_list is defined %}
+        -not -path {{ artcl_exclude_list|map('quote')|join(' -not -path ') }}
+        {% endif %}
+        -print0 |
+        xargs -0 -P 8 -I ITER sh -c 'mkdir -p "/tmp/{{ inventory_hostname }}$(dirname ITER)"; gzip -c "ITER" > "/tmp/{{ inventory_hostname }}/ITER.gz"'
+      failed_when: false
 
 - name: Create tar archive of logs for faster copying  # noqa: command-instead-of-module
   shell:
