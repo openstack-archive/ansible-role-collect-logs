@@ -14,8 +14,8 @@
     parent: tox
     vars:
       tox_envlist: units  # dynamic tox env added by tox-ansible
-      # we want to run sanity only on py36 instead of implicit 2.6-3.9 range
-      # tox_extra_args: -- --python 3.6
+      # we want to run sanity only on py3.10 instead of implicit 2.6-3.9 range
+      tox_extra_args: -- --python 3.10
 
 - job:
     name: zuul-ansible-role-collect-logs

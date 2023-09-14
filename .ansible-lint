@@ -1,5 +1,7 @@
 ---
 parseable: true
+exclude_paths:
+    - infrared_plugin/main.yml
 skip_list:
     # Add skips here only as last resort, like:
     - role-name
