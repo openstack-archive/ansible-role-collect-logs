@@ -88,7 +88,12 @@ for cont in $(${engine} ps | awk '{print $NF}' | grep -v NAMES); do
     # using a `logs` volume
     # NOTE(mandre) Do not copy logs if the containers is bind mounting /var/log directory
     if ! ${engine} inspect "$cont" | jq .[0].Mounts[].Source | grep -x  '"/var/log[/]*"' >/dev/null 2>&1; then
-            container_cp "$cont" /var/log "$INFO_DIR/log";
+        container_cp "$cont" /var/log "$INFO_DIR/log";
+        BIND_DESTS=$(${engine} inspect "$cont" | jq .[0].Mounts[].Destination -r)
+        for path in $(echo "$BIND_DESTS" | grep "^/var/log" | sed -e "s#^/var/log/##g"); do
+            rm -rf "$INFO_DIR/log/$path"
+            echo "Omitting $INFO_DIR/log/$path in $cont because it is mounted from the host"
+        done
     fi;
 
     # Delete symlinks because they break log collection and are generally
