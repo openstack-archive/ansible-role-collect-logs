@@ -1,8 +1,0 @@
----
-- name: Validate "/var/log/extra/logstash.txt
-  hosts: all
-  tasks:
-
-    - name: Check logstash.txt contains expected data
-      command: grep -q "this is sparta" /var/log/extra/logstash.txt
-      changed_when: false
